@@ -284,6 +284,21 @@ git submodule add <仓库URL> upstream/<名称>
 3. 使用 `make test` 运行测试
 4. 保持脚本 POSIX 兼容（优先使用 bash）
 
+### 命名规范
+
+#### Skill 分类前缀
+
+所有 Skills 使用分类前缀，便于区分用途：
+
+| 前缀 | 类别 | 示例 |
+|------|------|------|
+| `dev-` | 开发相关 | `dev-plan`, `dev-tdd`, `dev-review-py` |
+| `life-` | 生活相关 | `life-notes`, `life-daily` |
+| `work-` | 工作相关 | `work-meeting`, `work-project` |
+| `tool-` | 工具相关 | `tool-mcp-builder`, `tool-sshfs-mount` |
+| `learn-` | 学习相关 | `learn-paper`, `learn-research` |
+
+命名前缀规范适用于 Agents/Commands/Skills 及其 frontmatter `name` 字段，按用途选择前缀。
 ---
 
 ## 资源链接
