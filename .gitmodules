@@ -1,3 +1,6 @@
 [submodule "upstream/superpowers"]
 	path = upstream/superpowers
 	url = https://github.com/obra/superpowers.git
+[submodule "upstream/everything-claude-code"]
+	path = upstream/everything-claude-code
+	url = https://github.com/affaan-m/everything-claude-code.git
