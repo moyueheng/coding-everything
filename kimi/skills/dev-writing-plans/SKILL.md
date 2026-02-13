@@ -13,7 +13,7 @@ description: 当有多步骤任务的规范或需求时，在接触代码前使�
 
 **开始时宣布：** "I'm using the dev-writing-plans skill to create the implementation plan."
 
-**上下文：** 这应该在专用 worktree 中运行（由头脑风暴 skill 创建）。
+**上下文：** 这应该在专用 worktree 中运行（由 dev-brainstorming skill 创建）。
 
 **保存计划到：** `docs/plans/YYYY-MM-DD-<feature-name>.md`
 
