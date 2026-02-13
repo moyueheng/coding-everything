@@ -15,7 +15,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（13 个技能） |
+| **Kimi** | `kimi/` | ✅ 已配置（11 个技能 + 安装脚本） |
 | **OpenCode** | `opencode/` | 🏗️ 目录结构 |
 
 ---
@@ -26,6 +26,7 @@
 coding-everything/
 ├── README.md                   # 项目简介
 ├── AGENTS.md                   # 本文档
+├── Makefile                    # 常用命令
 ├── .gitmodules                 # Git submodule 配置
 │
 ├── kimi/                       # Kimi 配置
@@ -35,7 +36,7 @@ coding-everything/
 │   │       ├── agent.yaml
 │   │       ├── system.md
 │   │       └── README.md
-│   └── skills/                 # 13 个技能
+│   └── skills/                 # 11 个技能
 │       ├── dev-using-skills/
 │       ├── dev-brainstorming/
 │       ├── dev-debugging/
@@ -53,8 +54,13 @@ coding-everything/
 │   ├── plugins/                # 插件目录
 │   └── skills/                 # 技能目录（待填充）
 │
-├── docs/                       # 文档
 ├── scripts/                    # 工具脚本
+│   └── install.sh              # Kimi 配置安装脚本 (TDD)
+│
+├── tests/                      # 测试
+│   └── test_install.sh         # install.sh 的测试（18 个用例）
+│
+├── docs/                       # 文档
 │
 └── upstream/                   # 上游仓库（git submodules）
     ├── superpowers/            # superpowers 框架
@@ -64,7 +70,7 @@ coding-everything/
     │
     └── everything-claude-code/ # everything-claude-code 配置
         ├── .claude/            # Claude 配置
-        ├── .cursor/            # Cursor 配置
+        ├── .cursor/            # Cursor 编辑器配置
         ├── .opencode/          # OpenCode 配置
         ├── skills/             # 39 个技能
         ├── agents/             # 智能体配置
@@ -115,8 +121,8 @@ coding-everything/
 |------|------|------|
 | `dev-using-skills` | 入口点 - 技能使用方法 | 严格 |
 | `dev-brainstorming` | 编码前苏格拉底式对话 | 严格 |
-| `dev-tdd` | 测试驱动开发 | 严格 |
 | `dev-debugging` | 四阶段调试流程 | 严格 |
+| `dev-tdd` | 测试驱动开发 | 严格 |
 | `dev-writing-plans` | 编写实施计划 | 严格 |
 | `dev-executing-plans` | 执行计划 | 严格 |
 | `dev-git-worktrees` | Git 工作树管理 | 严格 |
@@ -125,14 +131,71 @@ coding-everything/
 | `dev-finishing-branch` | 分支完成工作流 | 严格 |
 | `dev-writing-skills` | 编写新技能 | 严格 |
 
-### 使用方法
+### 快速安装
+
+使用 Makefile（推荐）：
 
 ```bash
-# 进入项目目录
-cd coding-everything
+# 查看所有可用命令
+make help
 
-# Kimi Code CLI 会自动加载 kimi/agents/superpower/ 下的配置
+# 安装配置到 ~/.kimi/
+make install
+
+# 更新配置
+make update
+
+# 查看状态
+make status
+
+# 运行测试
+make test
 ```
+
+或使用脚本直接安装：
+
+```bash
+# 安装配置
+./scripts/install.sh
+
+# 启动 Kimi
+./kimi-superpower
+```
+
+### 安装脚本功能
+
+`scripts/install.sh` 使用 TDD 开发，包含以下命令：
+
+| 命令 | 说明 |
+|------|------|
+| `install` | 安装配置到 `~/.kimi/`（默认） |
+| `install -f` | 强制安装，覆盖现有配置 |
+| `update` | 更新已安装的配置 |
+| `uninstall` | 卸载配置 |
+| `status` | 查看安装状态 |
+
+安装路径：
+- Skills: `~/.kimi/skills/`（11 个 dev-* skills）
+- Agent: `~/.kimi/agents/superpower/`
+- 启动脚本: `./kimi-superpower`
+
+### 测试
+
+```bash
+# 运行所有测试
+make test
+
+# 或直接运行
+./tests/test_install.sh
+```
+
+测试覆盖：
+- install: 创建目录、复制 skills/agent、创建启动脚本
+- install -f: 覆盖现有配置
+- update: 更新配置、未安装时报错
+- uninstall: 删除配置和启动脚本
+- status: 显示安装状态
+- 边界情况: 无效命令、源文件缺失等
 
 ---
 
@@ -214,6 +277,13 @@ git submodule add <仓库URL> upstream/<名称>
    - 流程图（Graphviz dot）
    - 检查清单（如适用）
 
+### 脚本开发
+
+1. 使用 TDD 开发重要脚本
+2. 测试文件放在 `tests/` 目录
+3. 使用 `make test` 运行测试
+4. 保持脚本 POSIX 兼容（优先使用 bash）
+
 ---
 
 ## 资源链接
@@ -221,6 +291,7 @@ git submodule add <仓库URL> upstream/<名称>
 - **superpowers**: https://github.com/obra/superpowers
 - **everything-claude-code**: https://github.com/affaan-m/everything-claude-code
 - **本项目**: https://github.com/moyueheng/coding-everything
+- **Kimi CLI 文档**: https://moonshotai.github.io/kimi-cli/
 
 ---
 
