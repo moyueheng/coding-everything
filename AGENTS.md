@@ -284,6 +284,12 @@ git submodule add <仓库URL> upstream/<名称>
 3. 使用 `make test` 运行测试
 4. 保持脚本 POSIX 兼容（优先使用 bash）
 
+### 文档同步（AGENTS/CLAUDE）
+
+1. 开始任务先运行：`find . -type f \( -name 'AGENTS.md' -o -name 'CLAUDE.md' \)`，识别可受影响文档
+2. 只要变更触及目录结构、架构边界、工作流、安装步骤、测试入口等高信息密度事实，必须同步更新相关文档
+3. 更新内容禁止流水账，优先写稳定、可执行、可复用的约束与结构信息
+
 ### 命名规范
 
 #### Skill 分类前缀
