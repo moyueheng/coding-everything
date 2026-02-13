@@ -4,6 +4,27 @@
 
 ## 快速开始
 
+### 使用 Makefile（推荐）
+
+```bash
+# 查看所有可用命令
+make help
+
+# 安装配置
+make install
+
+# 更新配置
+make update
+
+# 查看状态
+make status
+
+# 运行测试
+make test
+```
+
+### 直接使用脚本
+
 ```bash
 # 安装配置
 ./scripts/install.sh
