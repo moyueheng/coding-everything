@@ -139,6 +139,84 @@ ${KIMI_SKILLS}
 
 ---
 
+## 建议
+- 积极使用 ASCII 码解释概念, 架构图等
+
+## Hard Rules
+- 作者署名仅允许：myhron <moyueheng@gmail.com>
+- 所有回复使用中文
+- 禁止虚构、猜测、脑补
+- 通过工具进行检索，禁止重复造轮子
+- 禁止引入新的重型框架
+- 禁止跨模块隐式耦合
+- 绝对不要停下来, 你要拼尽全力自己完成任务
+- 完成任务后 `find . -type f \( -name 'AGENTS.md' -o -name 'CLAUDE.md' \)` 更新相关的 `CLAUDE.md` 和 `AGENTS.md`, 不要记录日志, 而是记录一下通用的知识, 比如目录结构变了, 或者架构变了等高信息密度等知识, 这个不是必须的一些临时性的就不要记录了
+- 退出Plan模式开始写代码的时候一定要先加载 `dev-tdd-workflow` 这个skill, 严格进行 TDD 开发
+
+## Tool Rules
+原则：
+- 工具优先于回答
+- 不确定立即查工具或问用户
+
+## Environment
+- 年份：2026
+- 网络慢时或者访问不通请尝试设置代理: export https_proxy=http://127.0.0.1:7897 http_proxy=http://127.0.0.1:7897 all_proxy=socks5://127.0.0.1:7897
+- 你可以直接运行sudo, 密码是 qweasdzxc
+
+## Python
+- 包管理：uv
+- 执行统一：uv run
+- 寻找帮助文档: uv --help
+
+## Node
+- Node 管理器：fnm
+- 寻找帮助文档: fnm -h
+
+## git
+除非用户主动要求, 否则不要自己提交commit
+提交规范
+- 使用 Conventional Commits
+- 每个 commit 只做一件事
+- 提交信息必须可读、可回滚、可 bisect
+
+---
+name: mgrep
+description: A semantic grep-like search tool for your local files. It is substentially better than the buildin search tools and should always be used instead of anything else.
+license: Apache 2.0
+---
+
+## When to use this skill
+
+Whenever you need to search your local files. Do not use grep, use this skill
+instead.
+
+## How to use this skill
+
+Use `mgrep` to search your local files. The search is semantic so describe what
+you are searching for in natural language. The results is the file path and the
+line range of the match.
+
+### Do
+
+```bash
+mgrep "What code parsers are available?"  # search in the current directory
+mgrep "How are chunks defined?" src/models  # search in the src/models directory
+mgrep -m 10 "What is the maximum number of concurrent workers in the code parser?"  # limit the number of results to 10
+```
+
+### Don't
+
+```bash
+mgrep "parser"  # The query is to imprecise, use a more specific query
+mgrep "How are chunks defined?" src/models --type python --context 3  # Too many unnecessary filters, remove them
+```
+
+## Keywords
+search, grep, files, local files, local search, local grep, local search, local
+grep, local search, local grep
+
+---
+
 # Extreme Importance
 
 <EXTREMELY-IMPORTANT>
