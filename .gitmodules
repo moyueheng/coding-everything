@@ -4,3 +4,6 @@
 [submodule "upstream/everything-claude-code"]
 	path = upstream/everything-claude-code
 	url = https://github.com/affaan-m/everything-claude-code.git
+[submodule "upstream/ui-ux-pro-max-skill"]
+	path = upstream/ui-ux-pro-max-skill
+	url = https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git
