@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-# Kimi Superpower 启动脚本
-exec kimi --agent-file "/Users/moyueheng/.kimi/agents/superpower/agent.yaml" "$@"
