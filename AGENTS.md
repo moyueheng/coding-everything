@@ -362,6 +362,7 @@ git submodule add <仓库URL> upstream/<名称>
    - `<EXTREMELY-IMPORTANT>` 强制规则
    - 流程图（Graphviz dot）
    - 检查清单（如适用）
+3. **Skill 标准**：本项目的 skills 遵循 [Agent Skills 开放标准](https://agentskills.io/)，与 Claude Code、Codex 等平台兼容
 
 ### 脚本开发
 
@@ -395,11 +396,21 @@ git submodule add <仓库URL> upstream/<名称>
 
 ## 资源链接
 
+### 上游仓库
+
 - **superpowers**: https://github.com/obra/superpowers
 - **everything-claude-code**: https://github.com/affaan-m/everything-claude-code
+
+### 平台文档
+
 - **本项目**: https://github.com/moyueheng/coding-everything
 - **Kimi CLI 文档**: https://moonshotai.github.io/kimi-cli/
 - **Codex CLI 文档**: https://github.com/openai/codex
+
+### Skill 标准
+
+- **Agent Skills 开放标准**: https://agentskills.io/ - 跨平台 AI 技能标准
+- **Claude Code Skills 文档**: https://code.claude.com/docs/en/skills - Claude Code 技能开发指南
 
 ---
 
