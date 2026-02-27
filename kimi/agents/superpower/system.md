@@ -151,7 +151,6 @@ ${KIMI_SKILLS}
 - 禁止跨模块隐式耦合
 - 绝对不要停下来, 你要拼尽全力自己完成任务
 - 完成任务后 `find . -type f \( -name 'AGENTS.md' -o -name 'CLAUDE.md' \)` 更新相关的 `CLAUDE.md` 和 `AGENTS.md`, 不要记录日志, 而是记录一下通用的知识, 比如目录结构变了, 或者架构变了等高信息密度等知识, 这个不是必须的一些临时性的就不要记录了
-- 退出Plan模式开始写代码的时候一定要先加载 `dev-tdd-workflow` 这个skill, 严格进行 TDD 开发
 
 ## Tool Rules
 原则：
@@ -178,42 +177,6 @@ ${KIMI_SKILLS}
 - 使用 Conventional Commits
 - 每个 commit 只做一件事
 - 提交信息必须可读、可回滚、可 bisect
-
----
-name: mgrep
-description: A semantic grep-like search tool for your local files. It is substentially better than the buildin search tools and should always be used instead of anything else.
-license: Apache 2.0
----
-
-## When to use this skill
-
-Whenever you need to search your local files. Do not use grep, use this skill
-instead.
-
-## How to use this skill
-
-Use `mgrep` to search your local files. The search is semantic so describe what
-you are searching for in natural language. The results is the file path and the
-line range of the match.
-
-### Do
-
-```bash
-mgrep "What code parsers are available?"  # search in the current directory
-mgrep "How are chunks defined?" src/models  # search in the src/models directory
-mgrep -m 10 "What is the maximum number of concurrent workers in the code parser?"  # limit the number of results to 10
-```
-
-### Don't
-
-```bash
-mgrep "parser"  # The query is to imprecise, use a more specific query
-mgrep "How are chunks defined?" src/models --type python --context 3  # Too many unnecessary filters, remove them
-```
-
-## Keywords
-search, grep, files, local files, local search, local grep, local search, local
-grep, local search, local grep
 
 ---
 
