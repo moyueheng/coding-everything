@@ -12,11 +12,6 @@
 - [个人 Kimi 配置](#个人-kimi-配置)
   - [技能列表](#技能列表)
   - [快速安装](#快速安装)
-  - [安装脚本功能](#安装脚本功能)
-  - [测试](#测试)
-- [个人 Codex 配置](#个人-codex-配置)
-  - [技能列表](#技能列表-1)
-  - [快速安装](#快速安装-1)
 - [Git Submodule 管理](#git-submodule-管理)
   - [克隆包含 submodules 的项目](#克隆包含-submodules-的项目)
   - [初始化 submodules](#初始化-submodules如果已克隆但没有-submodules)
@@ -54,8 +49,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（11 个技能 + 安装脚本） |
-| **Codex** | `codex/` | ✅ 已配置（11 个技能 + 安装脚本） |
+| **Kimi** | `kimi/` | ✅ 已配置（11 个技能） |
 | **OpenCode** | `opencode/` | 🏗️ 目录结构 |
 
 ---
@@ -66,7 +60,6 @@
 coding-everything/
 ├── README.md                   # 项目简介
 ├── AGENTS.md                   # 本文档
-├── Makefile                    # 常用命令
 ├── .gitmodules                 # Git submodule 配置
 │
 ├── kimi/                       # Kimi 配置
@@ -89,31 +82,10 @@ coding-everything/
 │       ├── dev-finishing-branch/
 │       └── dev-writing-skills/
 │
-├── codex/                      # Codex 配置
-│   ├── README.md
-│   └── skills/                 # 11 个技能（从 kimi 迁移）
-│       ├── dev-using-skills/
-│       ├── dev-brainstorming/
-│       ├── dev-debugging/
-│       ├── dev-tdd/
-│       ├── dev-writing-plans/
-│       ├── dev-executing-plans/
-│       ├── dev-git-worktrees/
-│       ├── dev-requesting-review/
-│       ├── dev-verification/
-│       ├── dev-finishing-branch/
-│       └── dev-writing-skills/
-│
 ├── opencode/                   # OpenCode 配置
 │   ├── README.md
 │   ├── plugins/                # 插件目录
 │   └── skills/                 # 技能目录（待填充）
-│
-├── scripts/                    # 工具脚本
-│   └── install.sh              # 配置安装脚本 (TDD, 支持 kimi/codex)
-│
-├── tests/                      # 测试
-│   └── test_install.sh         # install.sh 的测试（27 个用例，覆盖 kimi/codex）
 │
 ├── docs/                       # 文档
 │
@@ -188,137 +160,21 @@ coding-everything/
 
 ### 快速安装
 
-使用 Makefile（推荐）：
+使用 setup skill（推荐）：
 
 ```bash
-# 查看所有可用命令
-make help
-
-# 安装配置到 ~/.kimi/
-make install
-
-# 更新配置
-make update
-
-# 查看状态
-make status
-
-# 运行测试
-make test
+cd coding-everything
+/skill:setup
 ```
 
-或使用脚本直接安装：
+或手动创建 symlink：
 
 ```bash
-# 安装配置
-./scripts/install.sh
+# Skills（所有 Agent 工具共享）
+ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
 
-# 启动 Kimi
-./kimi-superpower
-```
-
-### 安装脚本功能
-
-`scripts/install.sh` 使用 TDD 开发，支持 Kimi 和 Codex 双平台：
-
-```bash
-# 命令格式
-./scripts/install.sh [platform] [command] [options]
-
-# Platform: kimi (默认) | codex
-# Command: install | update | uninstall | status
-```
-
-| 命令 | 说明 |
-|------|------|
-| `install` | 安装配置（默认 kimi） |
-| `kimi install` | 安装 Kimi 配置到 `~/.kimi/` |
-| `codex install` | 安装 Codex 配置到 `~/.codex/` |
-| `install -f` | 强制安装，覆盖现有配置 |
-| `update` | 更新已安装的配置 |
-| `uninstall` | 卸载配置 |
-| `status` | 查看安装状态 |
-
-**Kimi 安装路径：**
-- Skills: `~/.kimi/skills/`（11 个 dev-* skills）
-- Agent: `~/.kimi/agents/superpower/`
-- 启动脚本: `./kimi-superpower`
-
-**Codex 安装路径：**
-- Skills: `~/.agents/skills/`（11 个 dev-* skills，符合 Codex 官方规范）
-- 直接使用 `codex` 命令启动，skills 自动加载
-
-### 测试
-
-```bash
-# 运行所有测试
-make test
-
-# 或直接运行
-./tests/test_install.sh
-```
-
-测试覆盖：
-- install: 创建目录、复制 skills/agent、创建启动脚本
-- install -f: 覆盖现有配置
-- update: 更新配置、未安装时报错
-- uninstall: 删除配置和启动脚本
-- status: 显示安装状态
-- 边界情况: 无效命令、源文件缺失等
-
----
-
-## 个人 Codex 配置
-
-基于 superpowers 框架改写，适配 Codex CLI 使用。技能与 Kimi 配置相同。
-
-### 技能列表
-
-与 Kimi 配置相同的 11 个技能：
-
-| 技能 | 用途 | 类型 |
-|------|------|------|
-| `dev-using-skills` | 入口点 - 技能使用方法 | 严格 |
-| `dev-brainstorming` | 编码前苏格拉底式对话 | 严格 |
-| `dev-debugging` | 四阶段调试流程 | 严格 |
-| `dev-tdd` | 测试驱动开发 | 严格 |
-| `dev-writing-plans` | 编写实施计划 | 严格 |
-| `dev-executing-plans` | 执行计划 | 严格 |
-| `dev-git-worktrees` | Git 工作树管理 | 严格 |
-| `dev-requesting-review` | 代码审查请求 | 严格 |
-| `dev-verification` | 完成前验证 | 严格 |
-| `dev-finishing-branch` | 分支完成工作流 | 严格 |
-| `dev-writing-skills` | 编写新技能 | 严格 |
-
-### 快速安装
-
-使用 Makefile：
-
-```bash
-# 查看所有可用命令
-make help
-
-# 安装 codex skills 到 ~/.agents/skills/
-make install-codex
-
-# 更新配置
-make update-codex
-
-# 查看状态
-make status-codex
-
-# 运行测试
-make test
-```
-
-或使用脚本直接安装：
-
-```bash
-# 安装 codex skills
-./scripts/install.sh codex install
-
-# 启动 Codex（skills 会自动加载）
-codex
+# Agent 配置（仅 Kimi）
+ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ```
 
 ---
@@ -406,8 +262,7 @@ git submodule add <仓库URL> upstream/<名称>
 
 1. 使用 TDD 开发重要脚本
 2. 测试文件放在 `tests/` 目录
-3. 使用 `make test` 运行测试
-4. 保持脚本 POSIX 兼容（优先使用 bash）
+3. 保持脚本 POSIX 兼容（优先使用 bash）
 
 ### 文档同步（AGENTS/CLAUDE）
 
