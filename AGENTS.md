@@ -49,7 +49,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（11 个技能） |
+| **Kimi** | `kimi/` | ✅ 已配置（12 个技能） |
 | **OpenCode** | `opencode/` | 🏗️ 目录结构 |
 
 ---
@@ -80,7 +80,8 @@ coding-everything/
 │       ├── dev-requesting-review/
 │       ├── dev-verification/
 │       ├── dev-finishing-branch/
-│       └── dev-writing-skills/
+│       ├── dev-writing-skills/
+│       └── dev-code-cleanup/
 │
 ├── opencode/                   # OpenCode 配置
 │   ├── README.md
@@ -157,6 +158,7 @@ coding-everything/
 | `dev-verification` | 完成前验证 | 严格 |
 | `dev-finishing-branch` | 分支完成工作流 | 严格 |
 | `dev-writing-skills` | 编写新技能 | 严格 |
+| `dev-code-cleanup` | 代码清理和死代码删除 | 严格 |
 
 ### 快速安装
 
