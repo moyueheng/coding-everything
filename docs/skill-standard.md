@@ -1,6 +1,6 @@
 # Agent Skills 标准文档
 
-> 本文档整合了 [Agent Skills 开放标准](https://agentskills.io/specification)、[Claude Code Skills 实现](https://code.claude.com/docs/en/skills) 和 [Kimi CLI Skills 实现](https://moonshotai.github.io/kimi-cli/en/customization/skills.html) 的核心内容，并提供深度对比分析。
+> 本文档整合了 [Agent Skills 开放标准](https://agentskills.io/specification)、[Claude Code Skills 实现](https://code.claude.com/docs/en/skills)、[Kimi CLI Skills 实现](https://moonshotai.github.io/kimi-cli/en/customization/skills.html) 和 [OpenCode Skills 实现](https://opencode.ai/docs/zh-cn/skills/) 的核心内容，并提供深度对比分析。
 
 ---
 
@@ -24,6 +24,8 @@
   - [Markdown 内容](#markdown-内容)
 - [Skill 发现与存放位置](#skill-发现与存放位置)
   - [Claude Code 四级优先级](#claude-code-四级优先级)
+  - [OpenCode Skill 发现机制](#opencode-skill-发现机制)
+  - [OpenCode 权限配置](#opencode-权限配置)
   - [Kimi CLI 分层加载机制](#kimi-cli-分层加载机制)
   - [存放位置对比总结](#存放位置对比总结)
 - [渐进式披露](#渐进式披露)
@@ -55,6 +57,7 @@
   - [使用纯 Agent Skills 标准](#使用纯-agent-skills-标准当)
   - [使用 Claude Code 扩展](#使用-claude-code-扩展当)
   - [使用 Kimi CLI 扩展](#使用-kimi-cli-扩展当)
+  - [使用 OpenCode 扩展](#使用-opencode-扩展当)
 - [总结表](#总结表)
 - [参考链接](#参考链接)
 
@@ -81,12 +84,12 @@
 
 ### 三种标准的关系
 
-| 维度 | Agent Skills 开放标准 | Claude Code Skills | Kimi CLI Skills |
-|------|----------------------|-------------------|-----------------|
-| **定位** | 跨平台通用标准 | Claude Code 专属实现 | Kimi CLI 专属实现 |
-| **关系** | 基础标准 | 扩展实现 | 扩展实现 |
-| **目标** | 互操作性、可移植性 | 用户体验、高级功能 | 用户体验、分层加载 |
-| **约束** | 严格、最小化 | 灵活、功能丰富 | 灵活、多目录支持 |
+| 维度 | Agent Skills 开放标准 | Claude Code Skills | Kimi CLI Skills | OpenCode |
+|------|----------------------|-------------------|-----------------|----------|
+| **定位** | 跨平台通用标准 | Claude Code 专属实现 | Kimi CLI 专属实现 | OpenCode 专属实现 |
+| **关系** | 基础标准 | 扩展实现 | 扩展实现 | 扩展实现 |
+| **目标** | 互操作性、可移植性 | 用户体验、高级功能 | 用户体验、分层加载 | 用户体验、权限控制 |
+| **约束** | 严格、最小化 | 灵活、功能丰富 | 灵活、多目录支持 | 灵活、配置驱动 |
 
 ---
 
@@ -177,22 +180,22 @@ metadata:
 
 #### Frontmatter 字段参考
 
-| 字段 | Agent Skills | Claude Code | Kimi CLI | 说明 |
-|------|-------------|-------------|----------|------|
-| `name` | **必填** | 可选 | 可选 | Skill 显示名称，1-64字符，小写/数字/连字符 |
-| `description` | **必填** | 推荐 | 推荐 | 功能描述+使用时机，1-1024字符 |
-| `license` | 可选 | ❌ | 可选 | 许可证声明 |
-| `compatibility` | 可选 | ❌ | 可选 | 环境要求（1-500字符）|
-| `metadata` | 可选 | ❌ | 可选 | 扩展元数据键值对 |
-| `type` | ❌ | ❌ | **flow** | Kimi 特有：设为 `flow` 表示 Flow Skill |
-| `allowed-tools` | 实验性 | 支持 | ❌ | 预批准工具列表 |
-| `argument-hint` | ❌ | 支持 | ❌ | 自动完成提示，如 `[issue-number]` |
-| `disable-model-invocation` | ❌ | 支持 | ❌ | 设为 `true` 禁止自动触发 |
-| `user-invocable` | ❌ | 支持 | ❌ | 设为 `false` 从 `/` 菜单隐藏 |
-| `model` | ❌ | 支持 | ❌ | Skill 激活时使用的模型 |
-| `context` | ❌ | 支持 | ❌ | 设为 `fork` 在 subagent 中运行 |
-| `agent` | ❌ | 支持 | ❌ | `context: fork` 时的 subagent 类型 |
-| `hooks` | ❌ | 支持 | ❌ | Skill 生命周期 hooks |
+| 字段 | Agent Skills | Claude Code | Kimi CLI | OpenCode | 说明 |
+|------|-------------|-------------|----------|----------|------|
+| `name` | **必填** | 可选 | 可选 | **必填** | Skill 显示名称，1-64字符，小写/数字/连字符 |
+| `description` | **必填** | 推荐 | 推荐 | **必填** | 功能描述+使用时机，1-1024字符 |
+| `license` | 可选 | ❌ | 可选 | 可选 | 许可证声明 |
+| `compatibility` | 可选 | ❌ | 可选 | 可选 | 环境要求（1-500字符）|
+| `metadata` | 可选 | ❌ | 可选 | 可选 | 扩展元数据键值对（OpenCode: 字符串到字符串映射）|
+| `type` | ❌ | ❌ | **flow** | ❌ | Kimi 特有：设为 `flow` 表示 Flow Skill |
+| `allowed-tools` | 实验性 | 支持 | ❌ | ❌ | 预批准工具列表 |
+| `argument-hint` | ❌ | 支持 | ❌ | ❌ | 自动完成提示，如 `[issue-number]` |
+| `disable-model-invocation` | ❌ | 支持 | ❌ | ❌ | 设为 `true` 禁止自动触发 |
+| `user-invocable` | ❌ | 支持 | ❌ | ❌ | 设为 `false` 从 `/` 菜单隐藏 |
+| `model` | ❌ | 支持 | ❌ | ❌ | Skill 激活时使用的模型 |
+| `context` | ❌ | 支持 | ❌ | ❌ | 设为 `fork` 在 subagent 中运行 |
+| `agent` | ❌ | 支持 | ❌ | ❌ | `context: fork` 时的 subagent 类型 |
+| `hooks` | ❌ | 支持 | ❌ | ❌ | Skill 生命周期 hooks |
 
 #### `name` 字段约束对比
 
@@ -282,6 +285,85 @@ Deploy the application:
 - 当 skills 在不同级别共享相同名称时，**更高优先级的位置获胜**: enterprise > personal > project
 - Plugin skills 使用 `plugin-name:skill-name` 命名空间，避免与其他级别冲突
 - `.claude/commands/` 中的文件工作方式相同，但 skill 与 command 同名时 skill 优先
+
+### OpenCode Skill 发现机制
+
+OpenCode 从当前工作目录向上遍历，直到到达 git 工作树根目录，发现以下位置的 skills：
+
+| 级别 | 路径 | 说明 |
+|------|------|------|
+| **项目配置** | `.opencode/skills/<name>/SKILL.md` | 项目本地 skills |
+| **全局配置** | `~/.config/opencode/skills/<name>/SKILL.md` | 用户级全局 skills |
+| **项目 Claude 兼容** | `.claude/skills/<name>/SKILL.md` | 与 Claude Code 兼容 |
+| **全局 Claude 兼容** | `~/.claude/skills/<name>/SKILL.md` | 全局 Claude 兼容 |
+| **项目代理兼容** | `.agents/skills/<name>/SKILL.md` | 与 Agent 标准兼容 |
+| **全局代理兼容** | `~/.agents/skills/<name>/SKILL.md` | 全局 Agent 兼容 |
+
+**发现规则：**
+- 向上遍历到 git 根目录，加载所有匹配路径的 skills
+- 同名 skill 按发现顺序覆盖（后发现的优先）
+- 未知 frontmatter 字段会被忽略
+
+### OpenCode 权限配置
+
+在 `opencode.json` 中使用基于模式的权限控制代理可访问的技能：
+
+```json
+{
+  "permission": {
+    "skill": {
+      "*": "allow",
+      "pr-review": "allow",
+      "internal-*": "deny",
+      "experimental-*": "ask"
+    }
+  }
+}
+```
+
+| 权限 | 行为 |
+|------|------|
+| `allow` | 技能立即加载 |
+| `deny` | 对代理隐藏技能，拒绝访问 |
+| `ask` | 加载前提示用户确认 |
+
+**模式支持通配符：** `internal-*` 可匹配 `internal-docs`、`internal-tools` 等。
+
+**按代理覆盖权限：**
+
+为特定代理授予与全局默认值不同的权限：
+
+```json
+{
+  "agent": {
+    "plan": {
+      "permission": {
+        "skill": {
+          "internal-*": "allow"
+        }
+      }
+    }
+  }
+}
+```
+
+**禁用技能工具：**
+
+为不需要使用技能的代理完全禁用技能功能：
+
+```json
+{
+  "agent": {
+    "plan": {
+      "tools": {
+        "skill": false
+      }
+    }
+  }
+}
+```
+
+禁用后，`<available_skills>` 部分将被完全省略。
 
 ### Kimi CLI 分层加载机制
 
@@ -379,6 +461,7 @@ Agent Skills 推荐的内容加载策略：
 | **Claude Code** | ✓ | `/<name>` 或 `/skill:<name>` | ✓ |
 | **Kimi CLI** | ✓ | `/skill:<name>` | ✓ |
 | **Codex** | ✓ | `/skill:<name>` | ✓ |
+| **OpenCode** | ✓ | `skill({ name: "<name>" })` | ❌ |
 
 ---
 
@@ -555,7 +638,7 @@ Agent Skills 开放标准被以下 AI 开发工具支持：
 - **Claude Code** - Anthropic 的 AI 编程助手
 - **Codex** - OpenAI 的 CLI 编程助手
 - **Kimi CLI** - Moonshot AI 的命令行工具
-- **OpenCode** - 开源 AI 编程助手
+- **OpenCode** - 开源 AI 编程助手（通过 `skill` 工具原生支持）
 
 ---
 
@@ -659,6 +742,15 @@ allowed-tools: Read, Grep, Bash
 
 ## 故障排除
 
+### OpenCode Skill 加载问题
+
+如果某个 skill 没有显示：
+
+1. 确认 `SKILL.md` 文件名全部为大写字母
+2. 检查 frontmatter 是否包含 `name` 和 `description`
+3. 确保技能名称在所有位置中唯一
+4. 检查权限设置——设为 `deny` 的技能会对代理隐藏
+
 ### Skill 未触发
 
 1. 检查描述是否包含用户会自然说的关键词
@@ -705,26 +797,34 @@ allowed-tools: Read, Grep, Bash
 - 需要**自定义 skills 目录**（`--skills-dir`）
 - 需要**跨工具协作**（团队使用不同工具）
 
+### 使用 OpenCode 扩展当：
+
+- 需要**细粒度的权限控制**（`opencode.json` 配置）
+- 需要**按代理配置**不同的 skill 权限
+- 使用 **`.agents/` 或 `.claude/` 目录结构**已有 skills
+- 需要**与 Claude Code / Kimi CLI 兼容**的 skill 目录
+
 ---
 
 ## 总结表
 
-| 特性类别 | Agent Skills | Claude Code | Kimi CLI | 建议 |
-|---------|-------------|-------------|----------|------|
-| **标准性质** | 开放标准 | 具体实现 | 具体实现 | 核心遵循标准，扩展按需使用 |
-| **必填字段** | `name`, `description` | 无 | 无 | 始终填写 `name` 和 `description` |
-| `name` 约束 | 严格（匹配目录）| 宽松 | 宽松 | 遵循标准约束 |
-| `description` | 强制 | 推荐 | 推荐 | 始终编写完整描述 |
-| 许可证 | 支持 | ❌ | 支持 | 开源 skill 建议添加 |
-| 兼容性声明 | 支持 | ❌ | 支持 | 跨平台 skill 建议添加 |
-| Flow Skills | ❌ | ❌ | ✓ | 需要自动化工作流时使用 |
-| 调用控制 | ❌ | 支持 | ❌ | Claude 专用时使用 |
-| Subagent | ❌ | 支持 | ❌ | 需要隔离执行时使用 |
-| 动态注入 | ❌ | 支持 | ❌ | 需要实时数据时使用 |
-| 多目录支持 | ❌ | ❌ | ✓ | 跨工具协作时使用 |
-| 自定义目录 | ❌ | ❌ | ✓ | 需要灵活路径时使用 |
-| 验证工具 | `skills-ref` | ❌ | ❌ | CI/CD 中验证标准合规性 |
-| 目录命名 | 标准化 | 灵活 | 标准化 | 遵循标准目录结构 |
+| 特性类别 | Agent Skills | Claude Code | Kimi CLI | OpenCode | 建议 |
+|---------|-------------|-------------|----------|----------|------|
+| **标准性质** | 开放标准 | 具体实现 | 具体实现 | 具体实现 | 核心遵循标准，扩展按需使用 |
+| **必填字段** | `name`, `description` | 无 | 无 | `name`, `description` | 始终填写 `name` 和 `description` |
+| `name` 约束 | 严格（匹配目录）| 宽松 | 宽松 | 严格（匹配目录）| 遵循标准约束 |
+| `description` | 强制 | 推荐 | 推荐 | 强制 | 始终编写完整描述 |
+| 许可证 | 支持 | ❌ | 支持 | 支持 | 开源 skill 建议添加 |
+| 兼容性声明 | 支持 | ❌ | 支持 | 支持 | 跨平台 skill 建议添加 |
+| Flow Skills | ❌ | ❌ | ✓ | ❌ | 需要自动化工作流时使用 |
+| 调用控制 | ❌ | 支持 | ❌ | ✓ 权限配置 | Claude/OpenCode 专用时使用 |
+| Subagent | ❌ | 支持 | ❌ | ❌ | 需要隔离执行时使用 |
+| 动态注入 | ❌ | 支持 | ❌ | ❌ | 需要实时数据时使用 |
+| 多目录支持 | ❌ | ❌ | ✓ | ✓ | 跨工具协作时使用 |
+| 自定义目录 | ❌ | ✓ `--skills-dir` | ❌ | ❌ | 需要灵活路径时使用 |
+| 权限配置 | ❌ | ❌ | ❌ | ✓ `opencode.json` | 需要细粒度控制时使用 |
+| 验证工具 | `skills-ref` | ❌ | ❌ | ❌ | CI/CD 中验证标准合规性 |
+| 目录命名 | 标准化 | 灵活 | 标准化 | 标准化 | 遵循标准目录结构 |
 
 ---
 
@@ -734,6 +834,7 @@ allowed-tools: Read, Grep, Bash
 - **Agent Skills 官网**: https://agentskills.io/
 - **Claude Code Skills 文档**: https://code.claude.com/docs/en/skills
 - **Kimi CLI Skills 文档**: https://moonshotai.github.io/kimi-cli/en/customization/skills.html
+- **OpenCode Skills 文档**: https://opencode.ai/docs/zh-cn/skills/
 - **Agent Skills GitHub**: https://github.com/anthropics/skills
 
 ---
