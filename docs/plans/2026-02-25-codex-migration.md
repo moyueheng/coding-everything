@@ -4,6 +4,23 @@
 
 **目标：** 创建 codex/ 目录，将 kimi 的 skills 迁移到 codex，并更新安装脚本支持 codex
 
+---
+
+## 目录
+
+- [任务 1：创建 codex/ 目录结构](#任务-1创建-codex-目录结构)
+- [任务 2：迁移 Skills 从 kimi/ 到 codex/](#任务-2迁移-skills-从-kimi-到-codex)
+- [任务 3：创建 Codex Agent 配置](#任务-3创建-codex-agent-配置)
+- [任务 4：重构安装脚本支持多平台](#任务-4重构安装脚本支持多平台)
+- [任务 5：更新 Makefile 添加 Codex 命令](#任务-5更新-makefile-添加-codex-命令)
+- [任务 6：更新测试脚本支持多平台](#任务-6更新测试脚本支持多平台)
+- [任务 7：更新 AGENTS.md 文档](#任务-7更新-agentsmd-文档)
+- [任务 8：创建 codex-superpower 启动脚本](#任务-8创建-codex-superpower-启动脚本)
+- [任务 9：最终验证](#任务-9最终验证)
+- [执行交接](#执行交接)
+
+---
+
 **架构：** 保持与 kimi/ 相同的目录结构（skills/ + agents/），安装脚本通过参数区分平台（kimi/codex），共享核心逻辑但使用不同的目标路径和配置文件格式
 
 **技术栈：** Bash, YAML (codex config), Markdown

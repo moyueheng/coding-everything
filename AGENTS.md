@@ -1,5 +1,43 @@
 # coding-everything 项目文档
 
+## 目录
+
+- [项目概述](#项目概述)
+  - [跟踪的上游仓库](#跟踪的上游仓库)
+  - [个人配置](#个人配置)
+- [项目结构](#项目结构)
+- [上游仓库详情](#上游仓库详情)
+  - [superpowers](#1-superpowers)
+  - [everything-claude-code](#2-everything-claude-code)
+- [个人 Kimi 配置](#个人-kimi-配置)
+  - [技能列表](#技能列表)
+  - [快速安装](#快速安装)
+  - [安装脚本功能](#安装脚本功能)
+  - [测试](#测试)
+- [个人 Codex 配置](#个人-codex-配置)
+  - [技能列表](#技能列表-1)
+  - [快速安装](#快速安装-1)
+- [Git Submodule 管理](#git-submodule-管理)
+  - [克隆包含 submodules 的项目](#克隆包含-submodules-的项目)
+  - [初始化 submodules](#初始化-submodules如果已克隆但没有-submodules)
+  - [更新所有 submodules](#更新所有-submodules-到最新)
+  - [更新特定 submodule](#更新特定-submodule)
+  - [添加新的 submodule](#添加新的-submodule)
+- [核心工作流](#核心工作流)
+- [开发约定](#开发约定)
+  - [使用技能时](#使用技能时)
+  - [技能开发](#技能开发)
+  - [脚本开发](#脚本开发)
+  - [文档同步（AGENTS/CLAUDE）](#文档同步agentsclaude)
+  - [命名规范](#命名规范)
+- [资源链接](#资源链接)
+  - [上游仓库](#上游仓库)
+  - [平台文档](#平台文档)
+  - [Skill 标准](#skill-标准)
+- [许可证](#许可证)
+
+---
+
 ## 项目概述
 
 本项目 (`coding-everything`) 是个人 AI 编程助手配置集合，通过 Git Submodule 跟踪多个上游配置仓库，并维护自己的专属配置。
