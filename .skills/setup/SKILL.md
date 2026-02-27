@@ -1,6 +1,6 @@
 ---
 name: setup
-description: 安装 coding-everything 配置到系统。当用户需要安装 skills、初始化配置或运行 setup 时使用。
+description: 安装 coding-everything 配置到系统，支持 Kimi/Codex/OpenCode 多平台。当用户需要安装 skills、初始化配置或运行 setup 时使用。
 license: MIT
 ---
 
@@ -8,13 +8,19 @@ license: MIT
 
 安装个人 AI 编程助手配置到系统，使用 symlink 模式实现实时同步。
 
+**兼容性：** Kimi CLI、Codex、OpenCode 均支持 `~/.agents/skills/` 路径。
+
+## 参考文档
+
+- [Agent Skills 标准](references/skill-standard.md) - Skill 格式规范与多平台兼容性说明
+
 ## 安装流程
 
 ### 1. 检查源目录
 
 确认项目目录结构完整：
-- `kimi/skills/` - 技能目录
-- `kimi/agents/superpower/` - Kimi Agent 配置
+- `kimi/skills/` - 技能目录（Kimi/Codex/OpenCode 共享）
+- `kimi/agents/superpower/` - Kimi Agent 配置（仅 Kimi 需要）
 
 ### 2. 创建目标目录
 
@@ -48,26 +54,24 @@ ls -la ~/.kimi/agents/superpower
 显示安装状态：
 - Skills 数量
 - Agent 配置状态
-- 使用方法
+- 各平台使用方法
 
 ## 使用方式
 
-安装完成后：
+安装完成后，各平台均可使用：
 
-**Kimi CLI:**
-```bash
-kimi --agent-file ~/.kimi/agents/superpower/agent.yaml
-```
+| 平台 | 命令 | 说明 |
+|------|------|------|
+| **Kimi CLI** | `kimi --agent-file ~/.kimi/agents/superpower/agent.yaml` | 带 Agent 配置启动 |
+| **Codex** | `codex` | 自动加载 `~/.agents/skills/` |
+| **OpenCode** | `opencode` | 自动加载 `~/.agents/skills/` |
 
-**Codex:**
-```bash
-codex
-```
+## 平台兼容性
 
-**OpenCode:**
-```bash
-opencode
-```
+**Skills 目录结构**遵循 [Agent Skills 开放标准](references/skill-standard.md)：
+- 路径：`~/.agents/skills/<skill-name>/SKILL.md`
+- 格式：YAML frontmatter + Markdown 内容
+- 兼容：Claude Code、Codex、Kimi CLI、OpenCode
 
 ## 实时同步
 
