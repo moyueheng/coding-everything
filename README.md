@@ -85,17 +85,17 @@ ls ~/.agents/skills/
 ## 典型工作流
 
 ```
-1. 头脑风暴 → 完善需求、边界条件
-         ↓
-2. 编写计划 → 拆分为 2-5 分钟任务
-         ↓
-3. 执行计划 → 按步骤实现
-         ↓
-4. TDD 开发 → RED → GREEN → REFACTOR
-         ↓
-5. 代码审查 → 检查清单验证
-         ↓
-6. 完成分支 → 验证并合并
+1. dev-brainstorming → 完善需求、边界条件
+              ↓
+2. dev-writing-plans → 拆分为 2-5 分钟任务
+              ↓
+3. dev-executing-plans → 按步骤实现
+              ↓
+4. dev-tdd → RED → GREEN → REFACTOR
+              ↓
+5. dev-requesting-review → 检查清单验证
+              ↓
+6. dev-finishing-branch → 验证并合并
 ```
 
 **重要原则**：任何行动前先检查是否有适用的 skill。
