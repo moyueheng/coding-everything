@@ -7,3 +7,6 @@
 [submodule "upstream/ui-ux-pro-max-skill"]
 	path = upstream/ui-ux-pro-max-skill
 	url = https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git
+[submodule "upstream/humanizer-zh"]
+	path = upstream/humanizer-zh
+	url = https://github.com/op7418/Humanizer-zh.git

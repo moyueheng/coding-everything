@@ -45,12 +45,13 @@
 | [obra/superpowers](https://github.com/obra/superpowers.git) | AI 编程助手工作流框架 | `upstream/superpowers/` |
 | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code.git) | Claude Code 完整配置 | `upstream/everything-claude-code/` |
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git) | UI/UX Pro Max Skill | `upstream/ui-ux-pro-max-skill/` |
+| [op7418/Humanizer-zh](https://github.com/op7418/Humanizer-zh.git) | AI 写作去痕工具（中文版） | `upstream/humanizer-zh/` |
 
 ### 个人配置
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（15 个skill） |
+| **Kimi** | `kimi/` | ✅ 已配置（16 个skill） |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -85,7 +86,8 @@ coding-everything/
 │       ├── dev-code-cleanup/
 │       ├── dev-update-codemaps/
 │       ├── dev-backend-patterns/
-│       └── dev-frontend-patterns/
+│       ├── dev-frontend-patterns/
+│       └── tool-humanizer-zh/
 │
 ├── opencode/                   # OpenCode 配置
 │   ├── README.md
@@ -100,10 +102,15 @@ coding-everything/
     │   ├── .opencode/          # OpenCode 集成
     │   └── ...
     │
-    └── everything-claude-code/ # everything-claude-code 配置
-        ├── .claude/            # Claude 配置
-        ├── .cursor/            # Cursor 编辑器配置
-        ├── .opencode/          # OpenCode 配置
+    ├── everything-claude-code/ # everything-claude-code 配置
+│   ├── .claude/            # Claude 配置
+│   ├── .cursor/            # Cursor 编辑器配置
+│   ├── .opencode/          # OpenCode 配置
+│   └── ...
+│
+└── humanizer-zh/           # AI 写作去痕工具（中文版）
+    ├── SKILL.md
+    └── README.md
         ├── skills/             # 39 个skill
         ├── agents/             # agent 配置
         └── ...
