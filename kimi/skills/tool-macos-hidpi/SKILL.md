@@ -130,6 +130,25 @@ betterdisplaycli set --name=VS3008 --resolution=3008x1260 --hiDPI=on
 - 优点：无需重启，成功率高。
 - 代价：不是实体屏原生 timing。
 
+### 7. 持久化自动恢复（避免周期性闪屏）
+
+如果需要“长期保持 VS3008 -> 34C1Q”，建议使用 LaunchAgent，但必须加防抖逻辑：
+
+- 标准脚本位置：`scripts/restore-vs3008.sh`
+- 运行方式：
+  ```bash
+  zsh ./scripts/restore-vs3008.sh
+  ```
+
+- 先做健康检查（connected/main/mirror/UI Looks like）  
+- 仅在状态异常时执行 `set --main` / `set --mirror`  
+- 状态健康时直接退出（不要重复重配）
+- 轮询间隔建议 `900` 秒（15 分钟）或更长，不建议 `120` 秒
+
+经验结论：
+- 若每隔固定时间闪一下，通常是定时任务反复执行显示重配置导致。
+- 日志中出现 `state already healthy; skip reconfigure` 说明防抖生效。
+
 ## 常用分辨率参考
 
 ### 带鱼屏 (3440×1440 原生)
@@ -175,6 +194,7 @@ betterdisplaycli set --name=VS3008 --resolution=3008x1260 --hiDPI=on
 - 黑边：分辨率宽高比与显示器不匹配
 - 模糊：未启用 HiDPI（scaling:on）
 - 无信号：分辨率超出显示器支持范围
+- 周期性闪屏：自动恢复任务在重复执行 `set main/mirror`，需改为“异常才修复”
 
 ### 恢复默认
 
