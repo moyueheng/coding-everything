@@ -4,6 +4,8 @@ description: 安装 coding-everything 配置到系统，支持 Kimi/Codex/OpenCo
 license: MIT
 ---
 
+现在开始安装 coding-everything 配置到系统，支持 Kimi/Codex/OpenCode 多平台。当用户需要安装 skills、初始化配置或运行 setup 时使用。
+
 # Setup: 安装 Coding Everything 配置
 
 安装个人 AI 编程助手配置到系统，使用 symlink 模式实现实时同步。
@@ -41,15 +43,41 @@ ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
 ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ```
 
-### 4. 验证安装
+### 4. 安装 ks 快捷命令
 
-检查 symlink 是否正确创建：
+安装 `ks`（Kimi Superpower）快捷启动命令到用户 bin 目录：
+
+```bash
+# 创建用户 bin 目录（如果不存在）
+mkdir -p ~/.local/bin
+
+# 创建 ks 启动脚本
+cat > ~/.local/bin/ks << 'EOF'
+#!/usr/bin/env bash
+# Kimi Superpower 启动脚本 (YOLO 模式)
+exec kimi -y --agent-file ~/.kimi/agents/superpower/agent.yaml "$@"
+EOF
+
+# 添加执行权限
+chmod +x ~/.local/bin/ks
+```
+
+**确保 `~/.local/bin` 在 PATH 中：**
+```bash
+# 添加到 shell 配置文件（如 .zshrc 或 .bashrc）
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+### 5. 验证安装
+
+检查所有组件是否正确安装：
 ```bash
 ls -la ~/.agents/skills
 ls -la ~/.kimi/agents/superpower
+which ks
 ```
 
-### 5. 输出结果
+### 6. 输出结果
 
 显示安装状态：
 - Skills 数量
@@ -58,7 +86,14 @@ ls -la ~/.kimi/agents/superpower
 
 ## 使用方式
 
-安装完成后，各平台均可使用：
+### 快速启动（推荐）
+
+```bash
+ks                    # YOLO 模式启动 Kimi + Superpower Agent
+ks -w /path/to/project # 指定工作目录
+```
+
+### 各平台命令
 
 | 平台 | 命令 | 说明 |
 |------|------|------|
@@ -83,9 +118,10 @@ vim kimi/skills/dev-tdd/SKILL.md  # 修改后立即生效
 
 ## 卸载
 
-如需卸载，删除 symlink 即可：
+如需卸载，删除 symlink 和 ks 命令即可：
 
 ```bash
 rm ~/.agents/skills
 rm -rf ~/.kimi/agents/superpower
+rm ~/.local/bin/ks
 ```
