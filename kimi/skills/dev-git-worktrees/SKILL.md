@@ -43,7 +43,7 @@ grep -i "worktree.*director" AGENTS.md 2>/dev/null
 没有找到 worktree 目录。应该在哪里创建 worktrees？
 
 1. .worktrees/（项目本地，隐藏）
-2. ~/.config/kimi/worktrees/<项目名称>/（全局位置）
+2. ~/.agents/worktrees/<项目名称>/（全局位置）
 
 偏好哪个？
 ```
@@ -68,7 +68,7 @@ git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/d
 
 **为什么关键：** 防止意外将 worktree 内容提交到仓库。
 
-### 对于全局目录（~/.config/kimi/worktrees）
+### 对于全局目录（~/.agents/worktrees）
 
 不需要 .gitignore 验证 - 完全在项目外。
 
@@ -88,8 +88,8 @@ case $LOCATION in
   .worktrees|worktrees)
     path="$LOCATION/$BRANCH_NAME"
     ;;
-  ~/.config/kimi/worktrees/*)
-    path="~/.config/kimi/worktrees/$project/$BRANCH_NAME"
+  ~/.agents/worktrees/*)
+    path="~/.agents/worktrees/$project/$BRANCH_NAME"
     ;;
 esac
 
@@ -98,7 +98,22 @@ git worktree add "$path" -b "$BRANCH_NAME"
 cd "$path"
 ```
 
-### 3. 运行项目设置
+### 3. 复制 .env 文件（如果主分支存在）
+
+如果主分支工作区有 `.env` 文件，自动复制到新 worktree：
+
+```bash
+# 获取主分支 worktree 路径
+main_worktree=$(git worktree list --porcelain | grep -A 1 "worktree" | head -2 | grep "^worktree" | cut -d ' ' -f2)
+
+# 如果主分支有 .env 且新 worktree 没有，则复制
+if [ -f "$main_worktree/.env" ] && [ ! -f "$path/.env" ]; then
+    cp "$main_worktree/.env" "$path/.env"
+    echo "已复制 .env 从主分支"
+fi
+```
+
+### 4. 运行项目设置
 
 自动检测并运行适当设置：
 
@@ -117,7 +132,7 @@ if [ -f pyproject.toml ]; then poetry install; fi
 if [ -f go.mod ]; then go mod download; fi
 ```
 
-### 4. 验证干净基线
+### 5. 验证干净基线
 
 运行测试确保 worktree 从干净开始：
 
@@ -133,7 +148,7 @@ go test ./...
 
 **如果测试通过：** 报告就绪。
 
-### 5. 报告位置
+### 6. 报告位置
 
 ```
 Worktree 就绪于 <完整路径>
@@ -152,6 +167,7 @@ Worktree 就绪于 <完整路径>
 | 目录未被忽略 | 添加到 .gitignore + 提交 |
 | 基线测试失败 | 报告失败 + 询问 |
 | 无 package.json/Cargo.toml | 跳过依赖安装 |
+| 主分支有 .env | 自动复制到新 worktree |
 
 ## 常见错误
 
