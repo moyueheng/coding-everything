@@ -87,6 +87,7 @@ coding-everything/
 │       ├── dev-update-codemaps/
 │       ├── dev-backend-patterns/
 │       ├── dev-frontend-patterns/
+│       ├── dev-e2e-testing/
 │       └── tool-humanizer-zh/
 │
 ├── opencode/                   # OpenCode 配置
@@ -174,6 +175,7 @@ coding-everything/
 | `dev-update-codemaps` | 分析代码库结构并生成架构文档 | 灵活 |
 | `dev-backend-patterns` | 后端架构模式与最佳实践 | 灵活 |
 | `dev-frontend-patterns` | 前端架构模式与最佳实践 | 灵活 |
+| `dev-e2e-testing` | Playwright Python 端到端测试模式 | 灵活 |
 
 ### 快速安装
 
