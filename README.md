@@ -141,6 +141,7 @@ coding-everything/
 详细文档请参考：
 
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
+- **[docs/kimi-skills-architecture.md](./docs/kimi-skills-architecture.md)** - Kimi Skills 架构全景图和调用关系
 
 ## 上游仓库
 
