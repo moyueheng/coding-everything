@@ -27,17 +27,17 @@ ls -d worktrees 2>/dev/null      # 替代
 
 **如果找到：** 使用该目录。如果两者都存在，`.worktrees` 胜出。
 
-### 2. 检查 CLAUDE.md
+### 2. 检查 AGENTS.md
 
 ```bash
-grep -i "worktree.*director" CLAUDE.md 2>/dev/null
+grep -i "worktree.*director" AGENTS.md 2>/dev/null
 ```
 
 **如果指定了偏好：** 不问直接使用。
 
 ### 3. 询问用户
 
-如果没有目录存在且没有 CLAUDE.md 偏好：
+如果没有目录存在且没有 AGENTS.md 偏好：
 
 ```
 没有找到 worktree 目录。应该在哪里创建 worktrees？
@@ -148,7 +148,7 @@ Worktree 就绪于 <完整路径>
 | `.worktrees/` 存在 | 使用它（验证被忽略） |
 | `worktrees/` 存在 | 使用它（验证被忽略） |
 | 两者都存在 | 使用 `.worktrees/` |
-| 都不存在 | 检查 CLAUDE.md → 询问用户 |
+| 都不存在 | 检查 AGENTS.md → 询问用户 |
 | 目录未被忽略 | 添加到 .gitignore + 提交 |
 | 基线测试失败 | 报告失败 + 询问 |
 | 无 package.json/Cargo.toml | 跳过依赖安装 |
@@ -163,7 +163,7 @@ Worktree 就绪于 <完整路径>
 ### 假设目录位置
 
 - **问题：** 创建不一致，违反项目约定
-- **修复：** 遵循优先级：现有 > CLAUDE.md > 询问
+- **修复：** 遵循优先级：现有 > AGENTS.md > 询问
 
 ### 测试失败仍继续
 
