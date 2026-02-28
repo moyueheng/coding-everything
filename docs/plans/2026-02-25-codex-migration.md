@@ -54,10 +54,10 @@ mkdir -p codex/skills codex/agents/superpower
 codex/
 ├── README.md
 ├── agents/
-│   └── superpower/      # 智能体配置
-│       ├── config.yaml  # Codex 智能体配置
+│   └── superpower/      # agent 配置
+│       ├── config.yaml  # Codex agent 配置
 │       └── instructions.md
-└── skills/              # 技能集合
+└── skills/              # skill 集合
     ├── dev-using-skills/
     ├── dev-brainstorming/
     ├── dev-debugging/
@@ -84,7 +84,7 @@ make install-codex
 ## 使用
 
 ```bash
-# 使用 superpower 智能体启动 codex
+# 使用 superpower agent 启动 codex
 ./codex-superpower
 ```
 ```

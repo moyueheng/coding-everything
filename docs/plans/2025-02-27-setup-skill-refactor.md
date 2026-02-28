@@ -61,7 +61,7 @@ license: MIT
 ### 1. 检查源目录
 
 确认项目目录结构完整：
-- `kimi/skills/` - 技能目录
+- `kimi/skills/` - skill 目录
 - `kimi/agents/superpower/` - Kimi Agent 配置
 
 ### 2. 创建目标目录
@@ -119,7 +119,7 @@ opencode
 
 ## 实时同步
 
-由于使用 symlink，修改项目中的技能文件会立即生效：
+由于使用 symlink，修改项目中的 skill 文件会立即生效：
 
 ```bash
 vim kimi/skills/dev-tdd/SKILL.md  # 修改后立即生效

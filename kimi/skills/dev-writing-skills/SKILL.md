@@ -179,7 +179,7 @@ description: 何时使用[具体触发条件和症状]
 **避免：**
 - 无前缀或前缀错误（如 `writing-skills`、`misc-helper`）
 - 过于泛化（如 `tools`、`helper`、`utils`）
-- 同一技能集合内命名风格不一致
+- 同一 skill 集合内命名风格不一致
 
 ### 4. 令牌效率（关键）
 

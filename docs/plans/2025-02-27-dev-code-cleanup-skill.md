@@ -334,9 +334,9 @@ git commit -m "feat: add report template"
 **文件：**
 - 修改：`AGENTS.md`
 
-**步骤 1：在技能列表中添加新 skill**
+**步骤 1：在 skill 列表中添加新 skill**
 
-在 AGENTS.md 的"技能列表"表格中添加：
+在 AGENTS.md 的"skill 列表"表格中添加：
 
 ```markdown
 | `dev-code-cleanup` | 代码清理和死代码删除 | 严格 |
@@ -397,5 +397,5 @@ ln -sf "$(pwd)/kimi/skills/dev-code-cleanup" ~/.agents/skills/dev-code-cleanup
 
 1. `kimi/skills/dev-code-cleanup/SKILL.md` 文件完整
 2. 文件遵循 dev-writing-skills 规范
-3. AGENTS.md 技能列表已更新
+3. AGENTS.md skill 列表已更新
 4. 所有变更已提交到 git

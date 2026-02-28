@@ -65,7 +65,7 @@ coding-everything/
 ├── kimi/                       # Kimi 配置
 │   ├── README.md
 │   ├── agents/
-│   │   └── superpower/         # 智能体配置
+│   │   └── superpower/         # agent 配置
 │   │       ├── agent.yaml
 │   │       ├── system.md
 │   │       └── README.md
@@ -104,7 +104,7 @@ coding-everything/
         ├── .cursor/            # Cursor 编辑器配置
         ├── .opencode/          # OpenCode 配置
         ├── skills/             # 39 个skill
-        ├── agents/             # 智能体配置
+        ├── agents/             # agent 配置
         └── ...
 ```
 
@@ -136,7 +136,7 @@ coding-everything/
 - `.cursor/` - Cursor 编辑器配置
 - `.opencode/` - OpenCode 配置
 - `skills/` - 39 个skill
-- `agents/` - 智能体配置
+- `agents/` - agent 配置
 - `commands/` - 预定义命令
 - `hooks/` - 会话钩子
 - `docs/zh-CN/skills/` - **32 个简体中文skill**（引入时无需翻译）

@@ -306,7 +306,7 @@ OpenCode 从当前工作目录向上遍历，直到到达 git 工作树根目录
 
 ### OpenCode 权限配置
 
-在 `opencode.json` 中使用基于模式的权限控制代理可访问的技能：
+在 `opencode.json` 中使用基于模式的权限控制 agent 可访问的 skill：
 
 ```json
 {
@@ -323,8 +323,8 @@ OpenCode 从当前工作目录向上遍历，直到到达 git 工作树根目录
 
 | 权限 | 行为 |
 |------|------|
-| `allow` | 技能立即加载 |
-| `deny` | 对代理隐藏技能，拒绝访问 |
+| `allow` | skill 立即加载 |
+| `deny` | 对 agent 隐藏 skill，拒绝访问 |
 | `ask` | 加载前提示用户确认 |
 
 **模式支持通配符：** `internal-*` 可匹配 `internal-docs`、`internal-tools` 等。
@@ -347,9 +347,9 @@ OpenCode 从当前工作目录向上遍历，直到到达 git 工作树根目录
 }
 ```
 
-**禁用技能工具：**
+**禁用 skill 工具：**
 
-为不需要使用技能的代理完全禁用技能功能：
+为不需要使用 skill 的 agent 完全禁用 skill 功能：
 
 ```json
 {
@@ -748,8 +748,8 @@ allowed-tools: Read, Grep, Bash
 
 1. 确认 `SKILL.md` 文件名全部为大写字母
 2. 检查 frontmatter 是否包含 `name` 和 `description`
-3. 确保技能名称在所有位置中唯一
-4. 检查权限设置——设为 `deny` 的技能会对代理隐藏
+3. 确保 skill 名称在所有位置中唯一
+4. 检查权限设置——设为 `deny` 的 skill 会对 agent 隐藏
 
 ### Skill 未触发
 

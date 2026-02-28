@@ -58,11 +58,11 @@ make test
 
 ### Skills (15 个)
 
-#### 核心工作流技能（严格类型）
+#### 核心 workflow skill（严格类型）
 
 | Skill | 用途 |
 |-------|------|
-| `dev-using-skills` | 技能使用入口 |
+| `dev-using-skills` | skill 入口 |
 | `dev-brainstorming` | 编码前苏格拉底式对话 |
 | `dev-debugging` | 四阶段调试流程 |
 | `dev-tdd` | 测试驱动开发 |
@@ -72,10 +72,10 @@ make test
 | `dev-requesting-review` | 代码审查请求 |
 | `dev-verification` | 完成前验证 |
 | `dev-finishing-branch` | 分支完成工作流 |
-| `dev-writing-skills` | 编写新技能 |
+| `dev-writing-skills` | 编写新 skill |
 | `dev-code-cleanup` | 代码清理和死代码删除 |
 
-#### 辅助技能（灵活类型）
+#### 辅助 skill（灵活类型）
 
 | Skill | 用途 |
 |-------|------|
@@ -85,7 +85,7 @@ make test
 
 ### Agent
 
-- `superpower/` - 基于 superpowers 框架的智能体配置
+- `superpower/` - 基于 superpowers 框架的 agent 配置
 
 ## 安装脚本
 

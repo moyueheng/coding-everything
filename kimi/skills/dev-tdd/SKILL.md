@@ -275,7 +275,7 @@ npm test path/to/test.test.ts
 | 必须 mock 所有东西 | 代码太耦合。用依赖注入。 |
 | 测试 setup 庞大 | 提取辅助函数。还复杂？简化设计。 |
 
-## 与其他技能的集成
+## 与其他 skill 的集成
 
 ### 与 dev-debugging 集成
 

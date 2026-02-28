@@ -12,7 +12,7 @@ description: 在任何创意工作前使用 - 创建功能、构建组件、添�
 首先了解当前项目上下文，然后一次提出一个问题来完善想法。一旦理解了要构建的内容，展示设计并获得用户批准。
 
 <HARD-GATE>
-在呈现设计并获得用户批准之前，**禁止**调用任何实现技能、编写任何代码、搭建任何项目或采取任何实现行动。这适用于**每个**项目，无论其看起来多么简单。
+在呈现设计并获得用户批准之前，**禁止**调用任何实现 skill、编写任何代码、搭建任何项目或采取任何实现行动。这适用于**每个**项目，无论其看起来多么简单。
 </HARD-GATE>
 
 ## 反模式："这个项目太简单了，不需要设计"
@@ -28,7 +28,7 @@ description: 在任何创意工作前使用 - 创建功能、构建组件、添�
 3. **提出 2-3 种方案** — 说明权衡并给出推荐
 4. **展示设计** — 按复杂度分节展示，每节后获得用户批准
 5. **编写设计文档** — 保存到 `docs/plans/YYYY-MM-DD-<主题>-design.md` 并提交
-6. **过渡到实现** — 调用 dev-writing-plans 技能创建实施计划
+6. **过渡到实现** — 调用 dev-writing-plans skill 创建实施计划
 
 ## 流程图
 
@@ -40,7 +40,7 @@ digraph brainstorming {
     "展示设计各节" [shape=box];
     "用户批准设计？" [shape=diamond];
     "编写设计文档" [shape=box];
-    "调用 dev-writing-plans 技能" [shape=doublecircle];
+    "调用 dev-writing-plans skill" [shape=doublecircle];
 
     "探索项目上下文" -> "提出澄清问题";
     "提出澄清问题" -> "提出 2-3 种方案";
@@ -48,7 +48,7 @@ digraph brainstorming {
     "展示设计各节" -> "用户批准设计？";
     "用户批准设计？" -> "展示设计各节" [label="否，修改"];
     "用户批准设计？" -> "编写设计文档" [label="是"];
-    "编写设计文档" -> "调用 dev-writing-plans 技能";
+    "编写设计文档" -> "调用 dev-writing-plans skill";
 }
 ```
 
@@ -83,8 +83,8 @@ digraph brainstorming {
 - 将设计文档提交到 git
 
 **实现：**
-- 调用 dev-writing-plans 技能创建详细实施计划
-- **不要**调用任何其他技能。dev-writing-plans 是下一步。
+- 调用 dev-writing-plans skill 创建详细实施计划
+- **不要**调用任何其他 skill。dev-writing-plans 是下一步。
 
 ## 核心原则
 

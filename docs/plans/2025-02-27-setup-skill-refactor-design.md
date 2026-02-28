@@ -9,7 +9,7 @@
 | 变更项 | 旧方式 | 新方式 |
 |--------|--------|--------|
 | 安装入口 | `./scripts/install.sh` 或 `make install` | `/skill:setup` |
-| 技能路径 | `kimi/skills/` + `codex/skills/` | 仅 `kimi/skills/` |
+| skill 路径 | `kimi/skills/` + `codex/skills/` | 仅 `kimi/skills/` |
 | 安装机制 | 复制文件 | Symlink 到项目目录 |
 | 配置同步 | 需手动更新 | 实时同步（symlink） |
 
