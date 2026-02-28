@@ -1,13 +1,34 @@
 ---
 name: tool-macos-hidpi
-description: 为 macOS 外接显示器创建自定义 HiDPI 分辨率。当用户需要调整显示器分辨率、字体大小、HiDPI 缩放时使用。适用于带鱼屏、4K 显示器等需要精细分辨率控制的场景。
+description: 当用户需要为 macOS 带鱼屏新增任意分辨率（HiDPI/标准）、验证模式是否真实可用，或在注入失败时切换虚拟屏兜底方案时使用。
 ---
 
-# macOS HiDPI 分辨率设置
+# macOS 带鱼屏任意分辨率设置
 
 ## 概述
 
-macOS 系统只提供有限的分辨率选项，对于带鱼屏或高分辨率显示器，预设档位往往要么字体太大、要么太小。本技能通过注入自定义 HiDPI 分辨率，让用户获得精细的字体大小控制。
+本 skill 的核心目标不是“调外接屏”，而是为带鱼屏新增并落地任意分辨率（HiDPI 或标准），再通过闭环验证确认系统真实可用。适用于主屏/扩展屏两种场景，重点解决“写入了但不出现”“出现了但不可切换”的问题。
+
+## 第一性原理背景
+
+从底层看，分辨率是否“可用”由 5 层共同决定：
+
+1. 显示器 EDID（声明支持的时序与能力）
+2. 连接链路能力（DP/HDMI、线材、色深、色度采样、带宽）
+3. GPU/驱动可输出的时序集合
+4. macOS 对模式的过滤与映射策略
+5. UI 缩放层（HiDPI 逻辑分辨率）
+
+关键结论：
+- `LoDPI`（标准）和 `HiDPI`（逻辑缩放）是两套不同模式，不是同一个开关。
+- 覆盖文件/脚本“写入成功”不等于“模式必然出现”；系统仍可能基于链路或策略过滤。
+- 任何方案都应以“当前可用模式列表”作为最终真值，而不是以配置文件内容为准。
+
+## 实战结论（2026-03）
+
+- 推荐目标分辨率：`3008×1260`。
+- 在部分机型/链路（例如 Mac mini + 外接屏作为主屏）中，即使覆盖文件写入成功，`3008×1260`、`3200×1340` 仍可能被系统过滤，不会出现在可用模式列表。
+- 这种情况下优先使用 BetterDisplay 虚拟屏方案，避免反复重启和无效注入。
 
 ## 工作流程
 
@@ -21,6 +42,15 @@ displayplacer list
 - 显示器名称和 ID
 - 当前分辨率
 - 原生分辨率（通常是最高可用分辨率）
+- 主屏标记（确认目标是主屏还是扩展屏）
+
+补充验证（推荐）：
+
+```bash
+betterdisplaycli get --displayWithMainStatus --displayModeList
+```
+
+先确认目标分辨率是否真的在系统可用模式中，再继续。
 
 ### 2. 计算目标分辨率
 
@@ -74,6 +104,32 @@ EXPECT
 
 用户必须重启电脑才能看到新的分辨率选项。
 
+### 6. 若 one-key-hidpi 失败，切换到 BetterDisplay 虚拟屏（推荐兜底）
+
+当 `3008×1260` 等分辨率在主屏不可用时，使用虚拟屏落地：
+
+```bash
+brew install --cask betterdisplay
+open -a /Applications/BetterDisplay.app
+
+# 创建虚拟屏，内置三档分辨率，默认可切到 3008x1260
+betterdisplaycli create --type=VirtualScreen \
+  --virtualScreenName=VS3008 \
+  --useResolutionList=on \
+  --resolutionList=2880x1206,3008x1260 \
+  --virtualScreenHiDPI=on
+
+betterdisplaycli set --name=VS3008 --connected=on
+betterdisplaycli set --name=VS3008 --main=on
+betterdisplaycli set --name=VS3008 --mirror=on --specifier=34C1Q
+betterdisplaycli set --name=VS3008 --resolution=3008x1260 --hiDPI=on
+```
+
+说明：
+- 这是“虚拟主屏 + 实体屏镜像”方案。
+- 优点：无需重启，成功率高。
+- 代价：不是实体屏原生 timing。
+
 ## 常用分辨率参考
 
 ### 带鱼屏 (3440×1440 原生)
@@ -81,10 +137,8 @@ EXPECT
 | 目标字体大小 | 分辨率 | HiDPI 效果 |
 |------------|--------|-----------|
 | 较大 | 2048×858 | 系统预设，字体大 |
-| 中等偏大 | 2560×1070 | 自定义，推荐 |
-| 中等 | 2700×1130 | 自定义，推荐 |
-| 中等偏小 | 2880×1206 | 自定义 |
-| 较小 | 3008×1260 | 自定义 |
+| 较大 | 2880×1206 | 自定义 |
+| 推荐（默认） | 3008×1260 | 自定义 |
 | 最小 | 3440×1440 | 原生，字体小 |
 
 ### 4K 显示器 (3840×2160)
@@ -103,6 +157,18 @@ EXPECT
 1. 确认已重启电脑
 2. 检查系统设置 → 显示器 → 按住 Option 点击"缩放"
 3. 运行 `displayplacer list` 查看可用分辨率
+4. 使用 `betterdisplaycli get --displayWithMainStatus --displayModeList` 做闭环验证（仅以此列表为准）
+5. 若列表无目标分辨率，直接切换 BetterDisplay 虚拟屏方案
+
+### 覆盖文件写入但仍无效
+
+重点检查 plist 内 ID 是否为十进制：
+- `DisplayVendorID` 和 `DisplayProductID` 的 `<integer>` 必须是十进制值
+- 目录名通常是十六进制（如 `DisplayVendorID-3103`），不要直接把 `3103/3400` 写入 integer
+
+示例（34C1Q）：
+- 目录：`DisplayVendorID-3103/DisplayProductID-3400`
+- plist integer：`DisplayVendorID=12547`、`DisplayProductID=13312`
 
 ### 显示异常
 
@@ -114,22 +180,5 @@ EXPECT
 
 重新运行脚本选择 "(2) Disable HIDPI" 或删除配置文件：
 ```bash
-sudo rm -rf /System/Library/Displays/Contents/Resources/Overrides/DisplayVendorID-*/
+sudo rm -rf /Library/Displays/Contents/Resources/Overrides/DisplayVendorID-*/
 ```
-
-## 替代方案
-
-如果 one-key-hidpi 不适用，可考虑：
-
-1. **BetterDisplay**: `brew install --cask betterdisplay`
-   - 图形界面操作
-   - 无需重启
-   - 支持虚拟显示器
-
-2. **RDM**: `brew install --cask usr-sse2-rdm`
-   - 轻量级
-   - 只能启用系统已有分辨率
-
-3. **displayplacer**: `brew install displayplacer`
-   - 命令行工具
-   - 只能切换已有分辨率
