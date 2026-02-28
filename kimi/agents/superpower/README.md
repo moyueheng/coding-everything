@@ -22,7 +22,7 @@ kimi --agent-file /path/to/my/kimi/agents/superpower/agent.yaml
 在 `~/.zshrc` 或 `~/.bashrc` 中添加：
 
 ```bash
-alias kimi='kimi --agent-file ~/.agents/kimi/superpower/agent.yaml'
+alias kimi='kimi --agent-file ~/.kimi/agents/superpower/agent.yaml'
 ```
 
 然后重新加载配置：
@@ -35,13 +35,13 @@ source ~/.zshrc  # 或 source ~/.bashrc
 
 ```bash
 # 创建 Kimi agent 配置目录
-mkdir -p ~/.agents/kimi
+mkdir -p ~/.kimi/agents
 
 # 复制 agent 配置
-cp -r my/kimi/agents/superpower ~/.agents/kimi/
+cp -r my/kimi/agents/superpower ~/.kimi/agents/
 
 # 然后使用
-kimi --agent-file ~/.agents/kimi/superpower/agent.yaml
+kimi --agent-file ~/.kimi/agents/superpower/agent.yaml
 ```
 
 ### 方法四：使用安装脚本
@@ -52,7 +52,7 @@ kimi --agent-file ~/.agents/kimi/superpower/agent.yaml
 ./install.sh
 ```
 
-这将自动安装 agent 配置到 `~/.agents/kimi/` 目录。
+这将自动安装 agent 配置到 `~/.kimi/agents/superpower/` 目录。
 
 ## 工作原理
 

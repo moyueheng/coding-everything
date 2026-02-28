@@ -49,8 +49,8 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（14 个技能） |
-| **OpenCode** | `opencode/` | 🏗️ 目录结构 |
+| **Kimi** | `kimi/` | ✅ 已配置（15 个技能） |
+| **OpenCode** | `opencode/` | 🏗️ 开发中（12 个技能目录，1 个已完成） |
 
 ---
 
@@ -69,7 +69,7 @@ coding-everything/
 │   │       ├── agent.yaml
 │   │       ├── system.md
 │   │       └── README.md
-│   └── skills/                 # 14 个技能
+│   └── skills/                 # 15 个技能
 │       ├── dev-using-skills/
 │       ├── dev-brainstorming/
 │       ├── dev-debugging/
@@ -81,7 +81,10 @@ coding-everything/
 │       ├── dev-verification/
 │       ├── dev-finishing-branch/
 │       ├── dev-writing-skills/
-│       └── dev-code-cleanup/
+│       ├── dev-code-cleanup/
+│       ├── dev-update-codemaps/
+│       ├── dev-backend-patterns/
+│       └── dev-frontend-patterns/
 │
 ├── opencode/                   # OpenCode 配置
 │   ├── README.md
@@ -160,6 +163,7 @@ coding-everything/
 | `dev-finishing-branch` | 分支完成工作流 | 严格 |
 | `dev-writing-skills` | 编写新技能 | 严格 |
 | `dev-code-cleanup` | 代码清理和死代码删除 | 严格 |
+| `dev-update-codemaps` | 分析代码库结构并生成架构文档 | 灵活 |
 | `dev-backend-patterns` | 后端架构模式与最佳实践 | 灵活 |
 | `dev-frontend-patterns` | 前端架构模式与最佳实践 | 灵活 |
 

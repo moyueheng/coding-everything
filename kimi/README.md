@@ -56,21 +56,32 @@ make test
 
 ## 包含内容
 
-### Skills (11 个)
+### Skills (15 个)
 
-| Skill | 用途 | 类型 |
-|-------|------|------|
-| `dev-using-skills` | 技能使用入口 | 严格 |
-| `dev-brainstorming` | 编码前苏格拉底式对话 | 严格 |
-| `dev-debugging` | 四阶段调试流程 | 严格 |
-| `dev-tdd` | 测试驱动开发 | 严格 |
-| `dev-writing-plans` | 编写实施计划 | 严格 |
-| `dev-executing-plans` | 执行计划 | 严格 |
-| `dev-git-worktrees` | Git 工作树管理 | 严格 |
-| `dev-requesting-review` | 代码审查请求 | 严格 |
-| `dev-verification` | 完成前验证 | 严格 |
-| `dev-finishing-branch` | 分支完成工作流 | 严格 |
-| `dev-writing-skills` | 编写新技能 | 严格 |
+#### 核心工作流技能（严格类型）
+
+| Skill | 用途 |
+|-------|------|
+| `dev-using-skills` | 技能使用入口 |
+| `dev-brainstorming` | 编码前苏格拉底式对话 |
+| `dev-debugging` | 四阶段调试流程 |
+| `dev-tdd` | 测试驱动开发 |
+| `dev-writing-plans` | 编写实施计划 |
+| `dev-executing-plans` | 执行计划 |
+| `dev-git-worktrees` | Git 工作树管理 |
+| `dev-requesting-review` | 代码审查请求 |
+| `dev-verification` | 完成前验证 |
+| `dev-finishing-branch` | 分支完成工作流 |
+| `dev-writing-skills` | 编写新技能 |
+| `dev-code-cleanup` | 代码清理和死代码删除 |
+
+#### 辅助技能（灵活类型）
+
+| Skill | 用途 |
+|-------|------|
+| `dev-update-codemaps` | 分析代码库结构并生成架构文档 |
+| `dev-backend-patterns` | 后端架构模式与最佳实践 |
+| `dev-frontend-patterns` | 前端架构模式与最佳实践 |
 
 ### Agent
 
@@ -110,9 +121,9 @@ make test
 
 ## 安装路径
 
-统一安装到 `~/.kimi/`：
-- Skills: `~/.kimi/skills/`
-- Agent: `~/.kimi/agents/superpower/`
+统一安装路径：
+- Skills: `~/.agents/skills/`（所有 Agent 工具共享）
+- Agent: `~/.kimi/agents/superpower/`（仅 Kimi）
 
 ## 使用方法
 
@@ -147,7 +158,7 @@ kimi/
 │       ├── agent.yaml           # Agent 定义
 │       ├── system.md            # 系统提示词
 │       └── README.md
-└── skills/                      # Skills 目录
+└── skills/                      # Skills 目录（15 个）
     ├── dev-using-skills/
     ├── dev-brainstorming/
     ├── dev-debugging/
@@ -158,7 +169,11 @@ kimi/
     ├── dev-requesting-review/
     ├── dev-verification/
     ├── dev-finishing-branch/
-    └── dev-writing-skills/
+    ├── dev-writing-skills/
+    ├── dev-code-cleanup/
+    ├── dev-update-codemaps/
+    ├── dev-backend-patterns/
+    └── dev-frontend-patterns/
 ```
 
 ## 核心工作流
