@@ -294,6 +294,19 @@ git submodule add <仓库URL> upstream/<名称>
 | `learn-` | 学习相关 | `learn-paper`, `learn-research` |
 
 命名前缀规范适用于 Agents/Commands/Skills 及其 frontmatter `name` 字段，按用途选择前缀。
+
+#### 术语约定
+
+| 术语 | 约定 | 说明 |
+|------|------|------|
+| skill | 不翻译 | 统一使用英文 "skill"，不用"技能" |
+| agent | 不翻译 | 统一使用英文 "agent"，不用"智能体" |
+
+**示例**：
+- ❌ "核心技能" → ✅ "核心 skill"
+- ❌ "技能列表" → ✅ "skill 列表"
+- ❌ "使用技能" → ✅ "使用 skill"
+
 ---
 
 ## 资源链接
