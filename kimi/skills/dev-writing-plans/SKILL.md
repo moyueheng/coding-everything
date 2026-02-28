@@ -26,6 +26,13 @@ description: 当有多步骤任务的规范或需求时，在接触代码前使�
 - "运行测试确保通过" - 一步
 - "提交" - 一步
 
+## TDD 要求
+
+**每个实现任务必须使用 TDD：**
+- 任务涉及编写代码时，**步骤必须体现 RED-GREEN-REFACTOR 循环**
+- 步骤应明确引用 `dev-tdd` skill
+- 不要假设执行者知道 TDD - 给出具体的测试代码和预期输出
+
 ## 计划文档头部
 
 **每个计划必须以这个头部开始：**
@@ -54,7 +61,11 @@ description: 当有多步骤任务的规范或需求时，在接触代码前使�
 - 修改：`exact/path/to/existing.py:123-145`
 - 测试：`tests/exact/path/to/test.py`
 
-**步骤 1：编写失败的测试**
+> **给 Kimi：** 此任务使用 `dev-tdd` skill。遵循 RED-GREEN-REFACTOR。
+
+**步骤 1：RED - 编写失败的测试**
+
+**调用 dev-tdd**：编写一个最小测试展示应该发生什么。
 
 ```python
 def test_specific_behavior():
@@ -62,24 +73,37 @@ def test_specific_behavior():
     assert result == expected
 ```
 
-**步骤 2：运行测试验证失败**
+**步骤 2：验证 RED - 看着它失败**
+
+**调用 dev-tdd**：运行测试确认它因正确原因失败。
 
 运行：`pytest tests/path/test.py::test_name -v`
 预期：FAIL with "function not defined"
 
-**步骤 3：编写最小实现**
+**步骤 3：GREEN - 编写最小实现**
+
+**调用 dev-tdd**：编写最简单的代码使测试通过。
 
 ```python
 def function(input):
     return expected
 ```
 
-**步骤 4：运行测试验证通过**
+**步骤 4：验证 GREEN - 看着它通过**
+
+**调用 dev-tdd**：运行测试确认通过且其他测试未损坏。
 
 运行：`pytest tests/path/test.py::test_name -v`
 预期：PASS
 
-**步骤 5：提交**
+**步骤 5：REFACTOR（可选）**
+
+**调用 dev-tdd**：清理代码，保持测试绿色。
+- 删除重复
+- 改进名称
+- 提取辅助函数
+
+**步骤 6：提交**
 
 ```bash
 git add tests/path/test.py src/path/file.py
@@ -91,8 +115,42 @@ git commit -m "feat: add specific feature"
 - 始终使用精确文件路径
 - 计划中包含完整代码（不是"添加验证"）
 - 精确命令及预期输出
-- 用 `@` syntax 引用相关 skills
+- **每个实现任务必须引用 `dev-tdd` skill**
+- 计划中的测试代码要完整可运行
 - DRY、YAGNI、TDD、频繁提交
+
+## TDD 集成说明
+
+### 为什么必须引用 dev-tdd
+
+编写计划时，你**必须**在每个实现任务中引用 `dev-tdd` skill：
+
+1. **执行者可能不熟悉 TDD** - 显式引用确保他们遵循正确的流程
+2. **RED-GREEN-REFACTOR 必须完整** - 跳过"验证失败"步骤是常见的错误
+3. **测试是设计工具** - 测试定义了期望的 API 和行为
+
+### 计划中引用 dev-tdd 的方式
+
+每个实现任务应包含：
+
+```markdown
+> **给 Kimi：** 此任务使用 `dev-tdd` skill。遵循 RED-GREEN-REFACTOR。
+
+**步骤 1: RED - 编写失败的测试**
+**调用 dev-tdd**: ...
+
+**步骤 2: 验证 RED - 看着它失败**
+**调用 dev-tdd**: ...
+```
+
+### 没有测试的任务
+
+纯配置、文档或基础设施任务不需要 TDD：
+- 添加配置文件
+- 更新文档
+- 设置 CI/CD pipeline
+
+但只要有代码逻辑，**就必须使用 TDD**。
 
 ## 执行交接
 

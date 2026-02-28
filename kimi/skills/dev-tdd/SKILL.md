@@ -44,7 +44,31 @@ description: 实现任何功能或修复 bug 前使用，在编写实现代码�
 
 从测试重新实现。就这样。
 
-## 红-绿-重构
+## 红-绿-重构循环
+
+```dot
+digraph tdd_cycle {
+    rankdir=LR;
+    red [label="红\n编写失败测试", shape=box, style=filled, fillcolor="#ffcccc"];
+    verify_red [label="验证失败\n正确", shape=diamond];
+    green [label="绿\n最小代码", shape=box, style=filled, fillcolor="#ccffcc"];
+    verify_green [label="验证通过\n全部绿色", shape=diamond];
+    refactor [label="重构\n清理", shape=box, style=filled, fillcolor="#ccccff"];
+    next [label="下一个", shape=ellipse];
+
+    red -> verify_red;
+    verify_red -> green [label="是"];
+    verify_red -> red [label="错误\n失败"];
+    green -> verify_green;
+    verify_green -> refactor [label="是"];
+    verify_green -> green [label="否"];
+    refactor -> verify_green [label="保持\n绿色"];
+    verify_green -> next;
+    next -> red;
+}
+```
+
+## 红-绿-重构详情
 
 ### 红 - 编写失败测试
 
@@ -251,11 +275,34 @@ npm test path/to/test.test.ts
 | 必须 mock 所有东西 | 代码太耦合。用依赖注入。 |
 | 测试 setup 庞大 | 提取辅助函数。还复杂？简化设计。 |
 
-## 调试集成
+## 与其他技能的集成
 
-发现 bug？编写重现它的失败测试。遵循 TDD 循环。测试证明修复并防止回归。
+### 与 dev-debugging 集成
 
-永远不要无测试修复 bug。
+在系统化调试中，找到根本原因后，**必须使用 dev-tdd**：
+
+1. **Phase 4 步骤 1** - 创建失败测试用例时：使用 `dev-tdd` skill 编写正确的失败测试
+2. 遵循 RED-GREEN-REFACTOR 循环实现修复
+3. 测试证明了修复并防止回归
+
+**永远不要无测试修复 bug。**
+
+### 与 dev-writing-plans 集成
+
+编写计划时，每个任务的步骤应体现 TDD：
+- 步骤 1: 编写失败的测试（红）
+- 步骤 2: 运行测试验证失败（验证红）
+- 步骤 3: 编写最小实现（绿）
+- 步骤 4: 运行测试验证通过（验证绿）
+- 步骤 5: 重构清理（可选）
+- 步骤 6: 提交
+
+### 与 dev-executing-plans 集成
+
+执行计划中的每个任务时：
+- 如果计划中的步骤包含"编写测试"，则 **调用 dev-tdd skill**
+- 严格按照 TDD 循环执行，不要跳过验证步骤
+- 测试失败时必须先解决才能继续下一步
 
 ## 最后规则
 
