@@ -6,8 +6,8 @@
 
 本项目聚合了多个优秀的 AI 编程助手配置：
 
-- **[obra/superpowers](https://github.com/obra/superpowers)** - AI 编程助手工作流框架（14 个核心技能）
-- **[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)** - Claude Code 完整配置（39 个技能）
+- **[obra/superpowers](https://github.com/obra/superpowers)** - AI 编程助手工作流框架（14 个核心skill）
+- **[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)** - Claude Code 完整配置（39 个skill）
 - **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** - UI/UX Pro Max Skill
 
 ## 快速开始
@@ -25,19 +25,20 @@ cd coding-everything
 git submodule update --init --recursive
 ```
 
-### 2. 安装 Kimi 技能
+### 2. 安装 Kimi skill
 
 使用自动化脚本（推荐）：
 
 ```bash
 # 进入项目目录后执行
+kimi # 让kimi自行安装, 会同时安装到kimi和codex
 /skill:setup
 ```
 
 或手动创建软链接：
 
 ```bash
-# 创建软链接到 Kimi 技能目录
+# 创建软链接到 Kimi skill目录
 mkdir -p ~/.agents
 ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
 
@@ -52,15 +53,15 @@ ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ls ~/.agents/skills/
 ```
 
-应该能看到类似 `dev-using-skills`、`dev-tdd`、`dev-debugging` 等技能目录。
+应该能看到类似 `dev-using-skills`、`dev-tdd`、`dev-debugging` 等skill目录。
 
-## 核心技能
+## 核心skill
 
-### 开发工作流技能
+### 开发工作流skill
 
-| 技能 | 用途 | 触发场景 |
+| skill | 用途 | 触发场景 |
 |------|------|----------|
-| `dev-using-skills` | 技能入口 | 不知道用什么技能时先执行这个 |
+| `dev-using-skills` | skill入口 | 不知道用什么skill时先执行这个 |
 | `dev-brainstorming` | 头脑风暴 | 开始任何新功能前 |
 | `dev-writing-plans` | 编写计划 | 需要将任务分解为可执行步骤 |
 | `dev-executing-plans` | 执行计划 | 按计划一步步实现 |
@@ -71,11 +72,11 @@ ls ~/.agents/skills/
 | `dev-finishing-branch` | 完成分支 | 合并代码前 |
 | `dev-git-worktrees` | Git 工作树 | 隔离多个任务 |
 
-### 辅助技能
+### 辅助skill
 
-| 技能 | 用途 |
+| skill | 用途 |
 |------|------|
-| `dev-writing-skills` | 编写新的技能 |
+| `dev-writing-skills` | 编写新的skill |
 | `dev-code-cleanup` | 清理死代码 |
 | `dev-update-codemaps` | 更新代码地图文档 |
 | `dev-backend-patterns` | 后端架构模式 |
@@ -111,13 +112,13 @@ git submodule update --remote
 cd upstream/superpowers && git pull origin main
 ```
 
-### 查看技能
+### 查看skill
 
 ```bash
-# 列出所有可用技能
+# 列出所有可用skill
 ls ~/.agents/skills/
 
-# 查看技能详情
+# 查看skill详情
 cat ~/.agents/skills/dev-tdd/SKILL.md
 ```
 
@@ -127,7 +128,7 @@ cat ~/.agents/skills/dev-tdd/SKILL.md
 coding-everything/
 ├── kimi/                    # Kimi 配置
 │   ├── agents/superpower/   # Agent 配置
-│   └── skills/              # 14 个技能
+│   └── skills/              # 14 个skill
 ├── opencode/                # OpenCode 配置（待完善）
 ├── upstream/                # 上游仓库（子模块）
 │   ├── superpowers/         # superpowers 框架
