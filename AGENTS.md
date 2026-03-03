@@ -10,6 +10,7 @@
 - [上游仓库详情](#上游仓库详情)
   - [superpowers](#1-superpowers)
   - [everything-claude-code](#2-everything-claude-code)
+  - [obsidian-skills](#3-obsidian-skills)
 - [个人 Kimi 配置](#个人-kimi-配置)
   - [skill列表](#skill列表)
   - [快速安装](#快速安装)
@@ -46,6 +47,7 @@
 | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code.git) | Claude Code 完整配置 | `upstream/everything-claude-code/` |
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git) | UI/UX Pro Max Skill | `upstream/ui-ux-pro-max-skill/` |
 | [op7418/Humanizer-zh](https://github.com/op7418/Humanizer-zh.git) | AI 写作去痕工具（中文版） | `upstream/humanizer-zh/` |
+| [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills.git) | Obsidian agent skills 仓库 | `upstream/obsidian-skills/` |
 
 ### 个人配置
 
@@ -104,17 +106,21 @@ coding-everything/
     │   └── ...
     │
     ├── everything-claude-code/ # everything-claude-code 配置
-│   ├── .claude/            # Claude 配置
-│   ├── .cursor/            # Cursor 编辑器配置
-│   ├── .opencode/          # OpenCode 配置
-│   └── ...
-│
-└── humanizer-zh/           # AI 写作去痕工具（中文版）
-    ├── SKILL.md
-    └── README.md
-        ├── skills/             # 39 个skill
-        ├── agents/             # agent 配置
-        └── ...
+    │   ├── .claude/            # Claude 配置
+    │   ├── .cursor/            # Cursor 编辑器配置
+    │   ├── .opencode/          # OpenCode 配置
+    │   └── ...
+    │
+    ├── ui-ux-pro-max-skill/    # UI/UX Pro Max Skill
+    │   └── ...
+    │
+    ├── humanizer-zh/           # AI 写作去痕工具（中文版）
+    │   ├── SKILL.md
+    │   └── README.md
+    │
+    └── obsidian-skills/        # Obsidian agent skills
+        ├── README.md
+        └── skills/             # Obsidian / Bases / Canvas / CLI 等 skill
 ```
 
 ---
@@ -149,6 +155,17 @@ coding-everything/
 - `commands/` - 预定义命令
 - `hooks/` - 会话钩子
 - `docs/zh-CN/skills/` - **32 个简体中文skill**（引入时无需翻译）
+
+### 3. obsidian-skills
+
+**简介**: 面向 Obsidian 的 agent skills 仓库，遵循 Agent Skills 开放标准，可供 Claude Code、Codex CLI、OpenCode 等兼容环境使用
+
+**内容**:
+- `skills/obsidian-markdown/` - Obsidian Flavored Markdown 编辑
+- `skills/obsidian-bases/` - Obsidian Bases 语法编辑
+- `skills/json-canvas/` - JSON Canvas 文件编辑
+- `skills/obsidian-cli/` - Obsidian CLI 与 vault 交互
+- `skills/defuddle/` - 网页提取为干净 markdown
 
 ---
 
@@ -325,6 +342,7 @@ git submodule add <仓库URL> upstream/<名称>
 
 - **superpowers**: https://github.com/obra/superpowers
 - **everything-claude-code**: https://github.com/affaan-m/everything-claude-code
+- **obsidian-skills**: https://github.com/kepano/obsidian-skills
 
 ### 平台文档
 

@@ -10,3 +10,6 @@
 [submodule "upstream/humanizer-zh"]
 	path = upstream/humanizer-zh
 	url = https://github.com/op7418/Humanizer-zh.git
+[submodule "upstream/obsidian-skills"]
+	path = upstream/obsidian-skills
+	url = https://github.com/kepano/obsidian-skills.git
