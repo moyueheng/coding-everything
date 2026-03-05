@@ -3,6 +3,7 @@
 ## 目录
 
 - [Kimi Skills 架构图](./docs/kimi-skills-architecture.md) - 技能关系图和调用流程可视化
+- [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
   - [个人配置](#个人配置)
@@ -46,6 +47,7 @@
 | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code.git) | Claude Code 完整配置 | `upstream/everything-claude-code/` |
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git) | UI/UX Pro Max Skill | `upstream/ui-ux-pro-max-skill/` |
 | [op7418/Humanizer-zh](https://github.com/op7418/Humanizer-zh.git) | AI 写作去痕工具（中文版） | `upstream/humanizer-zh/` |
+| [deanpeters/Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills.git) | Product Manager 相关 skill 集合 | `upstream/product-manager-skills/` |
 
 ### 个人配置
 
@@ -104,17 +106,18 @@ coding-everything/
     │   └── ...
     │
     ├── everything-claude-code/ # everything-claude-code 配置
-│   ├── .claude/            # Claude 配置
-│   ├── .cursor/            # Cursor 编辑器配置
-│   ├── .opencode/          # OpenCode 配置
-│   └── ...
-│
-└── humanizer-zh/           # AI 写作去痕工具（中文版）
-    ├── SKILL.md
-    └── README.md
-        ├── skills/             # 39 个skill
-        ├── agents/             # agent 配置
-        └── ...
+    │   ├── .claude/            # Claude 配置
+    │   ├── .cursor/            # Cursor 编辑器配置
+    │   ├── .opencode/          # OpenCode 配置
+    │   └── ...
+    │
+    ├── humanizer-zh/           # AI 写作去痕工具（中文版）
+    │   ├── SKILL.md
+    │   └── README.md
+    │
+    └── product-manager-skills/ # Product Manager skill 集合
+        ├── README.md
+        └── skills/             # PM 工作流相关 skill
 ```
 
 ---
@@ -325,6 +328,7 @@ git submodule add <仓库URL> upstream/<名称>
 
 - **superpowers**: https://github.com/obra/superpowers
 - **everything-claude-code**: https://github.com/affaan-m/everything-claude-code
+- **Product-Manager-Skills**: https://github.com/deanpeters/Product-Manager-Skills
 
 ### 平台文档
 

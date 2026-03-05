@@ -10,3 +10,6 @@
 [submodule "upstream/humanizer-zh"]
 	path = upstream/humanizer-zh
 	url = https://github.com/op7418/Humanizer-zh.git
+[submodule "upstream/product-manager-skills"]
+	path = upstream/product-manager-skills
+	url = https://github.com/deanpeters/Product-Manager-Skills.git
