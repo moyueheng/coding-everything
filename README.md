@@ -62,9 +62,9 @@ ls ~/.agents/skills/
 
 | skill | 用途 | 触发场景 |
 |------|------|----------|
-| `dev-using-skills` | skill入口 | 不知道用什么skill时先执行这个 |
-| `dev-brainstorming` | 头脑风暴 | 开始任何新功能前 |
-| `dev-writing-plans` | 编写计划 | 需要将任务分解为可执行步骤 |
+| `dev-using-skills` | skill入口 | 不知道用什么skill时先执行这个，并明确用户请求 / AGENTS.md / skill 的优先关系 |
+| `dev-brainstorming` | 头脑风暴 | 开始任何新功能前，先做设计并完成设计审查闭环 |
+| `dev-writing-plans` | 编写计划 | 需要将任务分解为可执行步骤，并对计划做分段审查收口 |
 | `dev-executing-plans` | 执行计划 | 按计划一步步实现 |
 | `dev-tdd` | 测试驱动开发 | 写代码前先写测试 |
 | `dev-debugging` | 调试 | 遇到 Bug 时 |

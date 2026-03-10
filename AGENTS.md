@@ -187,11 +187,11 @@ coding-everything/
 
 | skill | 用途 | 类型 |
 |------|------|------|
-| `dev-using-skills` | 入口点 - skill使用方法 | 严格 |
-| `dev-brainstorming` | 编码前苏格拉底式对话 | 严格 |
+| `dev-using-skills` | 入口点 - skill使用方法与指令优先级 | 严格 |
+| `dev-brainstorming` | 编码前苏格拉底式对话与设计审查闭环 | 严格 |
 | `dev-debugging` | 四阶段调试流程 | 严格 |
 | `dev-tdd` | 测试驱动开发 | 严格 |
-| `dev-writing-plans` | 编写实施计划 | 严格 |
+| `dev-writing-plans` | 编写实施计划与分段审查收口 | 严格 |
 | `dev-executing-plans` | 执行计划 | 严格 |
 | `dev-git-worktrees` | Git 工作树管理 | 严格 |
 | `dev-requesting-review` | 代码审查请求 | 严格 |
@@ -335,6 +335,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 1. 开始任务先运行：`find . -type f \( -name 'AGENTS.md' -o -name 'CLAUDE.md' \)`，识别可受影响文档
 2. 只要变更触及目录结构、架构边界、工作流、安装步骤、测试入口等高信息密度事实，必须同步更新相关文档
 3. 更新内容禁止流水账，优先写稳定、可执行、可复用的约束与结构信息
+4. 每次 commit 前检查 `upstream/everything-claude-code/agents/architect.md` 是否需要同步到当前仓库的相关 skills 或文档
 
 ### 命名规范
 
