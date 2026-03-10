@@ -53,7 +53,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（16 个skill） |
+| **Kimi** | `kimi/` | ✅ 已配置（19 个skill） |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -73,7 +73,7 @@ coding-everything/
 │   │       ├── agent.yaml
 │   │       ├── system.md
 │   │       └── README.md
-│   └── skills/                 # 15 个skill
+│   └── skills/                 # 19 个skill
 │       ├── dev-using-skills/
 │       ├── dev-brainstorming/
 │       ├── dev-debugging/
@@ -90,7 +90,9 @@ coding-everything/
 │       ├── dev-backend-patterns/
 │       ├── dev-frontend-patterns/
 │       ├── dev-e2e-testing/
-│       └── tool-humanizer-zh/
+│       ├── tool-humanizer-zh/
+│       ├── tool-macos-hidpi/
+│       └── tool-mgrep/
 │
 ├── opencode/                   # OpenCode 配置
 │   ├── README.md
@@ -193,6 +195,9 @@ coding-everything/
 | `dev-backend-patterns` | 后端架构模式与最佳实践 | 灵活 |
 | `dev-frontend-patterns` | 前端架构模式与最佳实践 | 灵活 |
 | `dev-e2e-testing` | Playwright Python 端到端测试模式 | 灵活 |
+| `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
+| `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
+| `tool-mgrep` | 统一替代内置 WebSearch/Grep/Glob 的语义搜索工具 | 严格 |
 
 ### 快速安装
 

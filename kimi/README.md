@@ -8,7 +8,7 @@
   - [使用 Makefile（推荐）](#使用-makefile推荐)
   - [直接使用脚本](#直接使用脚本)
 - [包含内容](#包含内容)
-  - [Skills (11 个)](#skills-11-个)
+  - [Skills (19 个)](#skills-19-个)
   - [Agent](#agent)
 - [安装脚本](#安装脚本)
 - [测试](#测试)
@@ -56,7 +56,7 @@ make test
 
 ## 包含内容
 
-### Skills (15 个)
+### Skills (19 个)
 
 #### 核心 workflow skill（严格类型）
 
@@ -82,6 +82,10 @@ make test
 | `dev-update-codemaps` | 分析代码库结构并生成架构文档 |
 | `dev-backend-patterns` | 后端架构模式与最佳实践 |
 | `dev-frontend-patterns` | 前端架构模式与最佳实践 |
+| `dev-e2e-testing` | Playwright Python 端到端测试模式 |
+| `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 |
+| `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 |
+| `tool-mgrep` | 统一替代内置搜索工具的语义搜索 skill |
 
 ### Agent
 
@@ -158,7 +162,7 @@ kimi/
 │       ├── agent.yaml           # Agent 定义
 │       ├── system.md            # 系统提示词
 │       └── README.md
-└── skills/                      # Skills 目录（15 个）
+└── skills/                      # Skills 目录（19 个）
     ├── dev-using-skills/
     ├── dev-brainstorming/
     ├── dev-debugging/
@@ -173,7 +177,11 @@ kimi/
     ├── dev-code-cleanup/
     ├── dev-update-codemaps/
     ├── dev-backend-patterns/
-    └── dev-frontend-patterns/
+    ├── dev-frontend-patterns/
+    ├── dev-e2e-testing/
+    ├── tool-humanizer-zh/
+    ├── tool-macos-hidpi/
+    └── tool-mgrep/
 ```
 
 ## 核心工作流
