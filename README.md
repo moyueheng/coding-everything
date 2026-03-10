@@ -126,6 +126,8 @@ cd upstream/superpowers && git pull origin main
 uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
 ```
 
+约束：所有 `upstream/` 子模块都显式跟踪 `main` 分支，避免因远端默认分支变化导致漂移。
+
 ### 查看skill
 
 ```bash

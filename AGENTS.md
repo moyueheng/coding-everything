@@ -251,6 +251,10 @@ git submodule update --init --recursive
 git submodule update --remote
 ```
 
+约束：
+- 所有 `upstream/` submodule 必须显式跟踪 `main` 分支，禁止依赖远端默认分支隐式漂移
+- 更新 submodule 后，先检查 gitlink 是否沿 `main` 前进，再决定是否写报告或提交
+
 ### 更新特定 submodule
 
 ```bash
