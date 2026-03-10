@@ -82,6 +82,9 @@ ls ~/.agents/skills/
 | `dev-update-codemaps` | 更新代码地图文档 |
 | `dev-backend-patterns` | 后端架构模式 |
 | `dev-frontend-patterns` | 前端架构模式 |
+| `dev-design-system` | 设计 token、语义层和组件状态模式 |
+| `dev-ui-styling` | 高质量 UI 样式实现与可访问性约束 |
+| `dev-continuous-agent-loop` | 持续 agent 循环与自动化执行模式 |
 
 ### 系统级 skill
 
@@ -142,7 +145,10 @@ coding-everything/
 │   └── update-upstream-repos/ # 上游更新与报告生成
 ├── kimi/                    # Kimi 配置
 │   ├── agents/superpower/   # Agent 配置
-│   └── skills/              # 14 个skill
+│   └── skills/              # 22 个skill
+│       ├── dev-design-system/
+│       ├── dev-ui-styling/
+│       └── dev-continuous-agent-loop/
 ├── opencode/                # OpenCode 配置（待完善）
 ├── upstream/                # 上游仓库（子模块）
 │   ├── superpowers/         # superpowers 框架
