@@ -83,6 +83,13 @@ ls ~/.agents/skills/
 | `dev-backend-patterns` | 后端架构模式 |
 | `dev-frontend-patterns` | 前端架构模式 |
 
+### 系统级 skill
+
+| skill | 用途 |
+|------|------|
+| `setup` | 安装本项目 skills 和 Kimi agent 配置 |
+| `update-upstream-repos` | 更新 `upstream/` submodule、整理 commit 变化并生成 `docs/` 报告 |
+
 ## 典型工作流
 
 ```
@@ -111,6 +118,9 @@ git submodule update --remote
 
 # 更新特定子模块
 cd upstream/superpowers && git pull origin main
+
+# 生成上游更新摘要
+uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
 ```
 
 ### 查看skill
@@ -127,6 +137,9 @@ cat ~/.agents/skills/dev-tdd/SKILL.md
 
 ```
 coding-everything/
+├── .agents/skills/          # 系统级 skills
+│   ├── setup/               # 安装入口
+│   └── update-upstream-repos/ # 上游更新与报告生成
 ├── kimi/                    # Kimi 配置
 │   ├── agents/superpower/   # Agent 配置
 │   └── skills/              # 14 个skill
@@ -138,6 +151,7 @@ coding-everything/
 │   ├── humanizer-zh/            # 中文去痕工具
 │   └── obsidian-skills/         # Obsidian agent skills
 └── docs/                    # 文档
+    └── upstream-updates/    # 上游更新报告
 ```
 
 ## 文档
@@ -146,6 +160,7 @@ coding-everything/
 
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
 - **[docs/kimi-skills-architecture.md](./docs/kimi-skills-architecture.md)** - Kimi Skills 架构全景图和调用关系
+- `docs/upstream-updates/YYYY-MM-DD-upstream-updates.md` - 使用 `update-upstream-repos` skill 生成和维护的上游更新报告
 
 ## 上游仓库
 

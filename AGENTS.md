@@ -65,6 +65,10 @@ coding-everything/
 ├── README.md                   # 项目简介
 ├── AGENTS.md                   # 本文档
 ├── .gitmodules                 # Git submodule 配置
+├── .agents/
+│   └── skills/                 # 系统级 skills
+│       ├── setup/              # 安装 skill
+│       └── update-upstream-repos/ # 上游更新与报告生成 skill
 │
 ├── kimi/                       # Kimi 配置
 │   ├── README.md
@@ -100,6 +104,7 @@ coding-everything/
 │   └── skills/                 # skill目录（待填充）
 │
 ├── docs/                       # 文档
+│   └── upstream-updates/       # 上游更新报告
 │
 └── upstream/                   # 上游仓库（git submodules）
     ├── superpowers/            # superpowers 框架
@@ -254,6 +259,20 @@ git commit -m "Update superpowers submodule"
 
 ```bash
 git submodule add <仓库URL> upstream/<名称>
+```
+
+### 生成上游更新报告
+
+更新 submodule 后，使用系统级 skill 附带脚本整理真实 commit 变化：
+
+```bash
+uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
+```
+
+推荐将报告写入：
+
+```bash
+docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 ```
 
 ---
