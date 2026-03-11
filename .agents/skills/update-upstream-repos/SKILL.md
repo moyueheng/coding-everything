@@ -76,6 +76,14 @@ git -C upstream/<repo> fetch --all --tags
 git -C upstream/<repo> pull --ff-only
 ```
 
+`git submodule update --remote` 会按 `.gitmodules` 里的 `branch = main` 前进，但通常会把 submodule 工作树留在 detached HEAD。这个项目要求更新后把已变化的 submodule 切回本地 `main`，避免后续误判成“没有跟踪主分支”。
+
+更新后立刻执行：
+
+```bash
+uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py
+```
+
 更新后不要立刻总结，先确认根仓库里真的有 gitlink 变化：
 
 ```bash
@@ -126,6 +134,12 @@ uv run .agents/skills/update-upstream-repos/scripts/validate_skill.py
 ```
 
 这个脚本只使用 Python 标准库，避免 `uv run` 环境下缺少 `PyYAML` 时校验失败。
+
+必要时，也可以验证切分支脚本是否可用：
+
+```bash
+uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py --help
+```
 
 ## 4. 深读必要上游内容
 

@@ -15,7 +15,9 @@
 
 - 更新时间：YYYY-MM-DD
 - 更新方式：`git submodule update --remote` / 单仓库 `git pull --ff-only`
+- 如使用 `git submodule update --remote`，补充：随后执行 `uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py`
 - 覆盖仓库：`upstream/...`
+- 最终状态：如有更新，写明已变化 submodule 是否已切回本地 `main`，以及是否 `HEAD == origin/main`
 - 证据来源：git diff、git log、上游 README/docs/具体文件
 ```
 
@@ -80,5 +82,6 @@
 
 - [ ] 是否同步到 `kimi/` 或 `opencode/`
 - [ ] 是否补充测试 / 验证命令
+- [ ] 下次同步时是否固定补跑 `switch_updated_submodules_to_main.py`
 - [ ] 是否更新 `AGENTS.md` / `README.md`
 ```

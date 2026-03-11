@@ -188,10 +188,10 @@ coding-everything/
 | skill | 用途 | 类型 |
 |------|------|------|
 | `dev-using-skills` | 入口点 - skill使用方法与指令优先级 | 严格 |
-| `dev-brainstorming` | 编码前苏格拉底式对话与设计审查闭环 | 严格 |
+| `dev-brainstorming` | 编码前苏格拉底式对话与设计审查闭环（审查清单外置） | 严格 |
 | `dev-debugging` | 四阶段调试流程 | 严格 |
 | `dev-tdd` | 测试驱动开发 | 严格 |
-| `dev-writing-plans` | 编写实施计划与分段审查收口 | 严格 |
+| `dev-writing-plans` | 编写实施计划与分段审查收口（审查清单外置） | 严格 |
 | `dev-executing-plans` | 执行计划 | 严格 |
 | `dev-git-worktrees` | Git 工作树管理 | 严格 |
 | `dev-requesting-review` | 代码审查请求 | 严格 |
@@ -254,6 +254,12 @@ git submodule update --remote
 约束：
 - 所有 `upstream/` submodule 必须显式跟踪 `main` 分支，禁止依赖远端默认分支隐式漂移
 - 更新 submodule 后，先检查 gitlink 是否沿 `main` 前进，再决定是否写报告或提交
+- `git submodule update --remote` 后，必须把本次有变化的 submodule 切回本地 `main`，不要把工作树停在 detached HEAD
+- 固定入口：
+
+```bash
+uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py
+```
 
 ### 更新特定 submodule
 
@@ -317,6 +323,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 2. **遵循skill类型** —— 严格skill完全遵循，灵活skill按需调整
 3. **skill优先级** —— 流程skill优先于实现skill
 4. **指令是 WHAT 不是 HOW** —— 不要跳过工作流
+5. `dev-brainstorming` 与 `dev-writing-plans` 的审查标准已拆到各自目录下的 checklist 文件，修改主流程时要同步检查旁边的 checklist
 
 ### skill开发
 

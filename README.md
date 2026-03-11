@@ -119,6 +119,9 @@ ls ~/.agents/skills/
 # 更新所有子模块到最新
 git submodule update --remote
 
+# 将本次有变化的子模块切回本地 main，避免停在 detached HEAD
+uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py
+
 # 更新特定子模块
 cd upstream/superpowers && git pull origin main
 
@@ -126,7 +129,7 @@ cd upstream/superpowers && git pull origin main
 uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
 ```
 
-约束：所有 `upstream/` 子模块都显式跟踪 `main` 分支，避免因远端默认分支变化导致漂移。
+约束：所有 `upstream/` 子模块都显式跟踪 `main` 分支，避免因远端默认分支变化导致漂移。执行 `git submodule update --remote` 后，还要把已变化的子模块切回本地 `main`，否则 Git 常会把工作树留在 detached HEAD。
 
 ### 查看skill
 
