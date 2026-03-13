@@ -8,7 +8,7 @@
   - [使用 Makefile（推荐）](#使用-makefile推荐)
   - [直接使用脚本](#直接使用脚本)
 - [包含内容](#包含内容)
-  - [Skills (25 个)](#skills-25-个)
+  - [Skills (24 个)](#skills-24-个)
   - [Agent](#agent)
 - [安装脚本](#安装脚本)
 - [测试](#测试)
@@ -56,7 +56,7 @@ make test
 
 ## 包含内容
 
-### Skills (25 个)
+### Skills (24 个)
 
 #### 核心 workflow skill（严格类型）
 
@@ -91,7 +91,6 @@ make test
 | `work-market-research` | 市场、竞品、价格与区域机会调研 |
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 |
-| `tool-mgrep` | 统一替代内置搜索工具的语义搜索 skill |
 
 ### Agent
 
@@ -168,7 +167,7 @@ kimi/
 │       ├── agent.yaml           # Agent 定义
 │       ├── system.md            # 系统提示词
 │       └── README.md
-└── skills/                      # Skills 目录（25 个）
+└── skills/                      # Skills 目录（24 个）
     ├── dev-using-skills/
     ├── dev-brainstorming/
     ├── dev-debugging/
@@ -192,8 +191,7 @@ kimi/
     ├── learn-deep-research/
     ├── work-market-research/
     ├── tool-humanizer-zh/
-    ├── tool-macos-hidpi/
-    └── tool-mgrep/
+    └── tool-macos-hidpi/
 ```
 
 ## 核心工作流

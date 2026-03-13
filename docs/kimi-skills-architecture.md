@@ -401,16 +401,16 @@
 | `dev-code-cleanup` | 清理死代码 | knip, depcheck, vulture |
 | `dev-update-codemaps` | 更新架构文档 | 代码分析, Token-lean |
 | `dev-e2e-testing` | 端到端浏览器测试 | pytest-playwright, Page Object Model |
-| `dev-search-first` | 编码前先检索现成方案 | tool-mgrep, 开源库, MCP, GitHub |
-| `learn-deep-research` | 正式调研报告与证据追踪 | tool-mgrep, 多来源证据, 引用校验 |
-| `work-market-research` | 市场、竞品与进入策略调研 | tool-mgrep, 公开市场信号, 业务判断 |
+| `dev-search-first` | 编码前先检索现成方案 | agent 内置搜索, 开源库, MCP, GitHub |
+| `learn-deep-research` | 正式调研报告与证据追踪 | agent 内置网页搜索, 多来源证据, 引用校验 |
+| `work-market-research` | 市场、竞品与进入策略调研 | agent 内置网页搜索, 公开市场信号, 业务判断 |
 | `dev-writing-skills` | 编写新 skill | TDD for Documentation |
 
 ### 来源映射
 
 | 本地 skill | 来源 | 引入内容 |
 |-----------|------|----------|
-| `dev-search-first` | `upstream/everything-claude-code/skills/search-first/SKILL.md` | 吸收 research-before-coding workflow，并按本仓库约束改为强制配合 `tool-mgrep` |
+| `dev-search-first` | `upstream/everything-claude-code/skills/search-first/SKILL.md` | 吸收 research-before-coding workflow，并按本仓库约束改为优先使用 agent 内置搜索能力 |
 | `work-market-research` | `upstream/everything-claude-code/skills/market-research/SKILL.md` | 吸收市场、竞品、业务判断框架；上游仅提供 `SKILL.md`，无额外 `references/` 或 `scripts/` |
 | `learn-deep-research` | `daymade/claude-code-skills/deep-research` | 吸收正式研究报告 workflow，并完整引入 `references/`：研究计划、来源质量、报告模板、格式规则、完整性检查 |
 

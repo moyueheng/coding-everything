@@ -153,7 +153,7 @@ coding-everything/
 │   └── update-upstream-repos/ # 上游更新与报告生成
 ├── kimi/                    # Kimi 配置
 │   ├── agents/superpower/   # Agent 配置
-│   └── skills/              # 25 个skill
+│   └── skills/              # 24 个skill
 │       ├── dev-design-system/
 │       ├── dev-search-first/
 │       ├── dev-ui-styling/
