@@ -53,7 +53,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（22 个skill） |
+| **Kimi** | `kimi/` | ✅ 已配置（25 个skill） |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -77,7 +77,7 @@ coding-everything/
 │   │       ├── agent.yaml
 │   │       ├── system.md
 │   │       └── README.md
-│   └── skills/                 # 22 个skill
+│   └── skills/                 # 25 个skill
 │       ├── dev-using-skills/
 │       ├── dev-brainstorming/
 │       ├── dev-debugging/
@@ -91,12 +91,15 @@ coding-everything/
 │       ├── dev-writing-skills/
 │       ├── dev-code-cleanup/
 │       ├── dev-update-codemaps/
+│       ├── dev-search-first/
 │       ├── dev-backend-patterns/
 │       ├── dev-frontend-patterns/
 │       ├── dev-design-system/
 │       ├── dev-ui-styling/
 │       ├── dev-continuous-agent-loop/
 │       ├── dev-e2e-testing/
+│       ├── learn-deep-research/
+│       ├── work-market-research/
 │       ├── tool-humanizer-zh/
 │       ├── tool-macos-hidpi/
 │       └── tool-mgrep/
@@ -200,12 +203,15 @@ coding-everything/
 | `dev-writing-skills` | 编写新skill | 严格 |
 | `dev-code-cleanup` | 代码清理和死代码删除 | 严格 |
 | `dev-update-codemaps` | 分析代码库结构并生成架构文档 | 灵活 |
+| `dev-search-first` | 编码前先检索仓库、依赖、MCP、公开 skill 与 GitHub 方案，再决定 Adopt / Extend / Build | 严格 |
 | `dev-backend-patterns` | 后端架构模式与最佳实践 | 灵活 |
 | `dev-frontend-patterns` | 前端架构模式与最佳实践 | 灵活 |
 | `dev-design-system` | 设计 token、语义层与组件状态的设计系统模式 | 灵活 |
 | `dev-ui-styling` | 组件样式、响应式布局、主题与可访问性的 UI 实现模式 | 灵活 |
 | `dev-continuous-agent-loop` | 顺序流水线、并行分发和持续 agent 循环的自动化执行模式 | 灵活 |
 | `dev-e2e-testing` | Playwright Python 端到端测试模式 | 灵活 |
+| `learn-deep-research` | 正式研究报告、技术调研、行业综述与结构化证据追踪 | 灵活 |
+| `work-market-research` | 市场规模、竞品、价格带、区域机会与进入策略调研 | 灵活 |
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
 | `tool-mgrep` | 统一替代内置 WebSearch/Grep/Glob 的语义搜索工具 | 严格 |

@@ -8,7 +8,7 @@
   - [使用 Makefile（推荐）](#使用-makefile推荐)
   - [直接使用脚本](#直接使用脚本)
 - [包含内容](#包含内容)
-  - [Skills (19 个)](#skills-19-个)
+  - [Skills (25 个)](#skills-25-个)
   - [Agent](#agent)
 - [安装脚本](#安装脚本)
 - [测试](#测试)
@@ -56,7 +56,7 @@ make test
 
 ## 包含内容
 
-### Skills (19 个)
+### Skills (25 个)
 
 #### 核心 workflow skill（严格类型）
 
@@ -74,6 +74,7 @@ make test
 | `dev-finishing-branch` | 分支完成工作流 |
 | `dev-writing-skills` | 编写新 skill |
 | `dev-code-cleanup` | 代码清理和死代码删除 |
+| `dev-search-first` | 编码前先检索仓库、依赖、MCP 与开源方案 |
 
 #### 辅助 skill（灵活类型）
 
@@ -82,7 +83,12 @@ make test
 | `dev-update-codemaps` | 分析代码库结构并生成架构文档 |
 | `dev-backend-patterns` | 后端架构模式与最佳实践 |
 | `dev-frontend-patterns` | 前端架构模式与最佳实践 |
+| `dev-design-system` | 设计 token、语义层与组件状态模式 |
+| `dev-ui-styling` | 组件样式、响应式布局、主题与可访问性模式 |
+| `dev-continuous-agent-loop` | 顺序流水线、并行分发和持续 agent 循环模式 |
 | `dev-e2e-testing` | Playwright Python 端到端测试模式 |
+| `learn-deep-research` | 通用深度调研与正式研究报告 |
+| `work-market-research` | 市场、竞品、价格与区域机会调研 |
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 |
 | `tool-mgrep` | 统一替代内置搜索工具的语义搜索 skill |
@@ -162,7 +168,7 @@ kimi/
 │       ├── agent.yaml           # Agent 定义
 │       ├── system.md            # 系统提示词
 │       └── README.md
-└── skills/                      # Skills 目录（19 个）
+└── skills/                      # Skills 目录（25 个）
     ├── dev-using-skills/
     ├── dev-brainstorming/
     ├── dev-debugging/
@@ -176,9 +182,15 @@ kimi/
     ├── dev-writing-skills/
     ├── dev-code-cleanup/
     ├── dev-update-codemaps/
+    ├── dev-search-first/
     ├── dev-backend-patterns/
     ├── dev-frontend-patterns/
+    ├── dev-design-system/
+    ├── dev-ui-styling/
+    ├── dev-continuous-agent-loop/
     ├── dev-e2e-testing/
+    ├── learn-deep-research/
+    ├── work-market-research/
     ├── tool-humanizer-zh/
     ├── tool-macos-hidpi/
     └── tool-mgrep/

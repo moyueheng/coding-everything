@@ -54,7 +54,7 @@ ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ls ~/.agents/skills/
 ```
 
-应该能看到类似 `dev-using-skills`、`dev-tdd`、`dev-debugging` 等skill目录。
+应该能看到类似 `dev-using-skills`、`dev-search-first`、`learn-deep-research` 等 skill 目录。
 
 ## 核心skill
 
@@ -80,11 +80,14 @@ ls ~/.agents/skills/
 | `dev-writing-skills` | 编写新的skill |
 | `dev-code-cleanup` | 清理死代码 |
 | `dev-update-codemaps` | 更新代码地图文档 |
+| `dev-search-first` | 编码前先检索现成方案 |
 | `dev-backend-patterns` | 后端架构模式 |
 | `dev-frontend-patterns` | 前端架构模式 |
 | `dev-design-system` | 设计 token、语义层和组件状态模式 |
 | `dev-ui-styling` | 高质量 UI 样式实现与可访问性约束 |
 | `dev-continuous-agent-loop` | 持续 agent 循环与自动化执行模式 |
+| `learn-deep-research` | 通用深度调研与正式研究报告 |
+| `work-market-research` | 市场、竞品、价格与区域机会调研 |
 
 ### 系统级 skill
 
@@ -150,10 +153,13 @@ coding-everything/
 │   └── update-upstream-repos/ # 上游更新与报告生成
 ├── kimi/                    # Kimi 配置
 │   ├── agents/superpower/   # Agent 配置
-│   └── skills/              # 22 个skill
+│   └── skills/              # 25 个skill
 │       ├── dev-design-system/
+│       ├── dev-search-first/
 │       ├── dev-ui-styling/
-│       └── dev-continuous-agent-loop/
+│       ├── dev-continuous-agent-loop/
+│       ├── learn-deep-research/
+│       └── work-market-research/
 ├── opencode/                # OpenCode 配置（待完善）
 ├── upstream/                # 上游仓库（子模块）
 │   ├── superpowers/         # superpowers 框架
