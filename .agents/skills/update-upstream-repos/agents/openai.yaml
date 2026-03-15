@@ -1,0 +1,4 @@
+interface:
+  display_name: "更新上游仓库"
+  short_description: "更新 submodule、分析变更并生成 docs 报告"
+  default_prompt: "Use $update-upstream-repos to refresh upstream submodules, summarize the changes, and draft a docs report."

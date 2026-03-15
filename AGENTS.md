@@ -11,6 +11,7 @@
 - [上游仓库详情](#上游仓库详情)
   - [superpowers](#1-superpowers)
   - [everything-claude-code](#2-everything-claude-code)
+  - [obsidian-skills](#3-obsidian-skills)
 - [个人 Kimi 配置](#个人-kimi-配置)
   - [skill列表](#skill列表)
   - [快速安装](#快速安装)
@@ -48,12 +49,13 @@
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git) | UI/UX Pro Max Skill | `upstream/ui-ux-pro-max-skill/` |
 | [op7418/Humanizer-zh](https://github.com/op7418/Humanizer-zh.git) | AI 写作去痕工具（中文版） | `upstream/humanizer-zh/` |
 | [deanpeters/Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills.git) | Product Manager 相关 skill 集合 | `upstream/product-manager-skills/` |
+| [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills.git) | Obsidian agent skills 仓库 | `upstream/obsidian-skills/` |
 
 ### 个人配置
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（16 个skill） |
+| **Kimi** | `kimi/` | ✅ 已配置（24 个skill） |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -65,6 +67,10 @@ coding-everything/
 ├── README.md                   # 项目简介
 ├── AGENTS.md                   # 本文档
 ├── .gitmodules                 # Git submodule 配置
+├── .agents/
+│   └── skills/                 # 系统级 skills
+│       ├── setup/              # 安装 skill
+│       └── update-upstream-repos/ # 上游更新与报告生成 skill
 │
 ├── kimi/                       # Kimi 配置
 │   ├── README.md
@@ -73,7 +79,7 @@ coding-everything/
 │   │       ├── agent.yaml
 │   │       ├── system.md
 │   │       └── README.md
-│   └── skills/                 # 15 个skill
+│   └── skills/                 # 24 个skill
 │       ├── dev-using-skills/
 │       ├── dev-brainstorming/
 │       ├── dev-debugging/
@@ -87,10 +93,17 @@ coding-everything/
 │       ├── dev-writing-skills/
 │       ├── dev-code-cleanup/
 │       ├── dev-update-codemaps/
+│       ├── dev-search-first/
 │       ├── dev-backend-patterns/
 │       ├── dev-frontend-patterns/
+│       ├── dev-design-system/
+│       ├── dev-ui-styling/
+│       ├── dev-continuous-agent-loop/
 │       ├── dev-e2e-testing/
-│       └── tool-humanizer-zh/
+│       ├── learn-deep-research/
+│       ├── work-market-research/
+│       ├── tool-humanizer-zh/
+│       └── tool-macos-hidpi/
 │
 ├── opencode/                   # OpenCode 配置
 │   ├── README.md
@@ -98,6 +111,7 @@ coding-everything/
 │   └── skills/                 # skill目录（待填充）
 │
 ├── docs/                       # 文档
+│   └── upstream-updates/       # 上游更新报告
 │
 └── upstream/                   # 上游仓库（git submodules）
     ├── superpowers/            # superpowers 框架
@@ -111,13 +125,25 @@ coding-everything/
     │   ├── .opencode/          # OpenCode 配置
     │   └── ...
     │
+<<<<<<< HEAD
+=======
+    ├── ui-ux-pro-max-skill/    # UI/UX Pro Max Skill
+    │   └── ...
+    │
+>>>>>>> f33094a494f121cedb16a2a6c9ea4c3908db87f4
     ├── humanizer-zh/           # AI 写作去痕工具（中文版）
     │   ├── SKILL.md
     │   └── README.md
     │
+<<<<<<< HEAD
     └── product-manager-skills/ # Product Manager skill 集合
         ├── README.md
         └── skills/             # PM 工作流相关 skill
+=======
+    └── obsidian-skills/        # Obsidian agent skills
+        ├── README.md
+        └── skills/             # Obsidian / Bases / Canvas / CLI 等 skill
+>>>>>>> f33094a494f121cedb16a2a6c9ea4c3908db87f4
 ```
 
 ---
@@ -153,6 +179,17 @@ coding-everything/
 - `hooks/` - 会话钩子
 - `docs/zh-CN/skills/` - **32 个简体中文skill**（引入时无需翻译）
 
+### 3. obsidian-skills
+
+**简介**: 面向 Obsidian 的 agent skills 仓库，遵循 Agent Skills 开放标准，可供 Claude Code、Codex CLI、OpenCode 等兼容环境使用
+
+**内容**:
+- `skills/obsidian-markdown/` - Obsidian Flavored Markdown 编辑
+- `skills/obsidian-bases/` - Obsidian Bases 语法编辑
+- `skills/json-canvas/` - JSON Canvas 文件编辑
+- `skills/obsidian-cli/` - Obsidian CLI 与 vault 交互
+- `skills/defuddle/` - 网页提取为干净 markdown
+
 ---
 
 ## 个人 Kimi 配置
@@ -163,11 +200,11 @@ coding-everything/
 
 | skill | 用途 | 类型 |
 |------|------|------|
-| `dev-using-skills` | 入口点 - skill使用方法 | 严格 |
-| `dev-brainstorming` | 编码前苏格拉底式对话 | 严格 |
+| `dev-using-skills` | 入口点 - skill使用方法与指令优先级 | 严格 |
+| `dev-brainstorming` | 编码前苏格拉底式对话与设计审查闭环（审查清单外置） | 严格 |
 | `dev-debugging` | 四阶段调试流程 | 严格 |
 | `dev-tdd` | 测试驱动开发 | 严格 |
-| `dev-writing-plans` | 编写实施计划 | 严格 |
+| `dev-writing-plans` | 编写实施计划与分段审查收口（审查清单外置） | 严格 |
 | `dev-executing-plans` | 执行计划 | 严格 |
 | `dev-git-worktrees` | Git 工作树管理 | 严格 |
 | `dev-requesting-review` | 代码审查请求 | 严格 |
@@ -176,9 +213,17 @@ coding-everything/
 | `dev-writing-skills` | 编写新skill | 严格 |
 | `dev-code-cleanup` | 代码清理和死代码删除 | 严格 |
 | `dev-update-codemaps` | 分析代码库结构并生成架构文档 | 灵活 |
+| `dev-search-first` | 编码前先检索仓库、依赖、MCP、公开 skill 与 GitHub 方案，再决定 Adopt / Extend / Build | 严格 |
 | `dev-backend-patterns` | 后端架构模式与最佳实践 | 灵活 |
 | `dev-frontend-patterns` | 前端架构模式与最佳实践 | 灵活 |
+| `dev-design-system` | 设计 token、语义层与组件状态的设计系统模式 | 灵活 |
+| `dev-ui-styling` | 组件样式、响应式布局、主题与可访问性的 UI 实现模式 | 灵活 |
+| `dev-continuous-agent-loop` | 顺序流水线、并行分发和持续 agent 循环的自动化执行模式 | 灵活 |
 | `dev-e2e-testing` | Playwright Python 端到端测试模式 | 灵活 |
+| `learn-deep-research` | 正式研究报告、技术调研、行业综述与结构化证据追踪 | 灵活 |
+| `work-market-research` | 市场规模、竞品、价格带、区域机会与进入策略调研 | 灵活 |
+| `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
+| `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
 
 ### 快速安装
 
@@ -221,6 +266,16 @@ git submodule update --init --recursive
 git submodule update --remote
 ```
 
+约束：
+- 所有 `upstream/` submodule 必须显式跟踪 `main` 分支，禁止依赖远端默认分支隐式漂移
+- 更新 submodule 后，先检查 gitlink 是否沿 `main` 前进，再决定是否写报告或提交
+- `git submodule update --remote` 后，必须把本次有变化的 submodule 切回本地 `main`，不要把工作树停在 detached HEAD
+- 固定入口：
+
+```bash
+uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py
+```
+
 ### 更新特定 submodule
 
 ```bash
@@ -235,6 +290,20 @@ git commit -m "Update superpowers submodule"
 
 ```bash
 git submodule add <仓库URL> upstream/<名称>
+```
+
+### 生成上游更新报告
+
+更新 submodule 后，使用系统级 skill 附带脚本整理真实 commit 变化：
+
+```bash
+uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
+```
+
+推荐将报告写入：
+
+```bash
+docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 ```
 
 ---
@@ -269,6 +338,7 @@ git submodule add <仓库URL> upstream/<名称>
 2. **遵循skill类型** —— 严格skill完全遵循，灵活skill按需调整
 3. **skill优先级** —— 流程skill优先于实现skill
 4. **指令是 WHAT 不是 HOW** —— 不要跳过工作流
+5. `dev-brainstorming` 与 `dev-writing-plans` 的审查标准已拆到各自目录下的 checklist 文件，修改主流程时要同步检查旁边的 checklist
 
 ### skill开发
 
@@ -291,6 +361,7 @@ git submodule add <仓库URL> upstream/<名称>
 1. 开始任务先运行：`find . -type f \( -name 'AGENTS.md' -o -name 'CLAUDE.md' \)`，识别可受影响文档
 2. 只要变更触及目录结构、架构边界、工作流、安装步骤、测试入口等高信息密度事实，必须同步更新相关文档
 3. 更新内容禁止流水账，优先写稳定、可执行、可复用的约束与结构信息
+4. 每次 commit 前检查 `upstream/everything-claude-code/agents/architect.md` 是否需要同步到当前仓库的相关 skills 或文档
 
 ### 命名规范
 
@@ -328,7 +399,11 @@ git submodule add <仓库URL> upstream/<名称>
 
 - **superpowers**: https://github.com/obra/superpowers
 - **everything-claude-code**: https://github.com/affaan-m/everything-claude-code
+<<<<<<< HEAD
 - **Product-Manager-Skills**: https://github.com/deanpeters/Product-Manager-Skills
+=======
+- **obsidian-skills**: https://github.com/kepano/obsidian-skills
+>>>>>>> f33094a494f121cedb16a2a6c9ea4c3908db87f4
 
 ### 平台文档
 

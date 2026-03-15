@@ -9,6 +9,7 @@
 - **[obra/superpowers](https://github.com/obra/superpowers)** - AI 编程助手工作流框架（14 个核心skill）
 - **[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)** - Claude Code 完整配置（39 个skill）
 - **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** - UI/UX Pro Max Skill
+- **[kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)** - Obsidian agent skills 仓库
 
 ## 快速开始
 
@@ -53,7 +54,7 @@ ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ls ~/.agents/skills/
 ```
 
-应该能看到类似 `dev-using-skills`、`dev-tdd`、`dev-debugging` 等skill目录。
+应该能看到类似 `dev-using-skills`、`dev-search-first`、`learn-deep-research` 等 skill 目录。
 
 ## 核心skill
 
@@ -61,9 +62,9 @@ ls ~/.agents/skills/
 
 | skill | 用途 | 触发场景 |
 |------|------|----------|
-| `dev-using-skills` | skill入口 | 不知道用什么skill时先执行这个 |
-| `dev-brainstorming` | 头脑风暴 | 开始任何新功能前 |
-| `dev-writing-plans` | 编写计划 | 需要将任务分解为可执行步骤 |
+| `dev-using-skills` | skill入口 | 不知道用什么skill时先执行这个，并明确用户请求 / AGENTS.md / skill 的优先关系 |
+| `dev-brainstorming` | 头脑风暴 | 开始任何新功能前，先做设计并完成设计审查闭环 |
+| `dev-writing-plans` | 编写计划 | 需要将任务分解为可执行步骤，并对计划做分段审查收口 |
 | `dev-executing-plans` | 执行计划 | 按计划一步步实现 |
 | `dev-tdd` | 测试驱动开发 | 写代码前先写测试 |
 | `dev-debugging` | 调试 | 遇到 Bug 时 |
@@ -79,8 +80,21 @@ ls ~/.agents/skills/
 | `dev-writing-skills` | 编写新的skill |
 | `dev-code-cleanup` | 清理死代码 |
 | `dev-update-codemaps` | 更新代码地图文档 |
+| `dev-search-first` | 编码前先检索现成方案 |
 | `dev-backend-patterns` | 后端架构模式 |
 | `dev-frontend-patterns` | 前端架构模式 |
+| `dev-design-system` | 设计 token、语义层和组件状态模式 |
+| `dev-ui-styling` | 高质量 UI 样式实现与可访问性约束 |
+| `dev-continuous-agent-loop` | 持续 agent 循环与自动化执行模式 |
+| `learn-deep-research` | 通用深度调研与正式研究报告 |
+| `work-market-research` | 市场、竞品、价格与区域机会调研 |
+
+### 系统级 skill
+
+| skill | 用途 |
+|------|------|
+| `setup` | 安装本项目 skills 和 Kimi agent 配置 |
+| `update-upstream-repos` | 更新 `upstream/` submodule、整理 commit 变化并生成 `docs/` 报告 |
 
 ## 典型工作流
 
@@ -108,9 +122,17 @@ ls ~/.agents/skills/
 # 更新所有子模块到最新
 git submodule update --remote
 
+# 将本次有变化的子模块切回本地 main，避免停在 detached HEAD
+uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py
+
 # 更新特定子模块
 cd upstream/superpowers && git pull origin main
+
+# 生成上游更新摘要
+uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
 ```
+
+约束：所有 `upstream/` 子模块都显式跟踪 `main` 分支，避免因远端默认分支变化导致漂移。执行 `git submodule update --remote` 后，还要把已变化的子模块切回本地 `main`，否则 Git 常会把工作树留在 detached HEAD。
 
 ### 查看skill
 
@@ -126,14 +148,27 @@ cat ~/.agents/skills/dev-tdd/SKILL.md
 
 ```
 coding-everything/
+├── .agents/skills/          # 系统级 skills
+│   ├── setup/               # 安装入口
+│   └── update-upstream-repos/ # 上游更新与报告生成
 ├── kimi/                    # Kimi 配置
 │   ├── agents/superpower/   # Agent 配置
-│   └── skills/              # 14 个skill
+│   └── skills/              # 24 个skill
+│       ├── dev-design-system/
+│       ├── dev-search-first/
+│       ├── dev-ui-styling/
+│       ├── dev-continuous-agent-loop/
+│       ├── learn-deep-research/
+│       └── work-market-research/
 ├── opencode/                # OpenCode 配置（待完善）
 ├── upstream/                # 上游仓库（子模块）
 │   ├── superpowers/         # superpowers 框架
-│   └── everything-claude-code/  # Claude Code 配置
+│   ├── everything-claude-code/  # Claude Code 配置
+│   ├── ui-ux-pro-max-skill/     # UI/UX Pro Max Skill
+│   ├── humanizer-zh/            # 中文去痕工具
+│   └── obsidian-skills/         # Obsidian agent skills
 └── docs/                    # 文档
+    └── upstream-updates/    # 上游更新报告
 ```
 
 ## 文档
@@ -142,6 +177,7 @@ coding-everything/
 
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
 - **[docs/kimi-skills-architecture.md](./docs/kimi-skills-architecture.md)** - Kimi Skills 架构全景图和调用关系
+- `docs/upstream-updates/YYYY-MM-DD-upstream-updates.md` - 使用 `update-upstream-repos` skill 生成和维护的上游更新报告
 
 ## 上游仓库
 
@@ -150,6 +186,7 @@ coding-everything/
 | [obra/superpowers](https://github.com/obra/superpowers) | AI 编程助手工作流框架 |
 | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | Claude Code 完整配置 |
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | UI/UX Pro Max Skill |
+| [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) | Obsidian agent skills 仓库 |
 
 ## 许可证
 

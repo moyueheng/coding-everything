@@ -27,7 +27,8 @@
 │   │  │                    dev-using-skills                         │    │   │
 │   │  │  ┌─────────────────────────────────────────────────────────┐│    │   │
 │   │  │  │  铁律: 1%可能适用就必须调用 │ 先调用skill再响应         ││    │   │
-│   │  │  │  优先级: 流程skills > 实现skills │ 严格型vs灵活型        ││    │   │
+│   │  │  │  优先级: 用户请求 > AGENTS/CLAUDE > skill > 默认行为     ││    │   │
+│   │  │  │  多skill时: 流程skills > 实现skills │ 严格型vs灵活型      ││    │   │
 │   │  │  │  红旗: "太简单不需要" "先看一下" "我记得这个skill"        ││    │   │
 │   │  │  └─────────────────────────────────────────────────────────┘│    │   │
 │   │  │  类型: 严格型 │ 触发: 每次对话开始时                          │    │   │
@@ -40,8 +41,9 @@
 │   │  ┌─────────────────────────────────────────────────────────────┐    │   │
 │   │  │                   dev-brainstorming                         │    │   │
 │   │  │  ┌─────────────────────────────────────────────────────────┐│    │   │
-│   │  │  │  流程: 探索上下文 → 澄清问题 → 2-3方案 → 展示设计        ││    │   │
+│   │  │  │  流程: 先查现有方案 → 澄清问题 → 2-3方案 → 展示设计      ││    │   │
 │   │  │  │  HARD-GATE: 未获用户批准禁止编写代码                     ││    │   │
+│   │  │  │  设计文档写完后必须按外置审查清单审查，过审后再进入计划  ││    │   │
 │   │  │  │  输出: docs/plans/YYYY-MM-DD-<topic>-design.md           ││    │   │
 │   │  │  └─────────────────────────────────────────────────────────┘│    │   │
 │   │  │  类型: 严格型 │ 下一步: dev-writing-plans                     │    │   │
@@ -56,6 +58,7 @@
 │   │  │  ┌─────────────────────────────────────────────────────────┐│    │   │
 │   │  │  │  粒度: 2-5分钟/任务 │ 每个任务必须引用 dev-tdd          ││    │   │
 │   │  │  │  内容: 精确路径 + 完整代码 + 预期输出 + 提交命令         ││    │   │
+│   │  │  │  分段编写、分段审查；审查清单外置；未过审不能交给执行    ││    │   │
 │   │  │  │  原则: DRY │ YAGNI │ TDD │ 频繁提交                      ││    │   │
 │   │  │  └─────────────────────────────────────────────────────────┘│    │   │
 │   │  │  类型: 严格型 │ 输出: docs/plans/YYYY-MM-DD-<feature>.md      │    │   │
@@ -182,7 +185,7 @@
                              │                │                │
                              ▼                ▼                ▼
                         ┌─────────────────────────────────────────┐
-                        │      设计文档 + 实施计划文档             │
+                        │   设计文档(先审查) + 实施计划(分段审查)   │
                         │  docs/plans/YYYY-MM-DD-*.md              │
                         └─────────────────────────────────────────┘
                                           │
@@ -267,11 +270,11 @@
 
 | Skill | 铁律 (不可违反) |
 |-------|----------------|
-| `dev-using-skills` | "1%可能适用就必须调用"<br>禁止: "简单问题不需要skill" "先看一下代码" |
-| `dev-brainstorming` | HARD-GATE: 未获批准禁止编写代码<br>终止状态: 只能调用 dev-writing-plans |
+| `dev-using-skills` | "1%可能适用就必须调用"<br>优先级: 用户请求 > AGENTS/CLAUDE > skill > 默认行为 |
+| `dev-brainstorming` | HARD-GATE: 未获批准禁止编写代码<br>设计文档必须先通过审查,再进入 dev-writing-plans |
 | `dev-tdd` | "没有先有失败的测试,就没有生产代码"<br>禁止: 保留代码"参考" "稍后补测试" 适配测试 |
 | `dev-debugging` | "没有先完成第一阶段,就没有修复"<br>3+修复失败 → 必须质疑架构,不继续瞎试 |
-| `dev-writing-plans` | 每个实现任务必须引用 dev-tdd<br>粒度: 2-5分钟/任务 |
+| `dev-writing-plans` | 每个实现任务必须引用 dev-tdd<br>粒度: 2-5分钟/任务 + 分段审查收口 |
 | `dev-verification` | "没有新鲜验证证据,就没有完成声称"<br>禁止: "应该有效" "看起来正确" "我有信心" |
 
 ### 灵活型 Skills 核心原则
@@ -356,7 +359,7 @@
                          │
                          ▼
               ┌─────────────────────┐
-              │ 流程skills优先       │ ◄── 决定 HOW 处理任务
+              │ 流程skills优先       │ ◄── 在不违背用户/AGENTS前提下
               │ (brainstorm/debug)  │
               └──────────┬──────────┘
                          │
@@ -375,9 +378,9 @@
 
 | Skill 名称 | 触发场景 | 核心输出 | 下一步 |
 |-----------|----------|----------|--------|
-| `dev-using-skills` | 每次对话开始 | 确定适用的 skill | 根据场景调用相应 skill |
-| `dev-brainstorming` | 新功能需求 | 设计文档 | `dev-writing-plans` |
-| `dev-writing-plans` | 需要实施计划 | 计划文档 | `dev-executing-plans` |
+| `dev-using-skills` | 每次对话开始 | 确定适用的 skill 与指令优先级 | 根据场景调用相应 skill |
+| `dev-brainstorming` | 新功能需求 | 设计文档 + 设计审查结论 | `dev-writing-plans` |
+| `dev-writing-plans` | 需要实施计划 | 计划文档 + 分段审查结论 | `dev-executing-plans` |
 | `dev-executing-plans` | 有书面计划 | 实现代码 | `dev-finishing-branch` |
 | `dev-tdd` | 写代码时 | 测试+实现 | 下一个测试或验证 |
 | `dev-debugging` | 遇到 Bug | 修复方案 | `dev-tdd` (阶段4) |
@@ -392,10 +395,24 @@
 |-----------|------|--------|
 | `dev-backend-patterns` | 后端架构模式 | Python, FastAPI, SQLAlchemy, Redis |
 | `dev-frontend-patterns` | 前端架构模式 | React, TypeScript, Next.js |
+| `dev-design-system` | 设计系统模式 | Token 分层, 语义层, 组件状态 |
+| `dev-ui-styling` | UI 样式实现 | CSS Variables, 响应式, 可访问性 |
+| `dev-continuous-agent-loop` | 持续 agent 循环 | 顺序流水线, 并行分发, 质量门 |
 | `dev-code-cleanup` | 清理死代码 | knip, depcheck, vulture |
 | `dev-update-codemaps` | 更新架构文档 | 代码分析, Token-lean |
 | `dev-e2e-testing` | 端到端浏览器测试 | pytest-playwright, Page Object Model |
+| `dev-search-first` | 编码前先检索现成方案 | agent 内置搜索, 开源库, MCP, GitHub |
+| `learn-deep-research` | 正式调研报告与证据追踪 | agent 内置网页搜索, 多来源证据, 引用校验 |
+| `work-market-research` | 市场、竞品与进入策略调研 | agent 内置网页搜索, 公开市场信号, 业务判断 |
 | `dev-writing-skills` | 编写新 skill | TDD for Documentation |
+
+### 来源映射
+
+| 本地 skill | 来源 | 引入内容 |
+|-----------|------|----------|
+| `dev-search-first` | `upstream/everything-claude-code/skills/search-first/SKILL.md` | 吸收 research-before-coding workflow，并按本仓库约束改为优先使用 agent 内置搜索能力 |
+| `work-market-research` | `upstream/everything-claude-code/skills/market-research/SKILL.md` | 吸收市场、竞品、业务判断框架；上游仅提供 `SKILL.md`，无额外 `references/` 或 `scripts/` |
+| `learn-deep-research` | `daymade/claude-code-skills/deep-research` | 吸收正式研究报告 workflow，并完整引入 `references/`：研究计划、来源质量、报告模板、格式规则、完整性检查 |
 
 ---
 
@@ -412,5 +429,5 @@
 
 ---
 
-*文档生成时间: 2026-02-28*
-*对应技能版本: kimi/skills v1.0*
+*文档更新时间: 2026-03-13*
+*对应技能版本: kimi/skills v1.2*
