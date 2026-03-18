@@ -55,7 +55,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（24 个skill） |
+| **Kimi** | `kimi/` | ✅ 已配置（30 个skill） |
 | **Claude Code** | 软链接到 `kimi/skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
@@ -126,25 +126,20 @@ coding-everything/
     │   ├── .opencode/          # OpenCode 配置
     │   └── ...
     │
-<<<<<<< HEAD
-=======
     ├── ui-ux-pro-max-skill/    # UI/UX Pro Max Skill
     │   └── ...
     │
->>>>>>> f33094a494f121cedb16a2a6c9ea4c3908db87f4
     ├── humanizer-zh/           # AI 写作去痕工具（中文版）
     │   ├── SKILL.md
     │   └── README.md
     │
-<<<<<<< HEAD
-    └── product-manager-skills/ # Product Manager skill 集合
-        ├── README.md
-        └── skills/             # PM 工作流相关 skill
-=======
+    ├── product-manager-skills/ # Product Manager skill 集合
+    │   ├── README.md
+    │   └── skills/             # PM 工作流相关 skill
+    │
     └── obsidian-skills/        # Obsidian agent skills
         ├── README.md
         └── skills/             # Obsidian / Bases / Canvas / CLI 等 skill
->>>>>>> f33094a494f121cedb16a2a6c9ea4c3908db87f4
 ```
 
 ---
@@ -403,11 +398,10 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 
 - **superpowers**: https://github.com/obra/superpowers
 - **everything-claude-code**: https://github.com/affaan-m/everything-claude-code
-<<<<<<< HEAD
-- **Product-Manager-Skills**: https://github.com/deanpeters/Product-Manager-Skills
-=======
+- **ui-ux-pro-max-skill**: https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
+- **humanizer-zh**: https://github.com/op7418/Humanizer-zh
+- **product-manager-skills**: https://github.com/deanpeters/Product-Manager-Skills
 - **obsidian-skills**: https://github.com/kepano/obsidian-skills
->>>>>>> f33094a494f121cedb16a2a6c9ea4c3908db87f4
 
 ### 平台文档
 

@@ -10,16 +10,18 @@
 
 ### Batch 1（优先，先迁移）
 
-1. `problem-statement` -> `work-problem-statement`
-2. `jobs-to-be-done` -> `work-jobs-to-be-done`
-3. `user-story` -> `work-user-story`
-4. `user-story-splitting` -> `work-user-story-splitting`
-5. `user-story-mapping` -> `work-user-story-mapping`
-6. `prd-development` -> `work-prd-development`
-7. `prioritization-advisor` -> `work-prioritization-advisor`
-8. `roadmap-planning` -> `work-roadmap-planning`
-9. `discovery-interview-prep` -> `work-discovery-interview-prep`
-10. `opportunity-solution-tree` -> `work-opportunity-solution-tree`
+| 上游 Skill | 本地 Skill | 状态 |
+|------------|------------|------|
+| `problem-statement` | `work-problem-statement` | ✅ 已迁移（2026-03-18） |
+| `jobs-to-be-done` | `work-jobs-to-be-done` | ✅ 已迁移（2026-03-18） |
+| `user-story` | `work-user-story` | ✅ 已迁移（2026-03-18） |
+| `user-story-splitting` | `work-user-story-splitting` | ✅ 已迁移（2026-03-18） |
+| `user-story-mapping` | `work-user-story-mapping` | ✅ 已迁移（2026-03-18） |
+| `prd-development` | `work-prd-development` | ⏳ 待迁移 |
+| `prioritization-advisor` | `work-prioritization-advisor` | ⏳ 待迁移 |
+| `roadmap-planning` | `work-roadmap-planning` | ⏳ 待迁移 |
+| `discovery-interview-prep` | `work-discovery-interview-prep` | ⏳ 待迁移 |
+| `opportunity-solution-tree` | `work-opportunity-solution-tree` | ⏳ 待迁移 |
 
 说明：以上 10 个覆盖问题定义、需求拆分、文档产出与路线图规划，适合作为 PM 基线能力包。
 
