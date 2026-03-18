@@ -1,6 +1,6 @@
 ---
 name: setup
-description: 安装 coding-everything 配置到系统，支持 Kimi/Codex/OpenCode 多平台。当用户需要安装 skills、初始化配置或运行 setup 时使用。
+description: 安装 coding-everything 配置到系统，支持 Kimi/Claude Code/Codex/OpenCode 多平台。当用户需要安装 skills、初始化配置或运行 setup 时使用。
 license: MIT
 ---
 
@@ -10,7 +10,11 @@ license: MIT
 
 安装个人 AI 编程助手配置到系统，使用 symlink 模式实现实时同步。
 
-**兼容性：** Kimi CLI、Codex、OpenCode 均支持 `~/.agents/skills/` 路径。
+**兼容性：**
+- **Kimi CLI**: 使用 `~/.kimi/agents/` 和 `~/.agents/skills/`
+- **Claude Code**: 使用 `~/.claude/skills/`
+- **Codex**: 使用 `~/.agents/skills/`
+- **OpenCode**: 使用 `~/.agents/skills/`
 
 ## 参考文档
 
@@ -36,6 +40,11 @@ mkdir -p ~/.kimi/agents
 **Skills（所有 Agent 工具共享）：**
 ```bash
 ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+```
+
+**Claude Code Skills:**
+```bash
+ln -sf "$(pwd)/kimi/skills" ~/.claude/skills
 ```
 
 **Agent 配置（仅 Kimi）：**
@@ -73,6 +82,7 @@ export PATH="$HOME/.local/bin:$PATH"
 检查所有组件是否正确安装：
 ```bash
 ls -la ~/.agents/skills
+ls -la ~/.claude/skills
 ls -la ~/.kimi/agents/superpower
 which ks
 ```
@@ -98,6 +108,7 @@ ks -w /path/to/project # 指定工作目录
 | 平台 | 命令 | 说明 |
 |------|------|------|
 | **Kimi CLI** | `kimi --agent-file ~/.kimi/agents/superpower/agent.yaml` | 带 Agent 配置启动 |
+| **Claude Code** | `claude` | 自动加载 `~/.claude/skills/` |
 | **Codex** | `codex` | 自动加载 `~/.agents/skills/` |
 | **OpenCode** | `opencode` | 自动加载 `~/.agents/skills/` |
 
@@ -122,6 +133,7 @@ vim kimi/skills/dev-tdd/SKILL.md  # 修改后立即生效
 
 ```bash
 rm ~/.agents/skills
+rm ~/.claude/skills
 rm -rf ~/.kimi/agents/superpower
 rm ~/.local/bin/ks
 ```

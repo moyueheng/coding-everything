@@ -56,6 +56,7 @@
 | 平台 | 路径 | 状态 |
 |------|------|------|
 | **Kimi** | `kimi/` | ✅ 已配置（24 个skill） |
+| **Claude Code** | 软链接到 `kimi/skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -237,8 +238,11 @@ cd coding-everything
 或手动创建 symlink：
 
 ```bash
-# Skills（所有 Agent 工具共享）
+# Skills（Kimi/Codex/OpenCode 共享）
 ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+
+# Skills（Claude Code）
+ln -sf "$(pwd)/kimi/skills" ~/.claude/skills
 
 # Agent 配置（仅 Kimi）
 ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
