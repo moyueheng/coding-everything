@@ -71,7 +71,8 @@ coding-everything/
 ├── .agents/
 │   └── skills/                 # 系统级 skills
 │       ├── setup/              # 安装 skill
-│       └── update-upstream-repos/ # 上游更新与报告生成 skill
+│       ├── update-upstream-repos/ # 上游更新与报告生成 skill
+│       └── dev-creating-subagents/ # 创建和管理 subagent
 │
 ├── kimi/                       # Kimi 配置
 │   ├── README.md
@@ -220,6 +221,7 @@ coding-everything/
 | `work-market-research` | 市场规模、竞品、价格带、区域机会与进入策略调研 | 灵活 |
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
+| `dev-creating-subagents` | 创建和管理 subagent（Kimi CLI/Codex 双平台指南） | 灵活 |
 
 ### 快速安装
 
