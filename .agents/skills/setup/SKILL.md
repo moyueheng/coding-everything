@@ -25,7 +25,7 @@ license: MIT
 ### 1. 检查源目录
 
 确认项目目录结构完整：
-- `kimi/skills/` - skill 目录（Kimi/Codex/OpenCode 共享）
+- `skills/` - 跨平台共享 skill 目录
 - `kimi/agents/superpower/` - Kimi Agent 配置（仅 Kimi 需要）
 
 ### 2. 创建目标目录
@@ -39,12 +39,12 @@ mkdir -p ~/.kimi/agents
 
 **Skills（所有 Agent 工具共享）：**
 ```bash
-ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+ln -sf "$(pwd)/skills" ~/.agents/skills
 ```
 
 **Claude Code Skills:**
 ```bash
-ln -sf "$(pwd)/kimi/skills" ~/.claude/skills
+ln -sf "$(pwd)/skills" ~/.claude/skills
 ```
 
 **Agent 配置（仅 Kimi）：**
@@ -124,7 +124,7 @@ ks -w /path/to/project # 指定工作目录
 由于使用 symlink，修改项目中的 skill 文件会立即生效：
 
 ```bash
-vim kimi/skills/dev-tdd/SKILL.md  # 修改后立即生效
+vim skills/dev-tdd/SKILL.md  # 修改后立即生效
 ```
 
 ## 卸载

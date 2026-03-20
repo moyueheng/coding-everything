@@ -2,7 +2,7 @@
 
 ## 目录
 
-- [Kimi Skills 架构图](./docs/kimi-skills-architecture.md) - 技能关系图和调用流程可视化
+- [共享 Skills 架构图](./docs/kimi-skills-architecture.md) - 技能关系图和调用流程可视化
 - [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
@@ -55,8 +55,9 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **Kimi** | `kimi/` | ✅ 已配置（30 个skill） |
-| **Claude Code** | 软链接到 `kimi/skills/` | ✅ 已兼容 |
+| **共享 skills** | `skills/` | ✅ 已配置（31 个skill） |
+| **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
+| **Claude Code** | 软链接到 `skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -74,38 +75,39 @@ coding-everything/
 │       ├── update-upstream-repos/ # 上游更新与报告生成 skill
 │       └── dev-creating-subagents/ # 创建和管理 subagent
 │
-├── kimi/                       # Kimi 配置
+├── skills/                     # 跨平台共享 skills
+│   ├── dev-using-skills/
+│   ├── dev-brainstorming/
+│   ├── dev-debugging/
+│   ├── dev-tdd/
+│   ├── dev-writing-plans/
+│   ├── dev-executing-plans/
+│   ├── dev-git-worktrees/
+│   ├── dev-requesting-review/
+│   ├── dev-verification/
+│   ├── dev-finishing-branch/
+│   ├── dev-writing-skills/
+│   ├── dev-code-cleanup/
+│   ├── dev-update-codemaps/
+│   ├── dev-search-first/
+│   ├── dev-backend-patterns/
+│   ├── dev-frontend-patterns/
+│   ├── dev-design-system/
+│   ├── dev-ui-styling/
+│   ├── dev-continuous-agent-loop/
+│   ├── dev-e2e-testing/
+│   ├── learn-deep-research/
+│   ├── work-market-research/
+│   ├── tool-humanizer-zh/
+│   └── tool-macos-hidpi/
+│
+├── kimi/                       # Kimi 专属配置
 │   ├── README.md
-│   ├── agents/
-│   │   └── superpower/         # agent 配置
-│   │       ├── agent.yaml
-│   │       ├── system.md
-│   │       └── README.md
-│   └── skills/                 # 24 个skill
-│       ├── dev-using-skills/
-│       ├── dev-brainstorming/
-│       ├── dev-debugging/
-│       ├── dev-tdd/
-│       ├── dev-writing-plans/
-│       ├── dev-executing-plans/
-│       ├── dev-git-worktrees/
-│       ├── dev-requesting-review/
-│       ├── dev-verification/
-│       ├── dev-finishing-branch/
-│       ├── dev-writing-skills/
-│       ├── dev-code-cleanup/
-│       ├── dev-update-codemaps/
-│       ├── dev-search-first/
-│       ├── dev-backend-patterns/
-│       ├── dev-frontend-patterns/
-│       ├── dev-design-system/
-│       ├── dev-ui-styling/
-│       ├── dev-continuous-agent-loop/
-│       ├── dev-e2e-testing/
-│       ├── learn-deep-research/
-│       ├── work-market-research/
-│       ├── tool-humanizer-zh/
-│       └── tool-macos-hidpi/
+│   └── agents/
+│       └── superpower/         # agent 配置
+│           ├── agent.yaml
+│           ├── system.md
+│           └── README.md
 │
 ├── opencode/                   # OpenCode 配置
 │   ├── README.md
@@ -191,7 +193,7 @@ coding-everything/
 
 ## 个人 Kimi 配置
 
-基于 superpowers 框架改写，适配 Kimi Code CLI 使用。
+共享 skill 基于 Agent Skills 标准组织；`kimi/` 目录仅保留 Kimi Code CLI 专属 agent/config。
 
 ### skill列表
 
@@ -235,11 +237,11 @@ cd coding-everything
 或手动创建 symlink：
 
 ```bash
-# Skills（Kimi/Codex/OpenCode 共享）
-ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+# Skills（跨平台共享）
+ln -sf "$(pwd)/skills" ~/.agents/skills
 
 # Skills（Claude Code）
-ln -sf "$(pwd)/kimi/skills" ~/.claude/skills
+ln -sf "$(pwd)/skills" ~/.claude/skills
 
 # Agent 配置（仅 Kimi）
 ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower

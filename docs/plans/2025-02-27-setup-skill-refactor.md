@@ -61,7 +61,7 @@ license: MIT
 ### 1. 检查源目录
 
 确认项目目录结构完整：
-- `kimi/skills/` - skill 目录
+- `skills/` - skill 目录
 - `kimi/agents/superpower/` - Kimi Agent 配置
 
 ### 2. 创建目标目录
@@ -75,7 +75,7 @@ mkdir -p ~/.kimi/agents
 
 **Skills（所有 Agent 工具共享）：**
 ```bash
-ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+ln -sf "$(pwd)/skills" ~/.agents/skills
 ```
 
 **Agent 配置（仅 Kimi）：**
@@ -122,7 +122,7 @@ opencode
 由于使用 symlink，修改项目中的 skill 文件会立即生效：
 
 ```bash
-vim kimi/skills/dev-tdd/SKILL.md  # 修改后立即生效
+vim skills/dev-tdd/SKILL.md  # 修改后立即生效
 ```
 
 ## 卸载
@@ -156,10 +156,10 @@ git commit -m "feat: add setup skill for symlink-based installation"
 **文件：**
 - 删除：`codex/` 整个目录
 
-**步骤 1：确认 codex/ 与 kimi/skills/ 内容一致**
+**步骤 1：确认 codex/ 与 skills/ 内容一致**
 
 ```bash
-diff -r kimi/skills/ codex/skills/ | head -20
+diff -r skills/ codex/skills/ | head -20
 ```
 预期：输出为空或只有 SKILL.md 中的细微差异（如 dev-update-codemaps 只在 kimi 中）
 
@@ -180,7 +180,7 @@ ls -d codex/ 2>&1
 
 ```bash
 git rm -rf codex/
-git commit -m "refactor: remove codex/ directory, use kimi/skills/ as single source"
+git commit -m "refactor: remove codex/ directory, use skills/ as single source"
 ```
 
 ---
@@ -268,7 +268,7 @@ cd coding-everything
 或直接执行：
 
 ```bash
-ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+ln -sf "$(pwd)/skills" ~/.agents/skills
 ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ```
 ```
@@ -322,7 +322,7 @@ mkdir -p ~/.kimi/agents
 
 创建 symlink：
 ```bash
-ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+ln -sf "$(pwd)/skills" ~/.agents/skills
 ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ```
 
@@ -344,7 +344,7 @@ ls ~/.agents/skills/
 **步骤 5：测试实时同步**
 
 ```bash
-echo "# Test" >> kimi/skills/dev-tdd/SKILL.md
+echo "# Test" >> skills/dev-tdd/SKILL.md
 grep "# Test" ~/.agents/skills/dev-tdd/SKILL.md
 ```
 预期：能找到添加的测试内容
@@ -352,7 +352,7 @@ grep "# Test" ~/.agents/skills/dev-tdd/SKILL.md
 **步骤 6：清理测试修改**
 
 ```bash
-git checkout kimi/skills/dev-tdd/SKILL.md
+git checkout skills/dev-tdd/SKILL.md
 ```
 
 **步骤 7：提交（如有文档更新）**

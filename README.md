@@ -26,7 +26,7 @@ cd coding-everything
 git submodule update --init --recursive
 ```
 
-### 2. 安装 Kimi skill
+### 2. 安装共享 skill
 
 使用自动化脚本（推荐）：
 
@@ -39,9 +39,9 @@ kimi # 让kimi自行安装, 会同时安装到kimi和codex
 或手动创建软链接：
 
 ```bash
-# 创建软链接到 Kimi skill目录
+# 创建软链接到共享 skill 目录
 mkdir -p ~/.agents
-ln -sf "$(pwd)/kimi/skills" ~/.agents/skills
+ln -sf "$(pwd)/skills" ~/.agents/skills
 
 # Agent 配置（可选）
 mkdir -p ~/.kimi/agents
@@ -151,15 +151,15 @@ coding-everything/
 ├── .agents/skills/          # 系统级 skills
 │   ├── setup/               # 安装入口
 │   └── update-upstream-repos/ # 上游更新与报告生成
-├── kimi/                    # Kimi 配置
-│   ├── agents/superpower/   # Agent 配置
-│   └── skills/              # 24 个skill
-│       ├── dev-design-system/
-│       ├── dev-search-first/
-│       ├── dev-ui-styling/
-│       ├── dev-continuous-agent-loop/
-│       ├── learn-deep-research/
-│       └── work-market-research/
+├── skills/                  # 跨平台共享 skills
+│   ├── dev-design-system/
+│   ├── dev-search-first/
+│   ├── dev-ui-styling/
+│   ├── dev-continuous-agent-loop/
+│   ├── learn-deep-research/
+│   └── work-market-research/
+├── kimi/                    # Kimi 专属配置
+│   └── agents/superpower/   # Agent 配置
 ├── opencode/                # OpenCode 配置（待完善）
 ├── upstream/                # 上游仓库（子模块）
 │   ├── superpowers/         # superpowers 框架
@@ -176,7 +176,7 @@ coding-everything/
 详细文档请参考：
 
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
-- **[docs/kimi-skills-architecture.md](./docs/kimi-skills-architecture.md)** - Kimi Skills 架构全景图和调用关系
+- **[docs/kimi-skills-architecture.md](./docs/kimi-skills-architecture.md)** - 共享 skill 架构全景图和调用关系
 - `docs/upstream-updates/YYYY-MM-DD-upstream-updates.md` - 使用 `update-upstream-repos` skill 生成和维护的上游更新报告
 
 ## 上游仓库

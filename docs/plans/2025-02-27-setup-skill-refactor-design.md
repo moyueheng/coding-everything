@@ -9,7 +9,7 @@
 | 变更项 | 旧方式 | 新方式 |
 |--------|--------|--------|
 | 安装入口 | `./scripts/install.sh` 或 `make install` | `/skill:setup` |
-| skill 路径 | `kimi/skills/` + `codex/skills/` | 仅 `kimi/skills/` |
+| skill 路径 | 平台分散目录 | 仅 `skills/` |
 | 安装机制 | 复制文件 | Symlink 到项目目录 |
 | 配置同步 | 需手动更新 | 实时同步（symlink） |
 
@@ -20,10 +20,10 @@ coding-everything/
 ├── .skills/
 │   └── setup/
 │       └── SKILL.md          # setup skill 定义
+├── skills/                   # → ~/.agents/skills/
 ├── kimi/
-│   ├── agents/superpower/    # → ~/.kimi/agents/superpower/
-│   └── skills/               # → ~/.agents/skills/
-└── [删除] codex/             # 与 kimi/skills/ 重复
+│   └── agents/superpower/    # → ~/.kimi/agents/superpower/
+└── [删除] codex/             # 与共享 skills 重复
 └── [删除] scripts/install.sh # 被 skill 替代
 └── [删除] Makefile           # 被 skill 替代
 ```
@@ -32,7 +32,7 @@ coding-everything/
 
 | 源路径 | 目标路径 | 说明 |
 |--------|----------|------|
-| `$(pwd)/kimi/skills/` | `~/.agents/skills/` | 所有 Agent 工具共享 |
+| `$(pwd)/skills/` | `~/.agents/skills/` | 所有 Agent 工具共享 |
 | `$(pwd)/kimi/agents/superpower/` | `~/.kimi/agents/superpower/` | Kimi Agent 配置 |
 
 ## setup skill 工作流程
