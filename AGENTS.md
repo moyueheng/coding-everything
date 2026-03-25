@@ -366,6 +366,11 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 3. 更新内容禁止流水账，优先写稳定、可执行、可复用的约束与结构信息
 4. 每次 commit 前检查 `upstream/everything-claude-code/agents/architect.md` 是否需要同步到当前仓库的相关 skills 或文档
 
+### Git Worktree 约束
+
+1. 新建 git worktree 时，统一使用 `~/.agents/worktrees/<项目名称>/<分支名>`
+2. 不要在仓库内创建或复用 `.worktrees/`、`worktrees/` 等项目本地目录作为新 worktree 位置
+
 ### 命名规范
 
 #### Skill 分类前缀
