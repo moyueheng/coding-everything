@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# Avoid accidentally committing symlink loops or local symlink artifacts
+skills/skills

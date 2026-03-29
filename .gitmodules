@@ -22,3 +22,6 @@
 	path = upstream/obsidian-skills
 	url = https://github.com/kepano/obsidian-skills.git
 	branch = main
+[submodule "upstream/orbitos"]
+	path = upstream/orbitos
+	url = https://github.com/MarsWang42/OrbitOS.git

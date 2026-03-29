@@ -50,6 +50,7 @@
 | [op7418/Humanizer-zh](https://github.com/op7418/Humanizer-zh.git) | AI 写作去痕工具（中文版） | `upstream/humanizer-zh/` |
 | [deanpeters/Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills.git) | Product Manager 相关 skill 集合 | `upstream/product-manager-skills/` |
 | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills.git) | Obsidian agent skills 仓库 | `upstream/obsidian-skills/` |
+| [MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS.git) | AI 驱动的 Obsidian 个人生产力系统 | `upstream/orbitos/` |
 
 ### 个人配置
 
@@ -143,9 +144,13 @@ coding-everything/
     │   ├── README.md
     │   └── skills/             # PM 工作流相关 skill
     │
-    └── obsidian-skills/        # Obsidian agent skills
+    ├── obsidian-skills/        # Obsidian agent skills
+    │   ├── README.md
+    │   └── skills/             # Obsidian / Bases / Canvas / CLI 等 skill
+    │
+    └── orbitos/                # AI 驱动的 Obsidian 个人生产力系统
         ├── README.md
-        └── skills/             # Obsidian / Bases / Canvas / CLI 等 skill
+        └── EN/                 # 英文版 vault 模板与 AI workflow
 ```
 
 ---
@@ -191,6 +196,16 @@ coding-everything/
 - `skills/json-canvas/` - JSON Canvas 文件编辑
 - `skills/obsidian-cli/` - Obsidian CLI 与 vault 交互
 - `skills/defuddle/` - 网页提取为干净 markdown
+
+### 4. orbitos
+
+**简介**: AI 驱动的 Obsidian 个人生产力系统，通过自然语言与 AI 助手管理知识库和日常任务规划
+
+**内容**:
+- `EN/` - 英文版 vault 模板，包含完整的文件夹结构、Prompts、Templates
+- `99_System/Prompts/` - AI persona 提示词（Claude Code / Gemini CLI 可用）
+- `99_System/Templates/` - Markdown 模板（Daily、Project、Research、Wiki 等）
+- 核心 workflow 命令：`/start-my-day`、`/kickoff`、`/research`、`/ask`、`/brainstorm`、`/parse-knowledge`、`/archive`
 
 ---
 
@@ -416,6 +431,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 - **humanizer-zh**: https://github.com/op7418/Humanizer-zh
 - **product-manager-skills**: https://github.com/deanpeters/Product-Manager-Skills
 - **obsidian-skills**: https://github.com/kepano/obsidian-skills
+- **orbitos**: https://github.com/MarsWang42/OrbitOS
 
 ### 平台文档
 

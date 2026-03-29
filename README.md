@@ -10,6 +10,7 @@
 - **[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)** - Claude Code 完整配置（39 个skill）
 - **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** - UI/UX Pro Max Skill
 - **[kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)** - Obsidian agent skills 仓库
+- **[MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS)** - AI 驱动的 Obsidian 个人生产力系统
 - **[vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)** - 单独镜像跟踪 `agent-browser` skill
 
 ## 快速开始
@@ -195,6 +196,7 @@ coding-everything/
 | [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | Claude Code 完整配置 |
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | UI/UX Pro Max Skill |
 | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) | Obsidian agent skills 仓库 |
+| [MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS) | AI 驱动的 Obsidian 个人生产力系统 |
 
 ## 许可证
 
