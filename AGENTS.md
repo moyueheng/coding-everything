@@ -55,7 +55,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **共享 skills** | `skills/` | ✅ 已配置（31 个skill） |
+| **共享 skills** | `skills/` | ✅ 已配置（32 个skill，含单独镜像跟踪的 `agent-browser`） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
 | **Claude Code** | 软链接到 `skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
@@ -76,6 +76,7 @@ coding-everything/
 │       └── dev-creating-subagents/ # 创建和管理 subagent
 │
 ├── skills/                     # 跨平台共享 skills
+│   ├── agent-browser/          # 单独镜像跟踪的外部浏览器自动化 skill
 │   ├── dev-using-skills/
 │   ├── dev-brainstorming/
 │   ├── dev-debugging/
@@ -100,6 +101,8 @@ coding-everything/
 │   ├── work-market-research/
 │   ├── tool-humanizer-zh/
 │   └── tool-macos-hidpi/
+├── scripts/                    # 本地同步脚本
+│   └── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
 │
 ├── kimi/                       # Kimi 专属配置
 │   ├── README.md
@@ -224,6 +227,7 @@ coding-everything/
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
 | `dev-creating-subagents` | 创建和管理 subagent（Kimi CLI/Codex 双平台指南） | 灵活 |
+| `agent-browser` | 浏览器自动化 CLI 使用、页面交互、抓取与截图 workflow | 灵活 |
 
 ### 快速安装
 
@@ -358,6 +362,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 1. 使用 TDD 开发重要脚本
 2. 测试文件放在 `tests/` 目录
 3. 保持脚本 POSIX 兼容（优先使用 bash）
+4. 外部单 skill 同步脚本放在仓库根 `scripts/`，并与被跟踪目录内的 `UPSTREAM.md` 一起维护来源、分支、SHA 与同步命令
 
 ### 文档同步（AGENTS/CLAUDE）
 

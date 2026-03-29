@@ -10,6 +10,7 @@
 - **[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)** - Claude Code 完整配置（39 个skill）
 - **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** - UI/UX Pro Max Skill
 - **[kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)** - Obsidian agent skills 仓库
+- **[vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)** - 单独镜像跟踪 `agent-browser` skill
 
 ## 快速开始
 
@@ -88,6 +89,7 @@ ls ~/.agents/skills/
 | `dev-continuous-agent-loop` | 持续 agent 循环与自动化执行模式 |
 | `learn-deep-research` | 通用深度调研与正式研究报告 |
 | `work-market-research` | 市场、竞品、价格与区域机会调研 |
+| `agent-browser` | 浏览器自动化 CLI 使用与网页交互 workflow |
 
 ### 系统级 skill
 
@@ -142,6 +144,9 @@ ls ~/.agents/skills/
 
 # 查看skill详情
 cat ~/.agents/skills/dev-tdd/SKILL.md
+
+# 更新单独跟踪的 agent-browser skill
+./scripts/sync-agent-browser-skill.sh
 ```
 
 ## 项目结构
@@ -156,8 +161,11 @@ coding-everything/
 │   ├── dev-search-first/
 │   ├── dev-ui-styling/
 │   ├── dev-continuous-agent-loop/
+│   ├── agent-browser/         # 单独镜像跟踪的外部 skill
 │   ├── learn-deep-research/
 │   └── work-market-research/
+├── scripts/                  # 本地同步脚本
+│   └── sync-agent-browser-skill.sh
 ├── kimi/                    # Kimi 专属配置
 │   └── agents/superpower/   # Agent 配置
 ├── opencode/                # OpenCode 配置（待完善）
