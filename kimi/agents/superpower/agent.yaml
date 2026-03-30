@@ -1,4 +1,5 @@
 version: 1
 agent:
   extend: default
-  system_prompt_path: ./system.md
+  system_prompt_path: 
+    ROLE_ADDITIONAL: "任何操作开始前都要加载dev-using-skills"
