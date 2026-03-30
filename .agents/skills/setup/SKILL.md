@@ -49,6 +49,10 @@ ln -sf "$(pwd)/skills" ~/.claude/skills
 
 **Agent 配置（仅 Kimi）：**
 ```bash
+# 如果目标存在但不是 symlink，先删除（避免嵌套）
+if [ -d ~/.kimi/agents/superpower ] && [ ! -L ~/.kimi/agents/superpower ]; then
+    rm -rf ~/.kimi/agents/superpower
+fi
 ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
 ```
 
