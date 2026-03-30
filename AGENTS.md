@@ -161,16 +161,22 @@ coding-everything/
 
 **简介**: 为 AI 编程助手设计的综合软件开发工作流框架
 
+**当前跟踪版本**: v5.0.6（2026-03-24）
+
 **核心skill**:
 - `using-superpowers` - skill使用入口
-- `brainstorming` - 编码前设计完善
+- `brainstorming` - 编码前设计完善（v5.0.6 已同步内联自审模式）
 - `test-driven-development` - TDD 循环
 - `systematic-debugging` - 系统化调试
-- `writing-plans` / `executing-plans` - 计划编写与执行
+- `writing-plans` / `executing-plans` - 计划编写与执行（v5.0.6 已同步内联自审模式）
 - `finishing-a-development-branch` - 分支完成工作流
 - 等等（共 14 个）
 
 **支持平台**: Claude Code, Codex, OpenCode
+
+**同步状态**: 
+- ✅ `dev-brainstorming` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
+- ✅ `dev-writing-plans` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
 
 ### 2. everything-claude-code
 
@@ -180,11 +186,20 @@ coding-everything/
 - `.claude/` - Claude 专属配置
 - `.cursor/` - Cursor 编辑器配置
 - `.opencode/` - OpenCode 配置
-- `skills/` - 39 个skill
-- `agents/` - agent 配置
-- `commands/` - 预定义命令
+- `skills/` - 69+ 个skill（持续增长）
+- `agents/` - 28+ 个 agent 配置
+- `commands/` - 58+ 个预定义命令
 - `hooks/` - 会话钩子
 - `docs/zh-CN/skills/` - **32 个简体中文skill**（引入时无需翻译）
+- `ecc2/` - ECC 2.0 Rust TUI 脚手架（开发中）
+
+**值得关注的 skill（尚未引入）**:
+| skill | 用途 | 引入障碍 |
+|-------|------|----------|
+| `ck` (context-keeper) | 持久化项目记忆，跨会话恢复上下文 | 需要 Node.js + Claude Code hook 系统，Kimi 不完全兼容 |
+| `git-workflow` | Git 工作流最佳实践（分支策略、提交规范、PR 流程） | 与 `dev-git-worktrees` 互补，可考虑整合 |
+| `rules-distill` | 规则提炼与整理 | 待评估 |
+| `architecture-decision-records` | 架构决策记录管理 | 待评估 |
 
 ### 3. obsidian-skills
 
