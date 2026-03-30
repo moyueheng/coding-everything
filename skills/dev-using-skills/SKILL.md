@@ -3,6 +3,10 @@ name: dev-using-skills
 description: 开始任何对话时使用 - 建立如何查找和使用 skills，在做出任何响应前要求先检查适用的 skill
 ---
 
+<SUBAGENT-STOP>
+如果你是被派发来执行特定任务的子 agent，跳过此 skill。
+</SUBAGENT-STOP>
+
 <极其重要>
 如果你认为某个 skill 有哪怕 1% 的几率适用于你正在做的事情，你必须绝对调用该 skill。
 
@@ -27,10 +31,10 @@ description: 开始任何对话时使用 - 建立如何查找和使用 skills，
 
 当多种指令同时存在时，使用下面的固定优先级：
 
-1. 用户的明确请求
-2. 项目级约束，如 `AGENTS.md` / `CLAUDE.md`
-3. 已触发 skill 的具体流程
-4. 默认行为和个人习惯
+1. **用户的明确请求**（`AGENTS.md`、`CLAUDE.md`、直接请求）— 最高优先级
+2. **项目级约束**，如 `AGENTS.md` / `CLAUDE.md`
+3. **已触发 skill 的具体流程** — 覆盖默认系统行为
+4. **默认行为和个人习惯** — 最低优先级
 
 解释规则：
 
@@ -38,12 +42,15 @@ description: 开始任何对话时使用 - 建立如何查找和使用 skills，
 - `AGENTS.md` / `CLAUDE.md` 决定当前项目的硬约束
 - skill 决定在这些约束内，应该如何执行
 - 如果 skill 与用户明确要求冲突，用户要求优先
-- 如果 skill 与 `AGENTS.md` 冲突，项目约束优先
-- 不能用“我在遵循 skill”来覆盖用户已经明确提出的边界
+- 如果 skill 与 `AGENTS.md` / `CLAUDE.md` 冲突，项目约束优先
+- 不能用"我在遵循 skill"来覆盖用户已经明确提出的边界
 
 ```dot
 digraph skill_flow {
     "收到用户消息" [shape=doublecircle];
+    "即将进入计划模式？" [shape=doublecircle];
+    "已调用过 dev-brainstorming？" [shape=diamond];
+    "调用 dev-brainstorming" [shape=box];
     "可能有 skill 适用？" [shape=diamond];
     "调用 /skill:命令" [shape=box];
     "宣布：'正在使用 [skill] 来 [目的]'" [shape=box];
@@ -51,6 +58,11 @@ digraph skill_flow {
     "为每项创建 TodoWrite" [shape=box];
     "精确遵循 skill" [shape=box];
     "响应（包括澄清问题）" [shape=doublecircle];
+
+    "即将进入计划模式？" -> "已调用过 dev-brainstorming？";
+    "已调用过 dev-brainstorming？" -> "调用 dev-brainstorming" [label="否"];
+    "已调用过 dev-brainstorming？" -> "可能有 skill 适用？" [label="是"];
+    "调用 dev-brainstorming" -> "可能有 skill 适用？";
 
     "收到用户消息" -> "可能有 skill 适用？";
     "可能有 skill 适用？" -> "调用 /skill:命令" [label="是，即使 1%"];
