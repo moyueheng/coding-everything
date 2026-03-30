@@ -58,7 +58,7 @@
 |------|------|------|
 | **共享 skills** | `skills/` | ✅ 已配置（32 个skill，含单独镜像跟踪的 `agent-browser`） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
-| **Claude Code** | 软链接到 `skills/` | ✅ 已兼容 |
+| **Claude Code** | 通过安装器写入 `~/.claude/skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -104,6 +104,7 @@ coding-everything/
 │   └── tool-macos-hidpi/
 ├── scripts/                    # 本地同步脚本
 │   └── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
+├── Makefile                    # skills 安装短入口
 │
 ├── kimi/                       # Kimi 专属配置
 │   ├── README.md
@@ -261,24 +262,25 @@ coding-everything/
 
 ### 快速安装
 
-使用 setup skill（推荐）：
+使用仓库根目录的短入口（推荐）：
 
 ```bash
 cd coding-everything
-/skill:setup
+make install
 ```
 
-或手动创建 symlink：
+默认会：
+
+- 共享 `skills/` 逐项合并安装到 `~/.agents/skills/` 和 `~/.claude/skills/`
+- 安装 `~/.kimi/agents/superpower`
+- 安装 `~/.local/bin/ks`
+
+如需更新、卸载或查看状态：
 
 ```bash
-# Skills（跨平台共享）
-ln -sf "$(pwd)/skills" ~/.agents/skills
-
-# Skills（Claude Code）
-ln -sf "$(pwd)/skills" ~/.claude/skills
-
-# Agent 配置（仅 Kimi）
-ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
+make update
+make uninstall
+make status
 ```
 
 ---
@@ -386,6 +388,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
    - 流程图（Graphviz dot）
    - 检查清单（如适用）
 3. **Skill 标准**：本项目的 skills 遵循 [Agent Skills 开放标准](https://agentskills.io/)，与 Claude Code、Codex 等平台兼容
+4. 安装与卸载边界以 manifest 为准，`update/uninstall/status` 只能处理本仓库登记过的项
 
 ### 脚本开发
 

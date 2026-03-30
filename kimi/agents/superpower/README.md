@@ -46,13 +46,13 @@ kimi --agent-file ~/.kimi/agents/superpower/agent.yaml
 
 ### 方法四：使用安装脚本
 
-运行项目根目录的安装脚本：
+运行仓库根目录的安装入口：
 
 ```bash
-./install.sh
+make install
 ```
 
-这将自动安装 agent 配置到 `~/.kimi/agents/superpower/` 目录。
+这将自动安装 agent 配置到 `~/.kimi/agents/superpower/` 目录，并同步安装共享 skills 与 `ks`。
 
 ## 工作原理
 

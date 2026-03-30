@@ -6,15 +6,14 @@
 
 - [快速开始](#快速开始)
   - [使用 Makefile（推荐）](#使用-makefile推荐)
-  - [直接使用脚本](#直接使用脚本)
+  - [直接使用 ks](#直接使用-ks)
 - [包含内容](#包含内容)
   - [Skills (24 个)](#skills-24-个)
   - [Agent](#agent)
-- [安装脚本](#安装脚本)
 - [测试](#测试)
 - [安装路径](#安装路径)
 - [使用方法](#使用方法)
-  - [方式1: 使用生成的启动脚本（推荐）](#方式1-使用生成的启动脚本推荐)
+  - [方式1: 使用 ks（推荐）](#方式1-使用-ks推荐)
   - [方式2: 直接指定 agent-file](#方式2-直接指定-agent-file)
   - [方式3: 创建别名](#方式3-创建别名)
 - [目录结构](#目录结构)
@@ -40,18 +39,14 @@ make update
 # 查看状态
 make status
 
-# 运行测试
-make test
+# 卸载配置
+make uninstall
 ```
 
-### 直接使用脚本
+### 直接使用 ks
 
 ```bash
-# 安装配置
-./scripts/install.sh
-
-# 启动 Kimi
-./kimi-superpower
+ks
 ```
 
 ## 包含内容
@@ -96,51 +91,26 @@ make test
 
 - `superpower/` - 基于 superpowers 框架的 agent 配置
 
-## 安装脚本
-
-单文件脚本：`scripts/install.sh`
-
-```bash
-# 安装（默认）
-./scripts/install.sh
-./scripts/install.sh install
-
-# 强制安装（覆盖）
-./scripts/install.sh install -f
-
-# 更新配置
-./scripts/install.sh update
-
-# 卸载配置
-./scripts/install.sh uninstall
-
-# 查看状态
-./scripts/install.sh status
-
-# 帮助
-./scripts/install.sh --help
-```
-
 ## 测试
 
 ```bash
-# 运行测试
-./tests/test_install.sh
+# 运行根仓库安装器测试
+uv run python -m unittest tests.test_install_skills -v
 ```
 
 ## 安装路径
 
 统一安装路径：
-- Skills: `~/.agents/skills/`（所有 Agent 工具共享）
+- Skills: `~/.agents/skills/` 和 `~/.claude/skills/`
 - Agent: `~/.kimi/agents/superpower/`（仅 Kimi）
+- 快捷入口: `~/.local/bin/ks`
 
 ## 使用方法
 
-### 方式1: 使用生成的启动脚本（推荐）
+### 方式1: 使用 ks（推荐）
 
 ```bash
-# 安装后会在项目根目录生成 kimi-superpower 脚本
-./kimi-superpower
+ks
 ```
 
 ### 方式2: 直接指定 agent-file
@@ -154,44 +124,45 @@ kimi --agent-file ~/.kimi/agents/superpower/agent.yaml
 添加到 `~/.bashrc` 或 `~/.zshrc`:
 
 ```bash
-alias kimi-superpower='kimi --agent-file ~/.kimi/agents/superpower/agent.yaml'
+alias ks='kimi -y --agent-file ~/.kimi/agents/superpower/agent.yaml'
 ```
 
 ## 目录结构
 
-```
-kimi/
-├── README.md                    # 本文件
-├── agents/
-│   └── superpower/              # Agent 配置
-│       ├── agent.yaml           # Agent 定义
-│       ├── system.md            # 系统提示词
-│       └── README.md
-└── skills/                      # Skills 目录（24 个）
-    ├── dev-using-skills/
-    ├── dev-brainstorming/
-    ├── dev-debugging/
-    ├── dev-tdd/
-    ├── dev-writing-plans/
-    ├── dev-executing-plans/
-    ├── dev-git-worktrees/
-    ├── dev-requesting-review/
-    ├── dev-verification/
-    ├── dev-finishing-branch/
-    ├── dev-writing-skills/
-    ├── dev-code-cleanup/
-    ├── dev-update-codemaps/
-    ├── dev-search-first/
-    ├── dev-backend-patterns/
-    ├── dev-frontend-patterns/
-    ├── dev-design-system/
-    ├── dev-ui-styling/
-    ├── dev-continuous-agent-loop/
-    ├── dev-e2e-testing/
-    ├── learn-deep-research/
-    ├── work-market-research/
-    ├── tool-humanizer-zh/
-    └── tool-macos-hidpi/
+```text
+coding-everything/
+├── skills/                      # 共享 skills（仓库根目录）
+│   ├── dev-using-skills/
+│   ├── dev-brainstorming/
+│   ├── dev-debugging/
+│   ├── dev-tdd/
+│   ├── dev-writing-plans/
+│   ├── dev-executing-plans/
+│   ├── dev-git-worktrees/
+│   ├── dev-requesting-review/
+│   ├── dev-verification/
+│   ├── dev-finishing-branch/
+│   ├── dev-writing-skills/
+│   ├── dev-code-cleanup/
+│   ├── dev-update-codemaps/
+│   ├── dev-search-first/
+│   ├── dev-backend-patterns/
+│   ├── dev-frontend-patterns/
+│   ├── dev-design-system/
+│   ├── dev-ui-styling/
+│   ├── dev-continuous-agent-loop/
+│   ├── dev-e2e-testing/
+│   ├── learn-deep-research/
+│   ├── work-market-research/
+│   ├── tool-humanizer-zh/
+│   └── tool-macos-hidpi/
+└── kimi/
+    ├── README.md                # 本文件
+    └── agents/
+        └── superpower/          # Agent 配置
+            ├── agent.yaml       # Agent 定义
+            ├── system.md        # 系统提示词
+            └── README.md
 ```
 
 ## 核心工作流

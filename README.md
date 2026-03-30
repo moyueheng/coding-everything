@@ -30,30 +30,31 @@ git submodule update --init --recursive
 
 ### 2. 安装共享 skill
 
-使用自动化脚本（推荐）：
+使用仓库根目录的短入口：
 
 ```bash
-# 进入项目目录后执行
-kimi # 让kimi自行安装, 会同时安装到kimi和codex
-/skill:setup
+make install
 ```
 
-或手动创建软链接：
+这会默认完成：
+
+- 共享 `skills/` 逐项合并安装到 `~/.agents/skills/` 和 `~/.claude/skills/`
+- 安装 `~/.kimi/agents/superpower`
+- 安装 `~/.local/bin/ks`
+
+如果需要更新、卸载或查看状态：
 
 ```bash
-# 创建软链接到共享 skill 目录
-mkdir -p ~/.agents
-ln -sf "$(pwd)/skills" ~/.agents/skills
-
-# Agent 配置（可选）
-mkdir -p ~/.kimi/agents
-ln -sf "$(pwd)/kimi/agents/superpower" ~/.kimi/agents/superpower
+make update
+make uninstall
+make status
 ```
 
 ### 3. 验证安装
 
 ```bash
 ls ~/.agents/skills/
+ls ~/.claude/skills/
 ```
 
 应该能看到类似 `dev-using-skills`、`dev-search-first`、`learn-deep-research` 等 skill 目录。
@@ -96,7 +97,7 @@ ls ~/.agents/skills/
 
 | skill | 用途 |
 |------|------|
-| `setup` | 安装本项目 skills 和 Kimi agent 配置 |
+| `setup` | 安装本项目共享 skills、Kimi agent 和 `ks` |
 | `update-upstream-repos` | 更新 `upstream/` submodule、整理 commit 变化并生成 `docs/` 报告 |
 
 ## 典型工作流
@@ -167,6 +168,7 @@ coding-everything/
 │   └── work-market-research/
 ├── scripts/                  # 本地同步脚本
 │   └── sync-agent-browser-skill.sh
+├── Makefile                  # skills 安装短入口
 ├── kimi/                    # Kimi 专属配置
 │   └── agents/superpower/   # Agent 配置
 ├── opencode/                # OpenCode 配置（待完善）
