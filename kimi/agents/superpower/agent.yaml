@@ -1,5 +1,5 @@
 version: 1
 agent:
   extend: default
-  system_prompt_path: 
+  system_prompt_args:
     ROLE_ADDITIONAL: "任何操作开始前都要加载dev-using-skills"
