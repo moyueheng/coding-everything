@@ -50,6 +50,8 @@ def discover_skills(repo_root: Path) -> list[str]:
     for path in skills_dir.iterdir():
         if not path.is_dir():
             continue
+        if path.is_symlink() and path.resolve() == skills_dir.resolve():
+            continue
         if not (path / "SKILL.md").is_file():
             continue
         discovered.append(path.name)

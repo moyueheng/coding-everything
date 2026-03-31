@@ -141,6 +141,23 @@ class InstallSkillsTest(unittest.TestCase):
         self.assertNotIn(".claude/skills/beta-skill", output)
         self.assertIn("untracked_new_skills=gamma-skill", output)
 
+    def test_discover_skills_ignores_self_referencing_symlink(self) -> None:
+        skills_dir = self.repo_root / "skills"
+        (skills_dir / "skills").symlink_to(skills_dir)
+
+        discovered = install_skills.discover_skills(self.repo_root)
+        self.assertNotIn("skills", discovered)
+
+    def test_discover_skills_ignores_self_referencing_symlink_even_with_skill_md(
+        self,
+    ) -> None:
+        skills_dir = self.repo_root / "skills"
+        (skills_dir / "skills").symlink_to(skills_dir)
+        (skills_dir / "SKILL.md").write_text("# skills root\n", encoding="utf-8")
+
+        discovered = install_skills.discover_skills(self.repo_root)
+        self.assertNotIn("skills", discovered)
+
     def test_install_ignores_directories_without_skill_md(self) -> None:
         ignored_dir = self.repo_root / "skills" / "not-a-skill"
         ignored_dir.mkdir()
