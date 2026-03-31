@@ -102,6 +102,8 @@ coding-everything/
 │   ├── work-market-research/
 │   ├── tool-humanizer-zh/
 │   └── tool-macos-hidpi/
+├── mcp-configs/                # MCP 服务器配置模板
+│   └── required.json           # 必装 MCP 定义（auggie-mcp + 3 个 zai 服务）
 ├── scripts/                    # 本地同步脚本
 │   └── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
 ├── Makefile                    # skills 安装短入口

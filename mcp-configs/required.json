@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "auggie-mcp": {
+      "command": "auggie",
+      "args": ["--mcp", "--mcp-auto-workspace"],
+      "type": "stdio",
+      "_install_note": "需要先安装 Auggie CLI 并执行 `auggie login` 完成浏览器 OAuth 认证。文档: https://docs.augmentcode.com/context-services/mcp/overview"
+    },
+    "zai-github-read": {
+      "type": "http",
+      "url": "https://open.bigmodel.cn/api/mcp/zread/mcp",
+      "headers": {
+        "Authorization": "Bearer {{ZAI_API_KEY}}"
+      }
+    },
+    "zai-web-reader": {
+      "type": "http",
+      "url": "https://open.bigmodel.cn/api/mcp/web_reader/mcp",
+      "headers": {
+        "Authorization": "Bearer {{ZAI_API_KEY}}"
+      }
+    },
+    "zai-web-search-prime": {
+      "type": "http",
+      "url": "https://open.bigmodel.cn/api/mcp/web_search_prime/mcp",
+      "headers": {
+        "Authorization": "Bearer {{ZAI_API_KEY}}"
+      }
+    }
+  }
+}
