@@ -1,5 +1,11 @@
 # macOS
 .DS_Store
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
 # Avoid accidentally committing symlink loops or local symlink artifacts
 skills/skills
