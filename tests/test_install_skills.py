@@ -134,9 +134,11 @@ class InstallSkillsTest(unittest.TestCase):
         self.assertEqual(code, 0)
         output = self.stdout.getvalue()
         self.assertIn("missing=", output)
-        self.assertIn(".agents/skills/alpha-skill", output)
+        self.assertIn("alpha-skill", output)
+        self.assertNotIn(".agents/skills/alpha-skill", output)
         self.assertIn("drifted=", output)
-        self.assertIn(".claude/skills/beta-skill", output)
+        self.assertIn("beta-skill", output)
+        self.assertNotIn(".claude/skills/beta-skill", output)
         self.assertIn("untracked_new_skills=gamma-skill", output)
 
     def test_install_ignores_directories_without_skill_md(self) -> None:

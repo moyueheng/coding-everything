@@ -306,7 +306,7 @@ def collect_status(repo_root: Path, home: Path) -> tuple[dict | None, dict]:
     targets = build_targets(home)
     manifest = load_manifest(targets)
     current_skills = discover_skills(repo_root)
-    state = {
+    state: dict[str, list[str]] = {
         "installed": [],
         "missing": [],
         "drifted": [],
@@ -322,11 +322,14 @@ def collect_status(repo_root: Path, home: Path) -> tuple[dict | None, dict]:
         for base_dir in (targets.agents_skills_dir, targets.claude_skills_dir):
             dst = base_dir / skill
             if not dst.exists() and not dst.is_symlink():
-                state["missing"].append(f"{dst}")
+                if skill not in state["missing"]:
+                    state["missing"].append(skill)
             elif not dst.is_symlink() or dst.resolve() != expected_src.resolve():
-                state["drifted"].append(f"{dst}")
+                if skill not in state["drifted"]:
+                    state["drifted"].append(skill)
             else:
-                state["installed"].append(f"{dst}")
+                if skill not in state["installed"]:
+                    state["installed"].append(skill)
 
     managed_set = set(managed)
     for skill in current_skills:
@@ -347,7 +350,10 @@ def command_status(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) -> 
             )
         return 0
 
-    for key in ("installed", "missing", "drifted", "untracked_new_skills"):
+    installed_count = len(state["installed"])
+    print(f"installed={installed_count}", file=stdout)
+
+    for key in ("missing", "drifted", "untracked_new_skills"):
         values = state[key]
         if values:
             print(f"{key}=" + ",".join(values), file=stdout)
