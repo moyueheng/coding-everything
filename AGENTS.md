@@ -56,9 +56,9 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **共享 skills** | `skills/` | ✅ 已配置（32 个skill，含单独镜像跟踪的 `agent-browser`） |
+| **共享 skills** | `skills/` | ✅ 已配置（37 个skill，含 obsidian 组 5 个） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
-| **Claude Code** | 通过安装器写入 `~/.claude/skills/` | ✅ 已兼容 |
+| **Claude Code** | 通过 `ce` CLI 写入 `~/.claude/skills/` 或项目级 `.claude/skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
 
 ---
@@ -78,6 +78,11 @@ coding-everything/
 │
 ├── skills/                     # 跨平台共享 skills
 │   ├── agent-browser/          # 单独镜像跟踪的外部浏览器自动化 skill
+│   ├── obsidian-markdown/      # Obsidian Flavored Markdown 编辑（从上游迁移）
+│   ├── obsidian-bases/         # Obsidian Bases 语法编辑
+│   ├── json-canvas/            # JSON Canvas 文件编辑
+│   ├── obsidian-cli/           # Obsidian CLI 与 vault 交互
+│   ├── defuddle/               # 网页提取为干净 markdown
 │   ├── dev-using-skills/
 │   ├── dev-brainstorming/
 │   ├── dev-debugging/
@@ -102,9 +107,16 @@ coding-everything/
 │   ├── work-market-research/
 │   ├── tool-humanizer-zh/
 │   └── tool-macos-hidpi/
+├── install_skills/             # ce CLI 工具 Python 包
+│   ├── __init__.py
+│   ├── cli.py                  # 命令行入口
+│   ├── config.py               # skills-install.yaml 加载
+│   ├── installer.py            # symlink / manifest / MCP 逻辑
+│   └── models.py               # 数据结构
+├── pyproject.toml              # Python 包定义（ce CLI 入口）
+├── skills-install.yaml         # skill 分组安装配置
 ├── scripts/                    # 本地同步脚本
 │   └── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
-├── Makefile                    # skills 安装短入口
 │
 ├── kimi/                       # Kimi 专属配置
 │   ├── README.md
@@ -206,6 +218,8 @@ coding-everything/
 
 **简介**: 面向 Obsidian 的 agent skills 仓库，遵循 Agent Skills 开放标准，可供 Claude Code、Codex CLI、OpenCode 等兼容环境使用
 
+**迁移状态**: ✅ 已迁移到 `skills/` 目录（obsidian-markdown, obsidian-bases, json-canvas, obsidian-cli, defuddle），每个目录含 `UPSTREAM.md` 跟踪来源
+
 **内容**:
 - `skills/obsidian-markdown/` - Obsidian Flavored Markdown 编辑
 - `skills/obsidian-bases/` - Obsidian Bases 语法编辑
@@ -259,29 +273,39 @@ coding-everything/
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
 | `dev-creating-subagents` | 创建和管理 subagent（Kimi CLI/Codex 双平台指南） | 灵活 |
 | `agent-browser` | 浏览器自动化 CLI 使用、页面交互、抓取与截图 workflow | 灵活 |
+| `obsidian-markdown` | Obsidian Flavored Markdown 编辑（项目级安装到 Obsidian vault） | 灵活 |
+| `obsidian-bases` | Obsidian Bases 语法编辑（项目级安装到 Obsidian vault） | 灵活 |
+| `json-canvas` | JSON Canvas 文件编辑（项目级安装到 Obsidian vault） | 灵活 |
+| `obsidian-cli` | Obsidian CLI 与 vault 交互（项目级安装到 Obsidian vault） | 灵活 |
+| `defuddle` | 网页提取为干净 markdown（项目级安装到 Obsidian vault） | 灵活 |
 
 ### 快速安装
 
-使用仓库根目录的短入口（推荐）：
+通过 `uv tool install -e` 安装 `ce` CLI 工具（一次性）：
 
 ```bash
 cd coding-everything
-make install
+uv tool install -e .
 ```
 
-默认会：
-
-- 共享 `skills/` 逐项合并安装到 `~/.agents/skills/` 和 `~/.claude/skills/`
-- 安装 `~/.kimi/agents/superpower`
-- 安装 `~/.local/bin/ks`
-- 合并 `mcp-configs/required.json` 中的 MCP 服务器配置到 `~/.claude.json`
-
-如需更新、卸载或查看状态：
+安装所有组的 skill：
 
 ```bash
-make update
-make uninstall
-make status
+ce install
+```
+
+默认会按 `skills-install.yaml` 分组安装：
+- `global` 组：skill symlink 到 `~/.agents/skills/` 和 `~/.claude/skills/`，安装 `~/.kimi/agents/superpower`、`~/.local/bin/ks`，合并 MCP 配置
+- `obsidian` 组：skill symlink 到 `~/Documents/ObsidianVault/.claude/skills/` 和 `~/Documents/ObsidianVault/.agents/skills/`
+
+单组操作：
+
+```bash
+ce install --group obsidian     # 只安装 obsidian 组
+ce update --group global        # 只更新 global 组
+ce uninstall --group obsidian   # 只卸载 obsidian 组
+ce status                       # 查看所有组状态
+ce status --group global        # 只查看 global 组
 ```
 
 ---
@@ -389,7 +413,8 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
    - 流程图（Graphviz dot）
    - 检查清单（如适用）
 3. **Skill 标准**：本项目的 skills 遵循 [Agent Skills 开放标准](https://agentskills.io/)，与 Claude Code、Codex 等平台兼容
-4. 安装与卸载边界以 manifest 为准，`update/uninstall/status` 只能处理本仓库登记过的项
+4. 安装与卸载边界以 manifest 为准（`~/.ce/install-manifest.json`），`update/uninstall/status` 只能处理本仓库登记过的项
+5. 新增 skill 必须在 `skills-install.yaml` 中声明所属组和 targets，否则不会被安装
 
 ### 脚本开发
 

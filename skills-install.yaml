@@ -1,0 +1,42 @@
+groups:
+  global:
+    skills:
+      - dev-brainstorming
+      - dev-debugging
+      - dev-tdd
+      - dev-writing-plans
+      - dev-executing-plans
+      - dev-git-worktrees
+      - dev-requesting-review
+      - dev-verification
+      - dev-finishing-branch
+      - dev-writing-skills
+      - dev-code-cleanup
+      - dev-update-codemaps
+      - dev-search-first
+      - dev-using-skills
+      - dev-backend-patterns
+      - dev-frontend-patterns
+      - dev-design-system
+      - dev-ui-styling
+      - dev-continuous-agent-loop
+      - dev-e2e-testing
+      - learn-deep-research
+      - work-market-research
+      - tool-humanizer-zh
+      - tool-macos-hidpi
+      - agent-browser
+    targets:
+      - ~/.agents/skills
+      - ~/.claude/skills
+
+  obsidian:
+    skills:
+      - obsidian-markdown
+      - obsidian-bases
+      - json-canvas
+      - obsidian-cli
+      - defuddle
+    targets:
+      - ~/Documents/ObsidianVault/.claude/skills
+      - ~/Documents/ObsidianVault/.agents/skills

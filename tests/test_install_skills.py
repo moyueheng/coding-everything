@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from scripts import install_skills
+from install_skills import cli, installer
 
 
 class InstallSkillsTest(unittest.TestCase):
@@ -52,7 +52,7 @@ class InstallSkillsTest(unittest.TestCase):
         self.temp_dir.cleanup()
 
     def run_command(self, command: str) -> int:
-        return install_skills.main(
+        return installer.main(
             [command],
             repo_root=self.repo_root,
             home=self.home,
@@ -145,7 +145,7 @@ class InstallSkillsTest(unittest.TestCase):
         skills_dir = self.repo_root / "skills"
         (skills_dir / "skills").symlink_to(skills_dir)
 
-        discovered = install_skills.discover_skills(self.repo_root)
+        discovered = installer.discover_skills(self.repo_root)
         self.assertNotIn("skills", discovered)
 
     def test_discover_skills_ignores_self_referencing_symlink_even_with_skill_md(
@@ -155,7 +155,7 @@ class InstallSkillsTest(unittest.TestCase):
         (skills_dir / "skills").symlink_to(skills_dir)
         (skills_dir / "SKILL.md").write_text("# skills root\n", encoding="utf-8")
 
-        discovered = install_skills.discover_skills(self.repo_root)
+        discovered = installer.discover_skills(self.repo_root)
         self.assertNotIn("skills", discovered)
 
     def test_install_ignores_directories_without_skill_md(self) -> None:
@@ -306,8 +306,8 @@ class ManifestPayloadMcpTest(unittest.TestCase):
         root = Path(temp_dir.name)
         repo_root = root / "repo"
         home = root / "home"
-        targets = install_skills.build_targets(home)
-        result = install_skills.manifest_payload(
+        targets = installer.build_targets(home)
+        result = installer.manifest_payload(
             repo_root, targets, ["skill-a"], mcp_servers=["mcp-1", "mcp-2"]
         )
         self.assertIn("mcp_servers", result)
@@ -319,8 +319,8 @@ class ManifestPayloadMcpTest(unittest.TestCase):
         root = Path(temp_dir.name)
         repo_root = root / "repo"
         home = root / "home"
-        targets = install_skills.build_targets(home)
-        result = install_skills.manifest_payload(repo_root, targets, ["skill-a"])
+        targets = installer.build_targets(home)
+        result = installer.manifest_payload(repo_root, targets, ["skill-a"])
         self.assertIn("mcp_servers", result)
         self.assertEqual(result["mcp_servers"], [])
 
@@ -360,14 +360,14 @@ class McpTemplateTest(unittest.TestCase):
 
     def test_load_mcp_template_returns_parsed_json(self) -> None:
         self._create_required_json()
-        result = install_skills.load_mcp_template(self.repo_root)
+        result = installer.load_mcp_template(self.repo_root)
         self.assertIn("mcpServers", result)
         self.assertIn("auggie-mcp", result["mcpServers"])
         self.assertIn("zai-github-read", result["mcpServers"])
 
     def test_load_mcp_template_raises_when_file_missing(self) -> None:
         with self.assertRaises(FileNotFoundError):
-            install_skills.load_mcp_template(self.repo_root)
+            installer.load_mcp_template(self.repo_root)
 
     def test_resolve_zai_api_key_from_existing_config(self) -> None:
         claude_config = {
@@ -377,19 +377,19 @@ class McpTemplateTest(unittest.TestCase):
                 }
             }
         }
-        result = install_skills.resolve_zai_api_key(claude_config)
+        result = installer.resolve_zai_api_key(claude_config)
         self.assertEqual(result, "my-token-123")
 
     def test_resolve_zai_api_key_from_env_var(self) -> None:
         claude_config = {"mcpServers": {}}
         with mock.patch.dict("os.environ", {"ZAI_API_KEY": "env-token-456"}):
-            result = install_skills.resolve_zai_api_key(claude_config)
+            result = installer.resolve_zai_api_key(claude_config)
             self.assertEqual(result, "env-token-456")
 
     def test_resolve_zai_api_key_returns_none_when_unavailable(self) -> None:
         claude_config = {"mcpServers": {}}
         with mock.patch.dict("os.environ", {}, clear=True):
-            result = install_skills.resolve_zai_api_key(claude_config)
+            result = installer.resolve_zai_api_key(claude_config)
             self.assertIsNone(result)
 
     def test_resolve_zai_api_key_prefers_existing_over_env(self) -> None:
@@ -401,7 +401,7 @@ class McpTemplateTest(unittest.TestCase):
             }
         }
         with mock.patch.dict("os.environ", {"ZAI_API_KEY": "env-token"}):
-            result = install_skills.resolve_zai_api_key(claude_config)
+            result = installer.resolve_zai_api_key(claude_config)
             self.assertEqual(result, "config-token")
 
 
@@ -442,7 +442,7 @@ class MergeMcpConfigTest(unittest.TestCase):
         )
         self._write_claude_json({"mcpServers": {}})
 
-        installed = install_skills.merge_mcp_config(self.home, self.repo_root)
+        installed = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, ["auggie-mcp"])
         config = self._read_claude_json()
@@ -464,7 +464,7 @@ class MergeMcpConfigTest(unittest.TestCase):
         self._write_claude_json({"mcpServers": {}})
 
         with unittest.mock.patch.dict("os.environ", {"ZAI_API_KEY": "test-key"}):
-            installed = install_skills.merge_mcp_config(self.home, self.repo_root)
+            installed = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, ["zai-github-read"])
         config = self._read_claude_json()
@@ -486,7 +486,7 @@ class MergeMcpConfigTest(unittest.TestCase):
         self._write_claude_json({"mcpServers": {}})
 
         with unittest.mock.patch.dict("os.environ", {}, clear=True):
-            installed = install_skills.merge_mcp_config(self.home, self.repo_root)
+            installed = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, [])
         config = self._read_claude_json()
@@ -510,7 +510,7 @@ class MergeMcpConfigTest(unittest.TestCase):
             }
         )
 
-        install_skills.merge_mcp_config(self.home, self.repo_root)
+        installer.merge_mcp_config(self.home, self.repo_root)
 
         config = self._read_claude_json()
         self.assertIn("user-custom", config["mcpServers"])
@@ -528,7 +528,7 @@ class MergeMcpConfigTest(unittest.TestCase):
         )
         self.home.mkdir(parents=True, exist_ok=True)
 
-        installed = install_skills.merge_mcp_config(self.home, self.repo_root)
+        installed = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, ["auggie-mcp"])
         self.assertTrue(self.claude_json.exists())
@@ -547,8 +547,8 @@ class MergeMcpConfigTest(unittest.TestCase):
         )
         self._write_claude_json({"mcpServers": {}})
 
-        install_skills.merge_mcp_config(self.home, self.repo_root)
-        install_skills.merge_mcp_config(self.home, self.repo_root)
+        installer.merge_mcp_config(self.home, self.repo_root)
+        installer.merge_mcp_config(self.home, self.repo_root)
 
         config = self._read_claude_json()
         self.assertEqual(len(config["mcpServers"]), 1)
@@ -579,14 +579,14 @@ class RemoveManagedMcpsTest(unittest.TestCase):
                 "user-custom": {"type": "http", "url": "https://user.com/mcp"},
             }
         )
-        install_skills.remove_managed_mcps(self.home, ["auggie-mcp"])
+        installer.remove_managed_mcps(self.home, ["auggie-mcp"])
         config = self._read_claude_json()
         self.assertNotIn("auggie-mcp", config["mcpServers"])
         self.assertIn("user-custom", config["mcpServers"])
 
     def test_noop_when_claude_json_missing(self) -> None:
         self.home.mkdir(parents=True, exist_ok=True)
-        install_skills.remove_managed_mcps(self.home, ["auggie-mcp"])
+        installer.remove_managed_mcps(self.home, ["auggie-mcp"])
         self.assertFalse(self.claude_json.exists())
 
     def test_removes_empty_mcp_servers_key(self) -> None:
@@ -595,7 +595,7 @@ class RemoveManagedMcpsTest(unittest.TestCase):
                 "auggie-mcp": {"type": "stdio", "command": "auggie"},
             }
         )
-        install_skills.remove_managed_mcps(self.home, ["auggie-mcp"])
+        installer.remove_managed_mcps(self.home, ["auggie-mcp"])
         config = self._read_claude_json()
         self.assertEqual(config["mcpServers"], {})
 
@@ -643,7 +643,7 @@ class CollectMcpStatusTest(unittest.TestCase):
                 },
             }
         )
-        status = install_skills.collect_mcp_status(self.home, self.repo_root)
+        status = installer.collect_mcp_status(self.home, self.repo_root)
         self.assertEqual(status["configured"], ["auggie-mcp", "zai-github-read"])
         self.assertEqual(status["missing"], [])
 
@@ -663,7 +663,7 @@ class CollectMcpStatusTest(unittest.TestCase):
                 "auggie-mcp": {"type": "stdio", "command": "auggie"},
             }
         )
-        status = install_skills.collect_mcp_status(self.home, self.repo_root)
+        status = installer.collect_mcp_status(self.home, self.repo_root)
         self.assertEqual(status["configured"], ["auggie-mcp"])
         self.assertEqual(status["missing"], ["zai-github-read"])
 
@@ -674,9 +674,300 @@ class CollectMcpStatusTest(unittest.TestCase):
             }
         )
         self.home.mkdir(parents=True, exist_ok=True)
-        status = install_skills.collect_mcp_status(self.home, self.repo_root)
+        status = installer.collect_mcp_status(self.home, self.repo_root)
         self.assertEqual(status["configured"], [])
         self.assertEqual(status["missing"], ["auggie-mcp"])
+
+
+class CliArgParseTest(unittest.TestCase):
+    def test_parse_install_command(self) -> None:
+        args = cli.parse_args(["install"])
+        self.assertEqual(args.command, "install")
+        self.assertIsNone(args.group)
+
+    def test_parse_install_with_group(self) -> None:
+        args = cli.parse_args(["install", "--group", "obsidian"])
+        self.assertEqual(args.command, "install")
+        self.assertEqual(args.group, "obsidian")
+
+    def test_parse_status(self) -> None:
+        args = cli.parse_args(["status"])
+        self.assertEqual(args.command, "status")
+
+    def test_parse_update_with_group(self) -> None:
+        args = cli.parse_args(["update", "--group", "global"])
+        self.assertEqual(args.command, "update")
+        self.assertEqual(args.group, "global")
+
+    def test_parse_uninstall(self) -> None:
+        args = cli.parse_args(["uninstall"])
+        self.assertEqual(args.command, "uninstall")
+        self.assertIsNone(args.group)
+
+
+class GroupInstallTest(unittest.TestCase):
+    """分组安装逻辑的测试。"""
+
+    def setUp(self) -> None:
+        self.temp_dir = tempfile.TemporaryDirectory()
+        root = Path(self.temp_dir.name)
+        self.repo_root = root / "repo"
+        self.home = root / "home"
+
+        # 创建 global 组的 skills
+        skills_dir = self.repo_root / "skills"
+        for skill in ("dev-tdd", "dev-debug"):
+            skill_path = skills_dir / skill
+            skill_path.mkdir(parents=True)
+            (skill_path / "SKILL.md").write_text(f"# {skill}\n", encoding="utf-8")
+
+        # 创建 obsidian 组的 skills
+        for skill in ("obsidian-markdown", "obsidian-bases"):
+            skill_path = skills_dir / skill
+            skill_path.mkdir(parents=True)
+            (skill_path / "SKILL.md").write_text(f"# {skill}\n", encoding="utf-8")
+
+        # kimi agent
+        kimi_agent = self.repo_root / "kimi" / "agents" / "superpower"
+        kimi_agent.mkdir(parents=True)
+        (kimi_agent / "agent.yaml").write_text("name: superpower\n", encoding="utf-8")
+
+        # ks
+        ks = self.repo_root / "ks"
+        ks.write_text("#!/usr/bin/env bash\nexit 0\n", encoding="utf-8")
+
+        # MCP 配置
+        mcp_dir = self.repo_root / "mcp-configs"
+        mcp_dir.mkdir(parents=True, exist_ok=True)
+        (mcp_dir / "required.json").write_text(
+            json.dumps(
+                {
+                    "mcpServers": {
+                        "auggie-mcp": {
+                            "command": "auggie",
+                            "args": ["--mcp"],
+                            "type": "stdio",
+                        }
+                    }
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        # skills-install.yaml -- 使用绝对路径（测试 home 是临时目录）
+        self.config_path = self.repo_root / "skills-install.yaml"
+        self.config_path.write_text(
+            "\n".join(
+                [
+                    "groups:",
+                    "  global:",
+                    "    skills:",
+                    "      - dev-tdd",
+                    "      - dev-debug",
+                    "    targets:",
+                    f"      - {self.home}/.agents/skills",
+                    f"      - {self.home}/.claude/skills",
+                    "  obsidian:",
+                    "    skills:",
+                    "      - obsidian-markdown",
+                    "      - obsidian-bases",
+                    "    targets:",
+                    f"      - {self.home}/obsidian-vault/.obsidian/scripts/skills",
+                ]
+            ),
+            encoding="utf-8",
+        )
+
+        self.stdout = io.StringIO()
+        self.stderr = io.StringIO()
+
+    def tearDown(self) -> None:
+        self.temp_dir.cleanup()
+
+    def _v2_manifest_path(self) -> Path:
+        return installer._ce_manifest_path(self.home)
+
+    def _run_install_grouped(self, *, group: str | None = None) -> int:
+        return installer.command_install_grouped(
+            self.repo_root,
+            self.home,
+            self.config_path,
+            group=group,
+            stdout=self.stdout,
+        )
+
+    def _run_uninstall_grouped(self, *, group: str | None = None) -> int:
+        return installer.command_uninstall_grouped(
+            self.repo_root,
+            self.home,
+            self.config_path,
+            group=group,
+            stdout=self.stdout,
+            stderr=self.stderr,
+        )
+
+    def _run_status_grouped(self, *, group: str | None = None) -> int:
+        return installer.command_status_grouped(
+            self.repo_root,
+            self.home,
+            self.config_path,
+            group=group,
+            stdout=self.stdout,
+        )
+
+    # ---- tests ----
+
+    def test_install_all_groups(self) -> None:
+        """ce install 安装所有组：global skills 在全局 targets，obsidian skills 在项目 targets，kimi+ks 也被安装。"""  # noqa: E501
+        with mock.patch.dict("os.environ", {}, clear=True):
+            code = self._run_install_grouped()
+
+        self.assertEqual(code, 0)
+
+        # global 组：dev-tdd, dev-debug 在 .agents/skills 和 .claude/skills
+        for skill in ("dev-tdd", "dev-debug"):
+            for target_dir in (".agents/skills", ".claude/skills"):
+                link = self.home / target_dir / skill
+                self.assertTrue(
+                    link.is_symlink(),
+                    f"{link} should be a symlink",
+                )
+                self.assertEqual(
+                    link.resolve(),
+                    (self.repo_root / "skills" / skill).resolve(),
+                )
+
+        # obsidian 组：obsidian-markdown, obsidian-bases 在 ~/obsidian-vault/.obsidian/scripts/skills
+        # 但 targets 中 ~/obsidian-vault/... 展开后是 home/obsidian-vault/...
+        obsidian_target = self.home / "obsidian-vault/.obsidian/scripts/skills"
+        for skill in ("obsidian-markdown", "obsidian-bases"):
+            link = obsidian_target / skill
+            self.assertTrue(
+                link.is_symlink(),
+                f"{link} should be a symlink",
+            )
+            self.assertEqual(
+                link.resolve(),
+                (self.repo_root / "skills" / skill).resolve(),
+            )
+
+        # kimi agent + ks
+        kimi_link = self.home / ".kimi/agents/superpower"
+        ks_link = self.home / ".local/bin/ks"
+        self.assertTrue(kimi_link.is_symlink())
+        self.assertTrue(ks_link.is_symlink())
+
+    def test_install_single_group(self) -> None:
+        """ce install --group obsidian 只安装 obsidian 组。"""
+        with mock.patch.dict("os.environ", {}, clear=True):
+            code = self._run_install_grouped(group="obsidian")
+
+        self.assertEqual(code, 0)
+
+        # obsidian skills 已安装
+        obsidian_target = self.home / "obsidian-vault/.obsidian/scripts/skills"
+        for skill in ("obsidian-markdown", "obsidian-bases"):
+            link = obsidian_target / skill
+            self.assertTrue(link.is_symlink())
+
+        # global skills 未安装
+        for skill in ("dev-tdd", "dev-debug"):
+            self.assertFalse((self.home / ".agents/skills" / skill).exists())
+
+        # kimi/ks 也未安装（只有 global 组才处理）
+        self.assertFalse((self.home / ".kimi/agents/superpower").exists())
+
+    def test_install_writes_v2_manifest(self) -> None:
+        """安装后写入 v2 格式 manifest（有 version=2 和 groups 键）。"""
+        with mock.patch.dict("os.environ", {}, clear=True):
+            self._run_install_grouped()
+
+        manifest_path = self._v2_manifest_path()
+        self.assertTrue(manifest_path.exists())
+
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["version"], 2)
+        self.assertIn("groups", manifest)
+        self.assertIn("global", manifest["groups"])
+        self.assertIn("obsidian", manifest["groups"])
+
+        # global 组应有 mcp_servers
+        global_group = manifest["groups"]["global"]
+        self.assertIn("mcp_servers", global_group)
+        self.assertEqual(global_group["mcp_servers"], ["auggie-mcp"])
+
+    def test_uninstall_single_group(self) -> None:
+        """只卸载 obsidian 组，global 组不受影响。"""
+        with mock.patch.dict("os.environ", {}, clear=True):
+            self._run_install_grouped()
+
+        self.stdout = io.StringIO()
+        self.stderr = io.StringIO()
+        with mock.patch.dict("os.environ", {}, clear=True):
+            code = self._run_uninstall_grouped(group="obsidian")
+
+        self.assertEqual(code, 0)
+
+        # obsidian skills 被卸载
+        obsidian_target = self.home / "obsidian-vault/.obsidian/scripts/skills"
+        for skill in ("obsidian-markdown", "obsidian-bases"):
+            self.assertFalse(
+                (obsidian_target / skill).exists(),
+                f"{obsidian_target / skill} should be removed",
+            )
+
+        # global skills 仍然存在
+        for skill in ("dev-tdd", "dev-debug"):
+            self.assertTrue((self.home / ".agents/skills" / skill).is_symlink())
+
+        # manifest 仍然存在且只包含 global
+        manifest_path = self._v2_manifest_path()
+        self.assertTrue(manifest_path.exists())
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        self.assertIn("global", manifest["groups"])
+        self.assertNotIn("obsidian", manifest["groups"])
+
+    def test_status_shows_all_groups(self) -> None:
+        """status 输出包含 [global] 和 [obsidian]。"""
+        with mock.patch.dict("os.environ", {}, clear=True):
+            self._run_install_grouped()
+
+        self.stdout = io.StringIO()
+        with mock.patch.dict("os.environ", {}, clear=True):
+            code = self._run_status_grouped()
+
+        self.assertEqual(code, 0)
+        output = self.stdout.getvalue()
+        self.assertIn("[global]", output)
+        self.assertIn("[obsidian]", output)
+        self.assertIn("installed=2", output)
+
+    def test_status_single_group(self) -> None:
+        """status --group global 只显示 global。"""
+        with mock.patch.dict("os.environ", {}, clear=True):
+            self._run_install_grouped()
+
+        self.stdout = io.StringIO()
+        with mock.patch.dict("os.environ", {}, clear=True):
+            code = self._run_status_grouped(group="global")
+
+        self.assertEqual(code, 0)
+        output = self.stdout.getvalue()
+        self.assertIn("[global]", output)
+        self.assertNotIn("[obsidian]", output)
+
+    def test_install_no_config_falls_back_to_legacy(self) -> None:
+        """配置文件不存在时走旧版 command_install 路径。"""
+        # 删除配置文件
+        self.config_path.unlink()
+
+        with mock.patch.dict("os.environ", {}, clear=True):
+            code = self._run_install_grouped()
+
+        self.assertEqual(code, 0)
+        # 旧版 manifest 路径应被使用
+        legacy_manifest = installer._legacy_manifest_path(self.home)
+        self.assertTrue(legacy_manifest.exists())
 
 
 if __name__ == "__main__":

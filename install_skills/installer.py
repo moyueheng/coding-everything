@@ -11,12 +11,17 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, TextIO
 
+from install_skills.models import SkillGroup
+
 
 MANIFEST_RELATIVE_PATH = Path(".local/share/coding-everything/install-manifest.json")
 AGENTS_SKILLS_RELATIVE_DIR = Path(".agents/skills")
 CLAUDE_SKILLS_RELATIVE_DIR = Path(".claude/skills")
 KIMI_AGENT_RELATIVE_PATH = Path(".kimi/agents/superpower")
 KS_RELATIVE_PATH = Path(".local/bin/ks")
+
+CE_DIR = Path(".ce")
+CE_MANIFEST = Path(".ce/install-manifest.json")
 
 
 @dataclass(frozen=True)
@@ -218,7 +223,14 @@ def manifest_payload(
     }
 
 
+def load_manifest(path: Path) -> dict | None:
+    if not path.exists():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def write_manifest(
+    path: Path,
     repo_root: Path,
     targets: InstallTargets,
     skills: Iterable[str],
@@ -232,15 +244,9 @@ def write_manifest(
         installed_at=installed_at,
         mcp_servers=mcp_servers,
     )
-    targets.manifest_path.write_text(
+    path.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
-
-
-def load_manifest(targets: InstallTargets) -> dict | None:
-    if not targets.manifest_path.exists():
-        return None
-    return json.loads(targets.manifest_path.read_text(encoding="utf-8"))
 
 
 def install_skill_links(
@@ -265,10 +271,12 @@ def command_install(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) ->
     install_kimi_agent_and_ks(repo_root, targets)
     mcp_installed = merge_mcp_config(home, repo_root)
     installed_at = None
-    existing = load_manifest(targets)
+    manifest_path = build_targets(home).manifest_path
+    existing = load_manifest(manifest_path)
     if existing:
         installed_at = existing.get("installed_at")
     write_manifest(
+        manifest_path,
         repo_root,
         targets,
         skills,
@@ -282,7 +290,8 @@ def command_install(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) ->
 
 def command_update(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) -> int:
     targets = build_targets(home)
-    manifest = load_manifest(targets)
+    manifest_path = build_targets(home).manifest_path
+    manifest = load_manifest(manifest_path)
     if manifest is None:
         print("manifest missing; running install", file=stdout)
         return command_install(repo_root, home, stdout=stdout)
@@ -293,6 +302,7 @@ def command_update(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) -> 
     install_kimi_agent_and_ks(repo_root, targets)
     mcp_installed = merge_mcp_config(home, repo_root)
     write_manifest(
+        manifest_path,
         repo_root,
         targets,
         skills,
@@ -306,7 +316,8 @@ def command_update(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) -> 
 
 def collect_status(repo_root: Path, home: Path) -> tuple[dict | None, dict]:
     targets = build_targets(home)
-    manifest = load_manifest(targets)
+    manifest_path = build_targets(home).manifest_path
+    manifest = load_manifest(manifest_path)
     current_skills = discover_skills(repo_root)
     state: dict[str, list[str]] = {
         "installed": [],
@@ -375,7 +386,8 @@ def command_uninstall(
     stderr: TextIO = sys.stderr,
 ) -> int:
     targets = build_targets(home)
-    manifest = load_manifest(targets)
+    manifest_path = build_targets(home).manifest_path
+    manifest = load_manifest(manifest_path)
     if manifest is None:
         print("manifest missing; refusing uninstall", file=stderr)
         return 1
@@ -422,6 +434,274 @@ def main(
             resolved_repo_root, resolved_home, stdout=stdout, stderr=stderr
         )
     return command_status(resolved_repo_root, resolved_home, stdout=stdout)
+
+
+def _ce_manifest_path(home: Path) -> Path:
+    """返回 ~/.ce/install-manifest.json 路径。"""
+    return home / CE_MANIFEST
+
+
+def _legacy_manifest_path(home: Path) -> Path:
+    """返回旧版 manifest 路径。"""
+    return home / MANIFEST_RELATIVE_PATH
+
+
+def _migrate_v1_manifest(home: Path) -> None:
+    """如果旧路径存在 v1 manifest（无 version 字段），迁移为 v2 到新路径并删除旧文件。"""
+    legacy_path = _legacy_manifest_path(home)
+    if not legacy_path.exists():
+        return
+
+    old_data = load_manifest(legacy_path)
+    if old_data is None:
+        return
+
+    # 已经是 v2 格式则跳过
+    if old_data.get("version") == 2:
+        return
+
+    # 迁移：将 v1 扁平结构包装为 v2 分组结构
+    skills = old_data.get("skills", [])
+    targets_map = old_data.get("targets", {})
+    target_paths = list(targets_map.values()) if targets_map else []
+
+    v2_groups: dict[str, dict] = {
+        "global": {
+            "installed_at": old_data.get("installed_at", now_iso()),
+            "updated_at": now_iso(),
+            "targets": target_paths,
+            "skills": skills,
+            "mcp_servers": old_data.get("mcp_servers", []),
+            "repo_root": old_data.get("repo_root"),
+        }
+    }
+
+    v2_data = {
+        "version": 2,
+        "groups": v2_groups,
+    }
+
+    new_path = _ce_manifest_path(home)
+    new_path.parent.mkdir(parents=True, exist_ok=True)
+    new_path.write_text(
+        json.dumps(v2_data, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    legacy_path.unlink()
+
+
+def load_v2_manifest(home: Path) -> dict | None:
+    """从 ~/.ce/install-manifest.json 加载 v2 manifest。"""
+    path = _ce_manifest_path(home)
+    if not path.exists():
+        return None
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def write_v2_manifest(home: Path, data: dict) -> None:
+    """写入 ~/.ce/install-manifest.json。"""
+    path = _ce_manifest_path(home)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(data, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _install_group(
+    repo_root: Path,
+    home: Path,
+    group: SkillGroup,
+    manifest_data: dict,
+) -> dict:
+    """安装单个组的 skills 到该组的 targets。
+
+    如果组名是 "global"，额外处理 kimi agent、ks、MCP。
+    返回更新后的 manifest_data。
+    """
+    # 为每个 target 创建目录并 symlink 每个 skill
+    for skill_name in group.skills:
+        src = repo_root / "skills" / skill_name
+        for target in group.targets:
+            force_symlink(src, target / skill_name)
+
+    timestamp = now_iso()
+    mcp_servers: list[str] = []
+
+    # global 组额外处理 kimi agent、ks、MCP
+    if group.name == "global":
+        targets = build_targets(home)
+        ensure_parent_dirs(targets)
+        install_kimi_agent_and_ks(repo_root, targets)
+        mcp_installed = merge_mcp_config(home, repo_root)
+        mcp_servers = mcp_installed
+
+    group_record = manifest_data.get("groups", {}).get(group.name, {})
+    manifest_data.setdefault("groups", {})[group.name] = {
+        "installed_at": group_record.get("installed_at", timestamp),
+        "updated_at": timestamp,
+        "targets": [str(t) for t in group.targets],
+        "skills": list(group.skills),
+        "mcp_servers": mcp_servers,
+        "repo_root": str(repo_root),
+    }
+
+    return manifest_data
+
+
+def command_install_grouped(
+    repo_root: Path,
+    home: Path,
+    config_path: Path,
+    *,
+    group: str | None = None,
+    stdout: TextIO = sys.stdout,
+) -> int:
+    """分组安装入口。如果配置为空，退化为 command_install。"""
+    from install_skills.config import load_install_config
+
+    groups = load_install_config(config_path)
+    if not groups:
+        return command_install(repo_root, home, stdout=stdout)
+
+    # 迁移 v1 manifest
+    _migrate_v1_manifest(home)
+
+    manifest_data: dict = load_v2_manifest(home) or {"version": 2, "groups": {}}
+    manifest_data["version"] = 2
+
+    groups_to_install = {group: groups[group]} if group else groups
+
+    for group_name, grp in groups_to_install.items():
+        manifest_data = _install_group(repo_root, home, grp, manifest_data)
+        skill_count = len(grp.skills)
+        print(f"[{group_name}] installed {skill_count} skills", file=stdout)
+
+    write_v2_manifest(home, manifest_data)
+    return 0
+
+
+def command_uninstall_grouped(
+    repo_root: Path,
+    home: Path,
+    config_path: Path,
+    *,
+    group: str | None = None,
+    stdout: TextIO = sys.stdout,
+    stderr: TextIO = sys.stderr,
+) -> int:
+    """分组卸载：从 v2 manifest 读取，如果指定 group 只卸载该组。"""
+    manifest_data = load_v2_manifest(home)
+    if manifest_data is None:
+        print("manifest missing; refusing uninstall", file=stderr)
+        return 1
+
+    all_groups = manifest_data.get("groups", {})
+    if not all_groups:
+        print("no groups in manifest", file=stderr)
+        return 1
+
+    from install_skills.config import load_install_config
+
+    load_install_config(config_path)  # 验证配置可用
+    groups_to_uninstall = {group: all_groups[group]} if group else dict(all_groups)
+
+    for group_name, group_record in groups_to_uninstall.items():
+        if group_name not in all_groups:
+            print(f"[{group_name}] not found in manifest", file=stderr)
+            continue
+
+        targets = [Path(t) for t in group_record.get("targets", [])]
+        for skill_name in group_record.get("skills", []):
+            for target in targets:
+                remove_existing(target / skill_name)
+
+        # global 组额外清理 kimi/ks/MCP
+        if group_name == "global":
+            targets_obj = build_targets(home)
+            remove_existing(targets_obj.kimi_agent_dir)
+            remove_existing(targets_obj.ks_path)
+            managed_mcp = group_record.get("mcp_servers", [])
+            if managed_mcp:
+                remove_managed_mcps(home, managed_mcp)
+
+        print(f"[{group_name}] uninstalled", file=stdout)
+        del manifest_data["groups"][group_name]
+
+    # 如果还有组剩余，更新 manifest；否则删除
+    if manifest_data["groups"]:
+        write_v2_manifest(home, manifest_data)
+    else:
+        manifest_path = _ce_manifest_path(home)
+        remove_existing(manifest_path)
+
+    return 0
+
+
+def command_status_grouped(
+    repo_root: Path,
+    home: Path,
+    config_path: Path,
+    *,
+    group: str | None = None,
+    stdout: TextIO = sys.stdout,
+) -> int:
+    """分组状态：检查每个 skill 在每个 target 的 symlink 状态。"""
+    from install_skills.config import load_install_config
+
+    groups = load_install_config(config_path)
+    if not groups:
+        return command_status(repo_root, home, stdout=stdout)
+
+    load_v2_manifest(home)  # 预加载（用于后续状态对比）
+
+    groups_to_check = {group: groups[group]} if group else groups
+
+    for group_name, grp in groups_to_check.items():
+        installed_count = 0
+        missing_count = 0
+        drifted_count = 0
+
+        for skill_name in grp.skills:
+            src = repo_root / "skills" / skill_name
+            for target in grp.targets:
+                dst = target / skill_name
+                if not dst.exists() and not dst.is_symlink():
+                    missing_count += 1
+                elif not dst.is_symlink() or dst.resolve() != src.resolve():
+                    drifted_count += 1
+                else:
+                    installed_count += 1
+
+        print(
+            f"[{group_name}] installed={installed_count} missing={missing_count} drifted={drifted_count}",
+            file=stdout,
+        )
+
+        # global 组额外显示 MCP 状态
+        if group_name == "global":
+            mcp_status = collect_mcp_status(home, repo_root)
+            if mcp_status["configured"]:
+                print(
+                    "  mcp_configured=" + ",".join(mcp_status["configured"]),
+                    file=stdout,
+                )
+            if mcp_status["missing"]:
+                print(
+                    "  mcp_missing=" + ",".join(mcp_status["missing"]),
+                    file=stdout,
+                )
+        else:
+            # 非 global 组显示 targets 路径
+            for t in grp.targets:
+                # 显示相对于 home 的路径
+                try:
+                    rel = t.relative_to(home)
+                    print(f"  target=~/{rel}", file=stdout)
+                except ValueError:
+                    print(f"  target={t}", file=stdout)
+
+    return 0
 
 
 if __name__ == "__main__":
