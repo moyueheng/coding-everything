@@ -1,6 +1,6 @@
 # coding-everything
 
-个人 AI 编程助手配置集合，支持 Kimi、OpenCode 等平台，跟踪多个上游优秀配置仓库。
+个人 AI 编程助手配置集合，支持 Claude Code、Codex/OpenCode、Kimi 等平台，跟踪多个上游优秀配置仓库。
 
 ## 这是什么项目？
 
@@ -15,6 +15,11 @@
 
 ## 快速开始
 
+### 前置条件
+
+- [uv](https://docs.astral.sh/uv/) — Python 包管理器
+- Python >= 3.12
+
 ### 1. 克隆项目
 
 ```bash
@@ -28,40 +33,89 @@ cd coding-everything
 git submodule update --init --recursive
 ```
 
-### 2. 安装共享 skill
-
-使用仓库根目录的短入口：
+### 2. 安装 ce 命令
 
 ```bash
-make install
+uv tool install -e .
 ```
 
-这会默认完成：
+这会注册一个 `ce` 命令到 PATH 中，可全局直接使用。`-e` 表示 editable 模式，仓库代码改动后无需重新安装。
 
-- 共享 `skills/` 逐项合并安装到 `~/.agents/skills/` 和 `~/.claude/skills/`
-- 安装 `~/.kimi/agents/superpower`
-- 安装 `~/.local/bin/ks`
-
-如果需要更新、卸载或查看状态：
+### 3. 安装 skill
 
 ```bash
-make update
-make uninstall
-make status
+# 安装所有组
+ce install
 ```
 
-### 3. 验证安装
+默认安装两组 skill：
+
+| 组 | 安装位置 | 内容 |
+|------|------|------|
+| `global` | `~/.agents/skills/` + `~/.claude/skills/` | 开发工作流 skill、Kimi agent、ks 命令、MCP 配置 |
+| `obsidian` | `~/Documents/ObsidianVault/.claude/skills/` + `.agents/skills/` | Obsidian 编辑相关 skill（只在 vault 内生效） |
+
+### 4. 验证安装
 
 ```bash
-ls ~/.agents/skills/
-ls ~/.claude/skills/
+ce status
 ```
 
-应该能看到类似 `dev-using-skills`、`dev-search-first`、`learn-deep-research` 等 skill 目录。
+输出示例：
 
-## 核心skill
+```
+[global] installed=25 missing=0 drifted=0
+  mcp: configured=auggie-mcp,...
+[obsidian] installed=5 missing=0 drifted=0
+  targets: ~/Documents/ObsidianVault/.claude/skills, ~/Documents/ObsidianVault/.agents/skills
+```
 
-### 开发工作流skill
+## 常用命令
+
+```bash
+ce install                        # 安装所有组
+ce install --group obsidian       # 只安装 obsidian 组
+ce update                         # 更新所有组
+ce update --group global          # 只更新 global 组
+ce uninstall                      # 卸载所有组
+ce uninstall --group obsidian     # 只卸载 obsidian 组
+ce status                         # 查看所有组状态
+ce status --group global          # 只查看 global 组
+```
+
+## 分组安装机制
+
+skill 通过 `skills-install.yaml` 配置文件分组管理：
+
+```yaml
+groups:
+  global:
+    skills: [dev-tdd, dev-debugging, ...]
+    targets:
+      - ~/.agents/skills
+      - ~/.claude/skills
+
+  obsidian:
+    skills: [obsidian-markdown, obsidian-bases, ...]
+    targets:
+      - ~/Documents/ObsidianVault/.claude/skills
+      - ~/Documents/ObsidianVault/.agents/skills
+```
+
+- **global 组**：额外处理 kimi agent、ks 命令、MCP 服务器配置
+- **非 global 组**：只做 skill symlink，安装到项目级目录
+- 安装状态记录在 `~/.ce/install-manifest.json`
+- 每组可独立安装、更新、卸载，互不影响
+
+### 新增项目级分组
+
+1. 把 skill 目录放到 `skills/` 下
+2. 在 `skills-install.yaml` 中添加新组和 targets
+3. 运行 `ce install --group <新组名>`
+
+## 核心 skill
+
+### 开发工作流 skill
 
 | skill | 用途 | 触发场景 |
 |------|------|----------|
@@ -76,7 +130,7 @@ ls ~/.claude/skills/
 | `dev-finishing-branch` | 完成分支 | 合并代码前 |
 | `dev-git-worktrees` | Git 工作树 | 隔离多个任务 |
 
-### 辅助skill
+### 辅助 skill
 
 | skill | 用途 |
 |------|------|
@@ -92,6 +146,16 @@ ls ~/.claude/skills/
 | `learn-deep-research` | 通用深度调研与正式研究报告 |
 | `work-market-research` | 市场、竞品、价格与区域机会调研 |
 | `agent-browser` | 浏览器自动化 CLI 使用与网页交互 workflow |
+
+### Obsidian skill（项目级安装）
+
+| skill | 用途 |
+|------|------|
+| `obsidian-markdown` | Obsidian Flavored Markdown 编辑 |
+| `obsidian-bases` | Obsidian Bases 语法编辑 |
+| `json-canvas` | JSON Canvas 文件编辑 |
+| `obsidian-cli` | Obsidian CLI 与 vault 交互 |
+| `defuddle` | 网页提取为干净 markdown |
 
 ### 系统级 skill
 
@@ -118,9 +182,7 @@ ls ~/.claude/skills/
 
 **重要原则**：任何行动前先检查是否有适用的 skill。
 
-## 常用命令
-
-### Git Submodule 管理
+## Git Submodule 管理
 
 ```bash
 # 更新所有子模块到最新
@@ -138,53 +200,35 @@ uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
 
 约束：所有 `upstream/` 子模块都显式跟踪 `main` 分支，避免因远端默认分支变化导致漂移。执行 `git submodule update --remote` 后，还要把已变化的子模块切回本地 `main`，否则 Git 常会把工作树留在 detached HEAD。
 
-### 查看skill
-
-```bash
-# 列出所有可用skill
-ls ~/.agents/skills/
-
-# 查看skill详情
-cat ~/.agents/skills/dev-tdd/SKILL.md
-
-# 更新单独跟踪的 agent-browser skill
-./scripts/sync-agent-browser-skill.sh
-```
-
 ## 项目结构
 
 ```
 coding-everything/
-├── .agents/skills/          # 系统级 skills
-│   ├── setup/               # 安装入口
-│   └── update-upstream-repos/ # 上游更新与报告生成
-├── skills/                  # 跨平台共享 skills
-│   ├── dev-design-system/
-│   ├── dev-search-first/
-│   ├── dev-ui-styling/
-│   ├── dev-continuous-agent-loop/
-│   ├── agent-browser/         # 单独镜像跟踪的外部 skill
-│   ├── learn-deep-research/
-│   └── work-market-research/
-├── scripts/                  # 本地同步脚本
-│   └── sync-agent-browser-skill.sh
-├── Makefile                  # skills 安装短入口
-├── kimi/                    # Kimi 专属配置
-│   └── agents/superpower/   # Agent 配置
-├── opencode/                # OpenCode 配置（待完善）
-├── upstream/                # 上游仓库（子模块）
-│   ├── superpowers/         # superpowers 框架
-│   ├── everything-claude-code/  # Claude Code 配置
-│   ├── ui-ux-pro-max-skill/     # UI/UX Pro Max Skill
-│   ├── humanizer-zh/            # 中文去痕工具
-│   └── obsidian-skills/         # Obsidian agent skills
-└── docs/                    # 文档
-    └── upstream-updates/    # 上游更新报告
+├── install_skills/             # ce CLI 工具 Python 包
+│   ├── cli.py                  # 命令行入口
+│   ├── config.py               # skills-install.yaml 加载
+│   ├── installer.py            # symlink / manifest / MCP 逻辑
+│   └── models.py               # 数据结构
+├── pyproject.toml              # Python 包定义（ce CLI 入口）
+├── skills-install.yaml         # skill 分组安装配置
+├── skills/                     # 跨平台共享 skills
+│   ├── dev-tdd/
+│   ├── dev-brainstorming/
+│   ├── obsidian-markdown/      # 从上游迁移的 Obsidian skill
+│   ├── agent-browser/          # 单独镜像跟踪的外部 skill
+│   └── ...
+├── .agents/skills/             # 系统级 skills
+│   ├── setup/                  # 安装入口
+│   └── update-upstream-repos/  # 上游更新与报告生成
+├── kimi/                       # Kimi 专属配置
+│   └── agents/superpower/      # Agent 配置
+├── scripts/                    # 同步脚本
+├── mcp-configs/                # MCP 服务器配置模板
+├── upstream/                   # 上游仓库（子模块）
+└── docs/                       # 文档
 ```
 
 ## 文档
-
-详细文档请参考：
 
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
 - **[docs/kimi-skills-architecture.md](./docs/kimi-skills-architecture.md)** - 共享 skill 架构全景图和调用关系
