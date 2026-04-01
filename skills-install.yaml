@@ -38,5 +38,5 @@ groups:
       - obsidian-cli
       - defuddle
     targets:
-      - ~/Documents/ObsidianVault/.claude/skills
-      - ~/Documents/ObsidianVault/.agents/skills
+      - ~/00-Life/ob-note/.claude/skills
+      - ~/00-Life/ob-note/.agents/skills
