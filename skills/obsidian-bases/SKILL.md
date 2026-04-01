@@ -1,22 +1,22 @@
 ---
 name: obsidian-bases
-description: Create and edit Obsidian Bases (.base files) with views, filters, formulas, and summaries. Use when working with .base files, creating database-like views of notes, or when the user mentions Bases, table views, card views, filters, or formulas in Obsidian.
+description: 创建和编辑包含视图、过滤器、公式和汇总的 Obsidian Bases（.base 文件）。适用于处理 .base 文件、创建类似数据库的笔记视图，或当用户在 Obsidian 中提到 Bases、表格视图、卡片视图、过滤器或公式时。
 ---
 
 # Obsidian Bases Skill
 
 ## Workflow
 
-1. **Create the file**: Create a `.base` file in the vault with valid YAML content
-2. **Define scope**: Add `filters` to select which notes appear (by tag, folder, property, or date)
-3. **Add formulas** (optional): Define computed properties in the `formulas` section
-4. **Configure views**: Add one or more views (`table`, `cards`, `list`, or `map`) with `order` specifying which properties to display
-5. **Validate**: Verify the file is valid YAML with no syntax errors. Check that all referenced properties and formulas exist. Common issues: unquoted strings containing special YAML characters, mismatched quotes in formula expressions, referencing `formula.X` without defining `X` in `formulas`
-6. **Test in Obsidian**: Open the `.base` file in Obsidian to confirm the view renders correctly. If it shows a YAML error, check quoting rules below
+1. **Create the file**：在 vault 中创建一个包含合法 YAML 内容的 `.base` 文件
+2. **Define scope**：添加 `filters` 来选择哪些笔记会出现（按标签、文件夹、property 或日期）
+3. **Add formulas**（可选）：在 `formulas` 部分定义计算属性
+4. **Configure views**：添加一个或多个视图（`table`、`cards`、`list` 或 `map`），并在 `order` 中指定显示哪些属性
+5. **Validate**：确认文件是合法 YAML 且没有语法错误。检查所有引用的属性和公式都存在。常见问题：包含特殊 YAML 字符但未加引号的字符串、公式表达式中的引号不匹配、引用了 `formula.X` 但没有在 `formulas` 中定义 `X`
+6. **Test in Obsidian**：在 Obsidian 中打开该 `.base` 文件，确认视图渲染正确。如果出现 YAML 错误，检查下方的引号规则
 
 ## Schema
 
-Base files use the `.base` extension and contain valid YAML.
+Base 文件使用 `.base` 扩展名，并包含合法 YAML。
 
 ```yaml
 # Global filters apply to ALL views in the base
@@ -64,7 +64,7 @@ views:
 
 ## Filter Syntax
 
-Filters narrow down results. They can be applied globally or per-view.
+过滤器用于缩小结果范围。它们既可以全局应用，也可以按视图单独应用。
 
 ### Filter Structure
 
@@ -105,51 +105,51 @@ filters:
 
 | Operator | Description |
 |----------|-------------|
-| `==` | equals |
-| `!=` | not equal |
-| `>` | greater than |
-| `<` | less than |
-| `>=` | greater than or equal |
-| `<=` | less than or equal |
-| `&&` | logical and |
-| `\|\|` | logical or |
-| <code>!</code> | logical not |
+| `==` | 等于 |
+| `!=` | 不等于 |
+| `>` | 大于 |
+| `<` | 小于 |
+| `>=` | 大于等于 |
+| `<=` | 小于等于 |
+| `&&` | 逻辑与 |
+| `\|\|` | 逻辑或 |
+| <code>!</code> | 逻辑非 |
 
 ## Properties
 
 ### Three Types of Properties
 
-1. **Note properties** - From frontmatter: `note.author` or just `author`
-2. **File properties** - File metadata: `file.name`, `file.mtime`, etc.
-3. **Formula properties** - Computed values: `formula.my_formula`
+1. **Note properties**：来自 frontmatter，例如 `note.author` 或直接写 `author`
+2. **File properties**：文件元数据，例如 `file.name`、`file.mtime`
+3. **Formula properties**：计算得到的值，例如 `formula.my_formula`
 
 ### File Properties Reference
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `file.name` | String | File name |
-| `file.basename` | String | File name without extension |
-| `file.path` | String | Full path to file |
-| `file.folder` | String | Parent folder path |
-| `file.ext` | String | File extension |
-| `file.size` | Number | File size in bytes |
-| `file.ctime` | Date | Created time |
-| `file.mtime` | Date | Modified time |
-| `file.tags` | List | All tags in file |
-| `file.links` | List | Internal links in file |
-| `file.backlinks` | List | Files linking to this file |
-| `file.embeds` | List | Embeds in the note |
-| `file.properties` | Object | All frontmatter properties |
+| `file.name` | String | 文件名 |
+| `file.basename` | String | 不含扩展名的文件名 |
+| `file.path` | String | 文件完整路径 |
+| `file.folder` | String | 父文件夹路径 |
+| `file.ext` | String | 文件扩展名 |
+| `file.size` | Number | 文件大小（字节） |
+| `file.ctime` | Date | 创建时间 |
+| `file.mtime` | Date | 修改时间 |
+| `file.tags` | List | 文件中的所有标签 |
+| `file.links` | List | 文件中的内部链接 |
+| `file.backlinks` | List | 链接到此文件的文件 |
+| `file.embeds` | List | 笔记中的嵌入内容 |
+| `file.properties` | Object | 所有 frontmatter 属性 |
 
 ### The `this` Keyword
 
-- In main content area: refers to the base file itself
-- When embedded: refers to the embedding file
-- In sidebar: refers to the active file in main content
+- 在主内容区中：指向 base 文件本身
+- 被嵌入时：指向嵌入它的文件
+- 在侧边栏中：指向主内容区当前激活的文件
 
 ## Formula Syntax
 
-Formulas compute values from properties. Defined in the `formulas` section.
+公式用于基于属性计算值，定义在 `formulas` 部分。
 
 ```yaml
 formulas:
@@ -174,25 +174,25 @@ formulas:
 
 ## Key Functions
 
-Most commonly used functions. For the complete reference of all types (Date, String, Number, List, File, Link, Object, RegExp), see [FUNCTIONS_REFERENCE.md](references/FUNCTIONS_REFERENCE.md).
+最常用的函数列在下面。所有类型（Date、String、Number、List、File、Link、Object、RegExp）的完整参考见 [FUNCTIONS_REFERENCE.md](references/FUNCTIONS_REFERENCE.md)。
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `date()` | `date(string): date` | Parse string to date (`YYYY-MM-DD HH:mm:ss`) |
-| `now()` | `now(): date` | Current date and time |
-| `today()` | `today(): date` | Current date (time = 00:00:00) |
-| `if()` | `if(condition, trueResult, falseResult?)` | Conditional |
-| `duration()` | `duration(string): duration` | Parse duration string |
-| `file()` | `file(path): file` | Get file object |
-| `link()` | `link(path, display?): Link` | Create a link |
+| `date()` | `date(string): date` | 将字符串解析为日期（`YYYY-MM-DD HH:mm:ss`） |
+| `now()` | `now(): date` | 当前日期和时间 |
+| `today()` | `today(): date` | 当前日期（时间 = `00:00:00`） |
+| `if()` | `if(condition, trueResult, falseResult?)` | 条件判断 |
+| `duration()` | `duration(string): duration` | 解析 duration 字符串 |
+| `file()` | `file(path): file` | 获取文件对象 |
+| `link()` | `link(path, display?): Link` | 创建链接 |
 
 ### Duration Type
 
-When subtracting two dates, the result is a **Duration** type (not a number).
+两个日期相减时，结果是 **Duration** 类型，而不是数字。
 
-**Duration Fields:** `duration.days`, `duration.hours`, `duration.minutes`, `duration.seconds`, `duration.milliseconds`
+**Duration Fields：** `duration.days`、`duration.hours`、`duration.minutes`、`duration.seconds`、`duration.milliseconds`
 
-**IMPORTANT:** Duration does NOT support `.round()`, `.floor()`, `.ceil()` directly. Access a numeric field first (like `.days`), then apply number functions.
+**IMPORTANT：** Duration 不能直接使用 `.round()`、`.floor()`、`.ceil()`。必须先取出数值字段（如 `.days`），再应用数字函数。
 
 ```yaml
 # CORRECT: Calculate days between dates
@@ -257,7 +257,7 @@ views:
 
 ### Map View
 
-Requires latitude/longitude properties and the Maps community plugin.
+需要经纬度属性以及 Maps 社区插件。
 
 ```yaml
 views:
@@ -270,21 +270,21 @@ views:
 
 | Name | Input Type | Description |
 |------|------------|-------------|
-| `Average` | Number | Mathematical mean |
-| `Min` | Number | Smallest number |
-| `Max` | Number | Largest number |
-| `Sum` | Number | Sum of all numbers |
-| `Range` | Number | Max - Min |
-| `Median` | Number | Mathematical median |
-| `Stddev` | Number | Standard deviation |
-| `Earliest` | Date | Earliest date |
-| `Latest` | Date | Latest date |
-| `Range` | Date | Latest - Earliest |
-| `Checked` | Boolean | Count of true values |
-| `Unchecked` | Boolean | Count of false values |
-| `Empty` | Any | Count of empty values |
-| `Filled` | Any | Count of non-empty values |
-| `Unique` | Any | Count of unique values |
+| `Average` | Number | 算术平均值 |
+| `Min` | Number | 最小值 |
+| `Max` | Number | 最大值 |
+| `Sum` | Number | 总和 |
+| `Range` | Number | 最大值 - 最小值 |
+| `Median` | Number | 中位数 |
+| `Stddev` | Number | 标准差 |
+| `Earliest` | Date | 最早日期 |
+| `Latest` | Date | 最晚日期 |
+| `Range` | Date | 最晚日期 - 最早日期 |
+| `Checked` | Boolean | `true` 值的数量 |
+| `Unchecked` | Boolean | `false` 值的数量 |
+| `Empty` | Any | 空值数量 |
+| `Filled` | Any | 非空值数量 |
+| `Unique` | Any | 唯一值数量 |
 
 ## Complete Examples
 
@@ -413,7 +413,7 @@ views:
 
 ## Embedding Bases
 
-Embed in Markdown files:
+在 Markdown 文件中嵌入：
 
 ```markdown
 ![[MyBase.base]]
@@ -424,15 +424,15 @@ Embed in Markdown files:
 
 ## YAML Quoting Rules
 
-- Use single quotes for formulas containing double quotes: `'if(done, "Yes", "No")'`
-- Use double quotes for simple strings: `"My View Name"`
-- Escape nested quotes properly in complex expressions
+- 公式中如果包含双引号，使用单引号包裹整个公式：`'if(done, "Yes", "No")'`
+- 简单字符串使用双引号：`"My View Name"`
+- 复杂表达式中的嵌套引号要正确转义
 
 ## Troubleshooting
 
 ### YAML Syntax Errors
 
-**Unquoted special characters**: Strings containing `:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` `` must be quoted.
+**未加引号的特殊字符**：字符串中如果包含 `:`、`{`、`}`、`[`、`]`、`,`、`&`、`*`、`#`、`?`、`|`、`-`、`<`、`>`、`=`、`!`、`%`、`@`、`` ` ``，必须加引号。
 
 ```yaml
 # WRONG - colon in unquoted string
@@ -442,7 +442,7 @@ displayName: Status: Active
 displayName: "Status: Active"
 ```
 
-**Mismatched quotes in formulas**: When a formula contains double quotes, wrap the entire formula in single quotes.
+**公式中的引号不匹配**：如果公式内部含有双引号，用单引号包住整个公式。
 
 ```yaml
 # WRONG - double quotes inside double quotes
@@ -456,7 +456,7 @@ formulas:
 
 ### Common Formula Errors
 
-**Duration math without field access**: Subtracting dates returns a Duration, not a number. Always access `.days`, `.hours`, etc.
+**未访问字段就直接做 Duration 运算**：日期相减返回的是 Duration，不是数字。必须始终访问 `.days`、`.hours` 等字段。
 
 ```yaml
 # WRONG - Duration is not a number
@@ -466,7 +466,7 @@ formulas:
 "(now() - file.ctime).days.round(0)"
 ```
 
-**Missing null checks**: Properties may not exist on all notes. Use `if()` to guard.
+**缺少空值保护**：某些属性并不会在所有笔记中都存在。使用 `if()` 做保护。
 
 ```yaml
 # WRONG - crashes if due_date is empty
@@ -476,7 +476,7 @@ formulas:
 'if(due_date, (date(due_date) - today()).days, "")'
 ```
 
-**Referencing undefined formulas**: Ensure every `formula.X` in `order` or `properties` has a matching entry in `formulas`.
+**引用了未定义的公式**：确保 `order` 或 `properties` 中出现的每个 `formula.X`，在 `formulas` 中都有对应定义。
 
 ```yaml
 # This will fail silently if 'total' is not defined in formulas
