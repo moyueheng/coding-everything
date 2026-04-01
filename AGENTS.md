@@ -2,7 +2,7 @@
 
 ## 目录
 
-- [共享 Skills 架构图](./docs/kimi-skills-architecture.md) - 技能关系图和调用流程可视化
+- [共享 Skills 架构图](./docs/skills-architecture.md) - 技能关系图和调用流程可视化
 - [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
