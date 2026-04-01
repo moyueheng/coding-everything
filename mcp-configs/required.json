@@ -26,6 +26,12 @@
       "headers": {
         "Authorization": "Bearer {{ZAI_API_KEY}}"
       }
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"],
+      "type": "stdio",
+      "_install_note": "无需额外安装，npx 自动拉取。两个核心工具：1) resolve-library-id：按库名搜索获取 Context7 兼容 ID；2) query-docs：用 libraryId + topic 检索最新文档片段。调用顺序：先 resolve-library-id 拿到 ID，再 query-docs 查文档。文档：https://zread.ai/upstash/context7/2-quick-start"
     }
   }
 }
