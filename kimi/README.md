@@ -5,7 +5,7 @@
 ## 目录
 
 - [快速开始](#快速开始)
-  - [使用 Makefile（推荐）](#使用-makefile推荐)
+  - [使用 ce 命令（推荐）](#使用-ce-命令推荐)
   - [直接使用 ks](#直接使用-ks)
 - [包含内容](#包含内容)
   - [Skills (24 个)](#skills-24-个)
@@ -24,23 +24,23 @@
 
 ## 快速开始
 
-### 使用 Makefile（推荐）
+### 使用 ce 命令（推荐）
 
 ```bash
-# 查看所有可用命令
-make help
+# 安装 ce CLI（一次性）
+uv tool install -e .
 
-# 安装配置
-make install
-
-# 更新配置
-make update
+# 安装所有 skill（含 kimi agent）
+ce install
 
 # 查看状态
-make status
+ce status
 
-# 卸载配置
-make uninstall
+# 更新
+ce update
+
+# 卸载
+ce uninstall
 ```
 
 ### 直接使用 ks
@@ -51,7 +51,7 @@ ks
 
 ## 包含内容
 
-### Skills (24 个)
+### Skills (25 个)
 
 #### 核心 workflow skill（严格类型）
 
@@ -86,6 +86,7 @@ ks
 | `work-market-research` | 市场、竞品、价格与区域机会调研 |
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 |
+| `agent-browser` | 浏览器自动化 CLI 使用与网页交互 workflow |
 
 ### Agent
 
@@ -104,6 +105,7 @@ uv run python -m unittest tests.test_install_skills -v
 - Skills: `~/.agents/skills/` 和 `~/.claude/skills/`
 - Agent: `~/.kimi/agents/superpower/`（仅 Kimi）
 - 快捷入口: `~/.local/bin/ks`
+- Manifest: `~/.ce/install-manifest.json`
 
 ## 使用方法
 
@@ -131,31 +133,15 @@ alias ks='kimi -y --agent-file ~/.kimi/agents/superpower/agent.yaml'
 
 ```text
 coding-everything/
+├── install_skills/             # ce CLI 工具
+├── pyproject.toml              # ce CLI 入口定义
+├── skills-install.yaml         # 分组安装配置
 ├── skills/                      # 共享 skills（仓库根目录）
 │   ├── dev-using-skills/
 │   ├── dev-brainstorming/
-│   ├── dev-debugging/
-│   ├── dev-tdd/
-│   ├── dev-writing-plans/
-│   ├── dev-executing-plans/
-│   ├── dev-git-worktrees/
-│   ├── dev-requesting-review/
-│   ├── dev-verification/
-│   ├── dev-finishing-branch/
-│   ├── dev-writing-skills/
-│   ├── dev-code-cleanup/
-│   ├── dev-update-codemaps/
-│   ├── dev-search-first/
-│   ├── dev-backend-patterns/
-│   ├── dev-frontend-patterns/
-│   ├── dev-design-system/
-│   ├── dev-ui-styling/
-│   ├── dev-continuous-agent-loop/
-│   ├── dev-e2e-testing/
-│   ├── learn-deep-research/
-│   ├── work-market-research/
-│   ├── tool-humanizer-zh/
-│   └── tool-macos-hidpi/
+│   ├── ...                     # 其余 dev-/learn-/work-/tool- skill
+│   ├── obsidian-markdown/      # Obsidian skill（项目级安装）
+│   └── agent-browser/          # 浏览器自动化 skill
 └── kimi/
     ├── README.md                # 本文件
     └── agents/

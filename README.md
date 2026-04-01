@@ -53,7 +53,7 @@ ce install
 | 组 | 安装位置 | 内容 |
 |------|------|------|
 | `global` | `~/.agents/skills/` + `~/.claude/skills/` | 开发工作流 skill、Kimi agent、ks 命令、MCP 配置 |
-| `obsidian` | `~/Documents/ObsidianVault/.claude/skills/` + `.agents/skills/` | Obsidian 编辑相关 skill（只在 vault 内生效） |
+| `obsidian` | `~/00-Life/ob-note/.claude/skills/` + `.agents/skills/` | Obsidian 编辑相关 skill（只在 vault 内生效） |
 
 ### 4. 验证安装
 
@@ -67,7 +67,7 @@ ce status
 [global] installed=25 missing=0 drifted=0
   mcp: configured=auggie-mcp,...
 [obsidian] installed=5 missing=0 drifted=0
-  targets: ~/Documents/ObsidianVault/.claude/skills, ~/Documents/ObsidianVault/.agents/skills
+  targets: ~/00-Life/ob-note/.claude/skills, ~/00-Life/ob-note/.agents/skills
 ```
 
 ## 常用命令
@@ -98,8 +98,8 @@ groups:
   obsidian:
     skills: [obsidian-markdown, obsidian-bases, ...]
     targets:
-      - ~/Documents/ObsidianVault/.claude/skills
-      - ~/Documents/ObsidianVault/.agents/skills
+      - ~/00-Life/ob-note/.claude/skills
+      - ~/00-Life/ob-note/.agents/skills
 ```
 
 - **global 组**：额外处理 kimi agent、ks 命令、MCP 服务器配置
