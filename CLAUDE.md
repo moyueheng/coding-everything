@@ -176,7 +176,7 @@ coding-everything/
 
 **简介**: 为 AI 编程助手设计的综合软件开发工作流框架
 
-**当前跟踪版本**: v5.0.6（2026-03-24）
+**当前跟踪版本**: v5.0.7（2026-03-31）
 
 **核心skill**:
 - `using-superpowers` - skill使用入口
@@ -192,6 +192,7 @@ coding-everything/
 **同步状态**: 
 - ✅ `dev-brainstorming` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
 - ✅ `dev-writing-plans` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
+- ✅ 当前跟踪到 `v5.0.7`，新增 GitHub Copilot CLI 支持并修复 OpenCode bootstrap / skills path 一致性
 
 ### 2. everything-claude-code
 
