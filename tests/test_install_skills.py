@@ -956,6 +956,39 @@ class GroupInstallTest(unittest.TestCase):
         self.assertIn("[global]", output)
         self.assertNotIn("[obsidian]", output)
 
+    def test_install_skips_when_target_dir_symlinks_to_source_skills(
+        self,
+    ) -> None:
+        """当 target 目录是 source skills 目录的 symlink 时，不应创建自引用 symlink。"""
+        # 让 ~/.claude/skills 成为 repo skills 目录的 symlink
+        claude_skills = self.home / ".claude/skills"
+        claude_skills.parent.mkdir(parents=True, exist_ok=True)
+        claude_skills.symlink_to(self.repo_root / "skills")
+
+        with mock.patch.dict("os.environ", {}, clear=True):
+            code = self._run_install_grouped()
+
+        self.assertEqual(code, 0)
+
+        # ~/.claude/skills/dev-tdd 不应该是 symlink（否则就是自引用）
+        for skill in ("dev-tdd", "dev-debug"):
+            link = self.home / ".claude/skills" / skill
+            # 如果 is_symlink() 为 True，说明创建了自引用 symlink
+            self.assertFalse(
+                link.is_symlink(),
+                f"{skill} should NOT be a symlink (target dir symlinks to source)",
+            )
+            # 但目录本身应该存在（因为是 source 目录的直接子目录）
+            self.assertTrue(
+                link.is_dir(),
+                f"{skill} should still be a real directory",
+            )
+
+        # .agents/skills 应该正常创建 symlink（因为它不指向 source）
+        for skill in ("dev-tdd", "dev-debug"):
+            link = self.home / ".agents/skills" / skill
+            self.assertTrue(link.is_symlink())
+
     def test_install_no_config_falls_back_to_legacy(self) -> None:
         """配置文件不存在时走旧版 command_install 路径。"""
         # 删除配置文件

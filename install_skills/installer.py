@@ -185,6 +185,11 @@ def remove_existing(path: Path) -> None:
 
 def force_symlink(src: Path, dst: Path) -> None:
     dst.parent.mkdir(parents=True, exist_ok=True)
+    # 如果解析后 dst 等于 src，创建 symlink 会变成自引用（循环）
+    # 例如：当 ~/.claude/skills 是 repo/skills 的 symlink 时，
+    # ~/.claude/skills/foo -> repo/skills/foo 实际指向自身
+    if src.resolve() == (dst.parent.resolve() / dst.name):
+        return
     remove_existing(dst)
     dst.symlink_to(src)
 
