@@ -11,7 +11,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, TextIO
 
-from install_skills.models import SkillGroup
+from install_skills.models import SkillGroup, UserConfig, GroupConfig
+from install_skills.config import load_user_config, get_default_config_path
 
 
 MANIFEST_RELATIVE_PATH = Path(".local/share/coding-everything/install-manifest.json")
@@ -815,6 +816,55 @@ def command_doctor(
         return 1
 
     print("\n✓ 所有问题已修复，可以运行 'ce install'", file=stdout)
+    return 0
+
+
+def command_install_from_config(
+    repo_root: Path,
+    home: Path,
+    *,
+    group: str | None = None,
+    stdout: TextIO = sys.stdout,
+) -> int:
+    """从 UserConfig ( ~/.ce/config.yaml ) 安装。"""
+    config_path = get_default_config_path(home)
+
+    # 加载用户配置
+    config = load_user_config(config_path)
+    if config is None:
+        print(f"配置未找到: {config_path}")
+        print("请先运行: ce init")
+        return 1
+
+    # 迁移 v1 manifest（保持向后兼容）
+    _migrate_v1_manifest(home)
+
+    manifest_data = load_v2_manifest(home) or {"version": 2, "groups": {}}
+    manifest_data["version"] = 2
+
+    groups_to_install = {group: config.groups[group]} if group else config.groups
+
+    for group_name, grp in groups_to_install.items():
+        if group_name not in config.groups:
+            print(f"[{group_name}] 未在配置中定义", file=stdout)
+            continue
+
+        # 创建 GroupConfig 兼容的临时对象用于安装
+        from dataclasses import replace
+        install_group = replace(grp, name=group_name)
+
+        manifest_data = _install_group(repo_root, home, install_group, manifest_data)
+        skill_count = len(grp.skills)
+        print(f"[{group_name}] installed {skill_count} skills", file=stdout)
+
+        # global 组额外显示 MCP 安装情况
+        if group_name == "global":
+            group_record = manifest_data.get("groups", {}).get(group_name, {})
+            mcp_servers = group_record.get("mcp_servers", [])
+            if mcp_servers:
+                print(f"[{group_name}] mcp installed: {','.join(mcp_servers)}", file=stdout)
+
+    write_v2_manifest(home, manifest_data)
     return 0
 
 
