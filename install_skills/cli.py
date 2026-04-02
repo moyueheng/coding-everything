@@ -262,6 +262,32 @@ def main(
     if args.command == "add-target":
         return command_add_target(args.target, args.group, resolved_home, stdout=stdout)
 
+    # 检查是否存在用户级配置 ~/.ce/config.yaml
+    user_config_path = get_default_config_path(resolved_home)
+    if user_config_path.exists():
+        # 使用新的 UserConfig 模式
+        if args.command == "install":
+            return installer.command_install_from_config(
+                resolved_repo_root, resolved_home, group=args.group, stdout=stdout
+            )
+        if args.command == "update":
+            return installer.command_install_from_config(
+                resolved_repo_root, resolved_home, group=args.group, stdout=stdout
+            )
+        if args.command == "uninstall":
+            return installer.command_uninstall_from_config(
+                resolved_repo_root, resolved_home, group=args.group, stdout=stdout, stderr=stderr
+            )
+        if args.command == "doctor":
+            return installer.command_doctor_from_config(
+                resolved_repo_root, resolved_home, stdout=stdout
+            )
+        if args.command == "status":
+            return installer.command_status_from_config(
+                resolved_repo_root, resolved_home, group=args.group, stdout=stdout
+            )
+
+    # 退回到旧版逻辑（向后兼容）
     config_path = resolved_repo_root / "skills-install.yaml"
     use_grouped = config_path.is_file()
 

@@ -868,5 +868,181 @@ def command_install_from_config(
     return 0
 
 
+def command_uninstall_from_config(
+    repo_root: Path,
+    home: Path,
+    *,
+    group: str | None = None,
+    stdout: TextIO = sys.stdout,
+    stderr: TextIO = sys.stderr,
+) -> int:
+    """从 v2 manifest 卸载（基于用户配置）。"""
+    manifest_data = load_v2_manifest(home)
+    if manifest_data is None:
+        print("manifest missing; refusing uninstall", file=stderr)
+        return 1
+
+    all_groups = manifest_data.get("groups", {})
+    if not all_groups:
+        print("no groups in manifest", file=stderr)
+        return 1
+
+    groups_to_uninstall = {group: all_groups[group]} if group else dict(all_groups)
+
+    for group_name, group_record in groups_to_uninstall.items():
+        if group_name not in all_groups:
+            print(f"[{group_name}] not found in manifest", file=stderr)
+            continue
+
+        targets = [Path(t) for t in group_record.get("targets", [])]
+        for skill_name in group_record.get("skills", []):
+            for target in targets:
+                remove_existing(target / skill_name)
+
+        # global 组额外清理 kimi/ks/MCP
+        if group_name == "global":
+            targets_obj = build_targets(home)
+            remove_existing(targets_obj.kimi_agent_dir)
+            remove_existing(targets_obj.ks_path)
+            managed_mcp = group_record.get("mcp_servers", [])
+            if managed_mcp:
+                remove_managed_mcps(home, managed_mcp)
+
+        print(f"[{group_name}] uninstalled", file=stdout)
+        del manifest_data["groups"][group_name]
+
+    # 如果还有组剩余，更新 manifest；否则删除
+    if manifest_data["groups"]:
+        write_v2_manifest(home, manifest_data)
+    else:
+        manifest_path = _ce_manifest_path(home)
+        remove_existing(manifest_path)
+
+    return 0
+
+
+def command_status_from_config(
+    repo_root: Path,
+    home: Path,
+    *,
+    group: str | None = None,
+    stdout: TextIO = sys.stdout,
+) -> int:
+    """从用户配置检查状态。"""
+    config_path = get_default_config_path(home)
+    config = load_user_config(config_path)
+
+    if config is None:
+        print("state=uninitialized")
+        print("hint: run 'ce init' first")
+        return 0
+
+    load_v2_manifest(home)  # 预加载
+
+    groups_to_check = {group: config.groups[group]} if group else config.groups
+
+    for group_name, grp in groups_to_check.items():
+        installed_count = 0
+        missing_count = 0
+        drifted_count = 0
+
+        for skill_name in grp.skills:
+            src = repo_root / "skills" / skill_name
+            for target in grp.targets:
+                dst = target / skill_name
+                if not dst.exists() and not dst.is_symlink():
+                    missing_count += 1
+                elif not dst.is_symlink() or dst.resolve() != src.resolve():
+                    drifted_count += 1
+                else:
+                    installed_count += 1
+
+        print(
+            f"[{group_name}] installed={installed_count} missing={missing_count} drifted={drifted_count}",
+            file=stdout,
+        )
+
+        # global 组额外显示 MCP 状态
+        if group_name == "global":
+            mcp_status = collect_mcp_status(home, repo_root)
+            if mcp_status["configured"]:
+                print(
+                    "  mcp_configured=" + ",".join(mcp_status["configured"]),
+                    file=stdout,
+                )
+            if mcp_status["missing"]:
+                print(
+                    "  mcp_missing=" + ",".join(mcp_status["missing"]),
+                    file=stdout,
+                )
+        else:
+            # 非 global 组显示 targets 路径
+            for t in grp.targets:
+                try:
+                    rel = t.relative_to(home)
+                    print(f"  target=~/{rel}", file=stdout)
+                except ValueError:
+                    print(f"  target={t}", file=stdout)
+
+    return 0
+
+
+def command_doctor_from_config(
+    repo_root: Path,
+    home: Path,
+    *,
+    stdout: TextIO = sys.stdout,
+) -> int:
+    """诊断安装环境问题。"""
+    config_path = get_default_config_path(home)
+    config = load_user_config(config_path)
+
+    if config is None:
+        print("配置未找到，请先运行: ce init")
+        return 1
+
+    issues_found = []
+    issues_fixed = []
+
+    def check_path(path: Path, description: str) -> None:
+        """检查路径是否存在问题。"""
+        if path.is_symlink() and not path.exists():
+            issues_found.append(f"{description}: {path} (损坏的符号链接 -> {path.readlink()})")
+            try:
+                path.unlink()
+                issues_fixed.append(f"{description}: 已删除损坏的符号链接")
+            except OSError as e:
+                issues_found.append(f"{description}: 无法删除 - {e}")
+        elif path.is_symlink() and path.is_dir():
+            issues_found.append(f"{description}: {path} 是符号链接而非目录")
+
+    # 检查所有组的 targets
+    for group_name, group in config.groups.items():
+        for target in group.targets:
+            check_path(target, f"{group_name} target '{target}'")
+
+    # 输出结果
+    if not issues_found:
+        print("✓ 未发现问题，环境健康", file=stdout)
+        return 0
+
+    print(f"发现 {len(issues_found)} 个问题:", file=stdout)
+    for issue in issues_found:
+        print(f"  • {issue}", file=stdout)
+
+    if issues_fixed:
+        print(f"\n已自动修复 {len(issues_fixed)} 个问题:", file=stdout)
+        for fix in issues_fixed:
+            print(f"  ✓ {fix}", file=stdout)
+
+    remaining = len(issues_found) - len(issues_fixed)
+    if remaining > 0:
+        print(f"\n还有 {remaining} 个问题需要手动修复", file=stdout)
+        return 1
+
+    print("\n✓ 所有问题已修复，可以运行 'ce install'", file=stdout)
+    return 0
+
+
 if __name__ == "__main__":
     raise SystemExit(main())
