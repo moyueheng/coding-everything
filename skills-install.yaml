@@ -37,6 +37,14 @@ groups:
       - json-canvas
       - obsidian-cli
       - defuddle
+      - life-start-my-day
+      - life-kickoff
+      - life-research
+      - life-brainstorm
+      - life-parse-knowledge
+      - life-archive
+      - work-ai-newsletters
+      - work-ai-products
     targets:
       - ~/00-Life/ob-note/.claude/skills
       - ~/00-Life/ob-note/.agents/skills

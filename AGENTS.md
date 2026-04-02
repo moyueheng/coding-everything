@@ -56,7 +56,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **共享 skills** | `skills/` | ✅ 已配置（37 个skill，含 obsidian 组 5 个） |
+| **共享 skills** | `skills/` | ✅ 已配置（44 个skill，含 obsidian 组 13 个） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
 | **Claude Code** | 通过 `ce` CLI 写入 `~/.claude/skills/` 或项目级 `.claude/skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
@@ -237,6 +237,11 @@ coding-everything/
 - `99_System/Prompts/` - AI persona 提示词（Claude Code / Gemini CLI 可用）
 - `99_System/Templates/` - Markdown 模板（Daily、Project、Research、Wiki 等）
 - 核心 workflow 命令：`/start-my-day`、`/kickoff`、`/research`、`/ask`、`/brainstorm`、`/parse-knowledge`、`/archive`
+
+**迁移状态**:
+- ✅ 已迁移 8 个 workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-parse-knowledge`、`life-archive`、`work-ai-newsletters`、`work-ai-products`
+- ✅ `skills-install.yaml` 的 `obsidian` 组已扩展为 13 个 skill
+- ✅ 本地适配统一使用 `20_Project/`，不保留 `20_Projects/` 兼容层
 
 ---
 
