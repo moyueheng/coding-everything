@@ -92,7 +92,12 @@ def _deep_copy_without_internal_keys(data: dict) -> dict:
     return {k: v for k, v in data.items() if not k.startswith("_")}
 
 
-def merge_mcp_config(home: Path, repo_root: Path) -> list[str]:
+def merge_mcp_config(home: Path, repo_root: Path) -> tuple[list[str], list[str]]:
+    """合并 MCP 配置到 ~/.claude.json。
+
+    Returns:
+        (installed, skipped) 元组，分别表示已安装和因缺少 ZAI_API_KEY 而跳过的 MCP 名称
+    """
     template = load_mcp_template(repo_root)
     claude_json_path = home / CLAUDE_JSON_FILENAME
 
@@ -106,12 +111,14 @@ def merge_mcp_config(home: Path, repo_root: Path) -> list[str]:
 
     zai_api_key = resolve_zai_api_key(claude_config)
     installed: list[str] = []
+    skipped: list[str] = []
 
     for name, server_def in template["mcpServers"].items():
         clean_def = _deep_copy_without_internal_keys(server_def)
 
         needs_zai_key = PLACEHOLDER_ZAI_API_KEY in json.dumps(clean_def)
         if needs_zai_key and zai_api_key is None:
+            skipped.append(name)
             continue
 
         if needs_zai_key:
@@ -131,7 +138,7 @@ def merge_mcp_config(home: Path, repo_root: Path) -> list[str]:
         encoding="utf-8",
     )
 
-    return sorted(installed)
+    return sorted(installed), sorted(skipped)
 
 
 def remove_managed_mcps(home: Path, managed_names: list[str]) -> None:
@@ -283,7 +290,7 @@ def command_install(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) ->
     skills = discover_skills(repo_root)
     install_skill_links(repo_root, targets, skills)
     install_kimi_agent_and_ks(repo_root, targets)
-    mcp_installed = merge_mcp_config(home, repo_root)
+    mcp_installed, mcp_skipped = merge_mcp_config(home, repo_root)
     installed_at = None
     manifest_path = build_targets(home).manifest_path
     existing = load_manifest(manifest_path)
@@ -299,6 +306,10 @@ def command_install(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) ->
     )
     print(f"installed {len(skills)} skills", file=stdout)
     print("mcp_servers=" + ",".join(mcp_installed), file=stdout)
+    if mcp_skipped:
+        print(f"mcp_skipped=" + ",".join(mcp_skipped), file=stdout)
+        print(f"warning: ZAI_API_KEY not set; {len(mcp_skipped)} MCP servers skipped", file=stdout)
+        print("hint: set ZAI_API_KEY environment variable or add to ~/.claude.json", file=stdout)
     return 0
 
 
@@ -314,7 +325,7 @@ def command_update(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) -> 
     skills = discover_skills(repo_root)
     install_skill_links(repo_root, targets, skills)
     install_kimi_agent_and_ks(repo_root, targets)
-    mcp_installed = merge_mcp_config(home, repo_root)
+    mcp_installed, mcp_skipped = merge_mcp_config(home, repo_root)
     write_manifest(
         manifest_path,
         repo_root,
@@ -325,6 +336,10 @@ def command_update(repo_root: Path, home: Path, stdout: TextIO = sys.stdout) -> 
     )
     print(f"updated {len(skills)} skills", file=stdout)
     print("mcp_servers=" + ",".join(mcp_installed), file=stdout)
+    if mcp_skipped:
+        print(f"mcp_skipped=" + ",".join(mcp_skipped), file=stdout)
+        print(f"warning: ZAI_API_KEY not set; {len(mcp_skipped)} MCP servers skipped", file=stdout)
+        print("hint: set ZAI_API_KEY environment variable or add to ~/.claude.json", file=stdout)
     return 0
 
 
@@ -547,7 +562,7 @@ def _install_group(
         targets = build_targets(home)
         ensure_parent_dirs(targets)
         install_kimi_agent_and_ks(repo_root, targets)
-        mcp_installed = merge_mcp_config(home, repo_root)
+        mcp_installed, mcp_skipped = merge_mcp_config(home, repo_root)
         mcp_servers = mcp_installed
 
     group_record = manifest_data.get("groups", {}).get(group.name, {})
@@ -590,6 +605,27 @@ def command_install_grouped(
         manifest_data = _install_group(repo_root, home, grp, manifest_data)
         skill_count = len(grp.skills)
         print(f"[{group_name}] installed {skill_count} skills", file=stdout)
+
+        # global 组额外显示 MCP 安装情况
+        if group_name == "global":
+            group_record = manifest_data.get("groups", {}).get(group_name, {})
+            mcp_servers = group_record.get("mcp_servers", [])
+            if mcp_servers:
+                print(f"[{group_name}] mcp installed: {','.join(mcp_servers)}", file=stdout)
+            else:
+                print(f"[{group_name}] mcp installed: (none)", file=stdout)
+            # 检查是否有因缺少 ZAI_API_KEY 而跳过的 MCP
+            template = load_mcp_template(repo_root)
+            all_zai_mcps = {
+                name for name, def_ in template["mcpServers"].items()
+                if PLACEHOLDER_ZAI_API_KEY in json.dumps(def_)
+            }
+            installed_set = set(mcp_servers)
+            skipped_mcps = sorted(all_zai_mcps - installed_set)
+            if skipped_mcps:
+                print(f"[{group_name}] mcp skipped: {','.join(skipped_mcps)}", file=stdout)
+                print(f"[{group_name}] warning: ZAI_API_KEY not set; {len(skipped_mcps)} MCP servers skipped", file=stdout)
+                print(f"[{group_name}] hint: set ZAI_API_KEY environment variable or add to ~/.claude.json", file=stdout)
 
     write_v2_manifest(home, manifest_data)
     return 0
