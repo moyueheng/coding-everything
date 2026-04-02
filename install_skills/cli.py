@@ -112,20 +112,132 @@ def command_init(
     return 0
 
 
+def command_add_skill(
+    skill_name: str,
+    group_name: str,
+    home: Path,
+    *,
+    stdout=None,
+) -> int:
+    """添加 skill 到指定组。"""
+    config_path = get_default_config_path(home)
+    config = load_user_config(config_path)
+
+    if config is None:
+        print("配置未找到，请先运行: ce init")
+        return 1
+
+    if group_name not in config.groups:
+        print(f"组 '{group_name}' 不存在")
+        return 1
+
+    group = config.groups[group_name]
+
+    if skill_name in group.skills:
+        print(f"skill '{skill_name}' 已在组 '{group_name}' 中")
+        return 0
+
+    # 创建新的 GroupConfig（frozen dataclass 不能直接修改）
+    from dataclasses import replace
+    new_group = replace(
+        group,
+        skills=group.skills + [skill_name]
+    )
+
+    # 更新 config
+    new_groups = dict(config.groups)
+    new_groups[group_name] = new_group
+
+    new_config = replace(config, groups=new_groups)
+
+    save_user_config(config_path, new_config)
+    print(f"✓ 已添加 '{skill_name}' 到组 '{group_name}'")
+    return 0
+
+
+def command_add_target(
+    target_path: str,
+    group_name: str,
+    home: Path,
+    *,
+    stdout=None,
+) -> int:
+    """添加 target 到指定组。"""
+    config_path = get_default_config_path(home)
+    config = load_user_config(config_path)
+
+    if config is None:
+        print("配置未找到，请先运行: ce init")
+        return 1
+
+    if group_name not in config.groups:
+        print(f"组 '{group_name}' 不存在")
+        return 1
+
+    group = config.groups[group_name]
+    target = Path(target_path).expanduser()
+
+    if target in group.targets:
+        print(f"target '{target}' 已在组 '{group_name}' 中")
+        return 0
+
+    # 创建新的 GroupConfig
+    from dataclasses import replace
+    new_group = replace(
+        group,
+        targets=group.targets + [target]
+    )
+
+    # 更新 config
+    new_groups = dict(config.groups)
+    new_groups[group_name] = new_group
+
+    new_config = replace(config, groups=new_groups)
+
+    save_user_config(config_path, new_config)
+    print(f"✓ 已添加 '{target}' 到组 '{group_name}'")
+    return 0
+
+
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="ce",
         description="Manage coding-everything skill installation",
     )
-    parser.add_argument(
-        "command",
-        choices=("init", "install", "update", "uninstall", "status", "doctor"),
-    )
-    parser.add_argument(
-        "--group",
-        default=None,
-        help="Only operate on the specified group",
-    )
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # init
+    subparsers.add_parser("init", help="Initialize configuration interactively")
+
+    # install
+    install_parser = subparsers.add_parser("install", help="Install skills")
+    install_parser.add_argument("--group", help="Only install specified group")
+
+    # update
+    update_parser = subparsers.add_parser("update", help="Update installed skills")
+    update_parser.add_argument("--group", help="Only update specified group")
+
+    # uninstall
+    uninstall_parser = subparsers.add_parser("uninstall", help="Uninstall skills")
+    uninstall_parser.add_argument("--group", help="Only uninstall specified group")
+
+    # status
+    status_parser = subparsers.add_parser("status", help="Show installation status")
+    status_parser.add_argument("--group", help="Only show specified group")
+
+    # doctor
+    subparsers.add_parser("doctor", help="Diagnose and fix installation issues")
+
+    # add-skill
+    add_skill_parser = subparsers.add_parser("add-skill", help="Add a skill to a group")
+    add_skill_parser.add_argument("skill", help="Skill name to add")
+    add_skill_parser.add_argument("--group", required=True, help="Target group")
+
+    # add-target
+    add_target_parser = subparsers.add_parser("add-target", help="Add a target directory to a group")
+    add_target_parser.add_argument("target", help="Target directory path")
+    add_target_parser.add_argument("--group", required=True, help="Target group")
+
     return parser.parse_args(argv)
 
 
@@ -143,6 +255,12 @@ def main(
 
     if args.command == "init":
         return command_init(resolved_repo_root, resolved_home, stdout=stdout)
+
+    if args.command == "add-skill":
+        return command_add_skill(args.skill, args.group, resolved_home, stdout=stdout)
+
+    if args.command == "add-target":
+        return command_add_target(args.target, args.group, resolved_home, stdout=stdout)
 
     config_path = resolved_repo_root / "skills-install.yaml"
     use_grouped = config_path.is_file()
