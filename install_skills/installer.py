@@ -184,12 +184,21 @@ def remove_existing(path: Path) -> None:
 
 
 def force_symlink(src: Path, dst: Path) -> None:
-    dst.parent.mkdir(parents=True, exist_ok=True)
+    # 检查并修复损坏的父目录链接
+    parent = dst.parent
+    if parent.is_symlink() and not parent.exists():
+        # 父目录是损坏的符号链接，删除它
+        parent.unlink()
+    parent.mkdir(parents=True, exist_ok=True)
     # 如果解析后 dst 等于 src，创建 symlink 会变成自引用（循环）
     # 例如：当 ~/.claude/skills 是 repo/skills 的 symlink 时，
     # ~/.claude/skills/foo -> repo/skills/foo 实际指向自身
-    if src.resolve() == (dst.parent.resolve() / dst.name):
-        return
+    try:
+        if src.resolve() == (dst.parent.resolve() / dst.name):
+            return
+    except (OSError, FileNotFoundError):
+        # 解析失败时继续执行
+        pass
     remove_existing(dst)
     dst.symlink_to(src)
 
@@ -706,6 +715,70 @@ def command_status_grouped(
                 except ValueError:
                     print(f"  target={t}", file=stdout)
 
+    return 0
+
+
+def command_doctor(
+    repo_root: Path,
+    home: Path,
+    config_path: Path,
+    *,
+    stdout: TextIO = sys.stdout,
+) -> int:
+    """诊断安装环境问题并尝试修复。"""
+    from install_skills.config import load_install_config
+
+    groups = load_install_config(config_path)
+    issues_found = []
+    issues_fixed = []
+
+    def check_path(path: Path, description: str) -> None:
+        """检查路径是否存在问题。"""
+        if path.is_symlink() and not path.exists():
+            issues_found.append(f"{description}: {path} (损坏的符号链接 -> {path.readlink()})")
+            try:
+                path.unlink()
+                issues_fixed.append(f"{description}: 已删除损坏的符号链接")
+            except OSError as e:
+                issues_found.append(f"{description}: 无法删除 - {e}")
+        elif path.is_symlink() and path.is_dir():
+            # 目录是符号链接（可能是用户手动设置的）
+            issues_found.append(f"{description}: {path} 是符号链接而非目录")
+
+    # 检查 global 组的 targets
+    if groups and "global" in groups:
+        for target_str in groups["global"].targets:
+            target = Path(target_str).expanduser()
+            check_path(target, f"global target '{target}'")
+
+    # 检查 obsidian 组的 targets
+    if groups and "obsidian" in groups:
+        for target_str in groups["obsidian"].targets:
+            target = Path(target_str).expanduser()
+            # 检查父目录是否存在损坏链接
+            check_path(target.parent, f"obsidian parent '{target.parent}'")
+            check_path(target, f"obsidian target '{target}'")
+
+    # 输出结果
+    if not issues_found:
+        print("✓ 未发现问题，环境健康", file=stdout)
+        return 0
+
+    print(f"发现 {len(issues_found)} 个问题:", file=stdout)
+    for issue in issues_found:
+        print(f"  • {issue}", file=stdout)
+
+    if issues_fixed:
+        print(f"\n已自动修复 {len(issues_fixed)} 个问题:", file=stdout)
+        for fix in issues_fixed:
+            print(f"  ✓ {fix}", file=stdout)
+
+    remaining = len(issues_found) - len(issues_fixed)
+    if remaining > 0:
+        print(f"\n还有 {remaining} 个问题需要手动修复", file=stdout)
+        return 1
+
+    print("\n✓ 所有问题已修复，可以运行 'ce install'", file=stdout)
     return 0
 
 

@@ -15,7 +15,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument(
         "command",
-        choices=("install", "update", "uninstall", "status"),
+        choices=("install", "update", "uninstall", "status", "doctor"),
     )
     parser.add_argument(
         "--group",
@@ -65,6 +65,13 @@ def main(
                 group=args.group,
                 stdout=stdout,
                 stderr=stderr,
+            )
+        if args.command == "doctor":
+            return installer.command_doctor(
+                resolved_repo_root,
+                resolved_home,
+                config_path,
+                stdout=stdout,
             )
         return installer.command_status_grouped(
             resolved_repo_root,

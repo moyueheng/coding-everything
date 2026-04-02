@@ -46,5 +46,5 @@ groups:
       - work-ai-newsletters
       - work-ai-products
     targets:
-      - ~/00-Life/ob-note/.claude/skills
-      - ~/00-Life/ob-note/.agents/skills
+      - ~/00-life/ob-note/.claude/skills
+      - ~/00-life/ob-note/.agents/skills
