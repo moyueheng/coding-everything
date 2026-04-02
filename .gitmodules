@@ -25,3 +25,4 @@
 [submodule "upstream/orbitos"]
 	path = upstream/orbitos
 	url = https://github.com/MarsWang42/OrbitOS.git
+	branch = main

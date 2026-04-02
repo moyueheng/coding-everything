@@ -214,6 +214,9 @@ coding-everything/
 | `git-workflow` | Git 工作流最佳实践（分支策略、提交规范、PR 流程） | 与 `dev-git-worktrees` 互补，可考虑整合 |
 | `rules-distill` | 规则提炼与整理 | 待评估 |
 | `architecture-decision-records` | 架构决策记录管理 | 待评估 |
+| `brand-voice` | 从真实素材构建可复用的品牌声音 profile | 需评估与现有工作流整合 |
+| `connections-optimizer` | X/LinkedIn 社交网络重组与外联优化 | 需评估目标用户群体 |
+| `manim-video` | 数学动画视频生成 | 待评估 |
 
 ### 3. obsidian-skills
 
