@@ -1,6 +1,6 @@
 ---
 name: defuddle
-description: 使用 Defuddle CLI 从网页提取干净的 markdown 内容，去除导航和杂项以节省 token。适用于用户提供 URL 让你阅读或分析在线文档、文章、博客或其他常规网页时，优先替代 WebFetch。
+description: 使用 Defuddle CLI 从网页提取干净的 markdown 内容，去除导航和杂项以节省 token。适用于用户提供 URL 让你阅读或分析在线文档、文章、博客或其他常规网页时，优先替代 WebFetch。不要用于 .md 结尾的 URL，它们已经是 markdown，直接用 WebFetch。
 ---
 
 # Defuddle
