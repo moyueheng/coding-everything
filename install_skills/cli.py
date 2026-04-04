@@ -6,7 +6,11 @@ from pathlib import Path
 from typing import TextIO
 
 from install_skills import installer
-from install_skills.config import get_default_config_path, load_user_config, save_user_config
+from install_skills.config import (
+    get_default_config_path,
+    load_user_config,
+    save_user_config,
+)
 from install_skills.models import UserConfig, GroupConfig
 
 
@@ -16,7 +20,9 @@ def _ask_obsidian_path(_input_func=input) -> Path | None:
     print("这些 skills 需要安装到你的 Obsidian vault 目录中。")
 
     while True:
-        answer = _input_func("输入 Obsidian vault 路径 (例如 ~/00-life/ob-note)，或留空跳过: ").strip()
+        answer = _input_func(
+            "输入 Obsidian vault 路径 (例如 ~/00-life/ob-note)，或留空跳过: "
+        ).strip()
 
         if not answer:
             return None
@@ -27,7 +33,7 @@ def _ask_obsidian_path(_input_func=input) -> Path | None:
         if not path.exists():
             print(f"❌ 路径不存在: {path}")
             retry = _input_func("是否重新输入? [Y/n]: ").strip().lower()
-            if retry in ('', 'y', 'yes'):
+            if retry in ("", "y", "yes"):
                 continue
             return None
 
@@ -35,7 +41,7 @@ def _ask_obsidian_path(_input_func=input) -> Path | None:
         if not (path / ".obsidian").exists():
             print(f"⚠️  警告: {path} 似乎不是 Obsidian vault（缺少 .obsidian 目录）")
             confirm = _input_func("仍然继续? [y/N]: ").strip().lower()
-            if confirm not in ('y', 'yes'):
+            if confirm not in ("y", "yes"):
                 continue
 
         return path
@@ -57,15 +63,22 @@ def command_init(
         print("如需重新配置，请先删除该文件。")
         return 1
 
-    print(f"初始化 ce CLI 配置...")
+    print("初始化 ce CLI 配置...")
     print(f"仓库根目录: {repo_root}")
 
     # 扫描可用 skills
     from install_skills.installer import discover_skills
+
     available_skills = discover_skills(repo_root)
 
     # 分类 skills
-    obsidian_skills = [s for s in available_skills if s.startswith(("obsidian-", "defuddle", "json-canvas"))]
+    _obsidian_prefixes = ("obsidian-", "defuddle", "json-canvas")
+    _obsidian_names = {"work-ai-newsletters", "work-ai-products"}
+    obsidian_skills = [
+        s
+        for s in available_skills
+        if s.startswith(_obsidian_prefixes) or s in _obsidian_names
+    ]
     global_skills = [s for s in available_skills if s not in obsidian_skills]
 
     print(f"\n发现 {len(global_skills)} 个通用 skills")
@@ -83,7 +96,7 @@ def command_init(
             targets=[
                 home / ".agents/skills",
                 home / ".claude/skills",
-            ]
+            ],
         )
     }
 
@@ -94,7 +107,7 @@ def command_init(
             targets=[
                 obsidian_path / ".claude/skills",
                 obsidian_path / ".agents/skills",
-            ]
+            ],
         )
 
     config = UserConfig(
@@ -107,7 +120,7 @@ def command_init(
     save_user_config(config_path, config)
 
     print(f"\n✓ 配置已保存: {config_path}")
-    print(f"\n现在可以运行: ce install")
+    print("\n现在可以运行: ce install")
 
     return 0
 
@@ -139,10 +152,8 @@ def command_add_skill(
 
     # 创建新的 GroupConfig（frozen dataclass 不能直接修改）
     from dataclasses import replace
-    new_group = replace(
-        group,
-        skills=group.skills + [skill_name]
-    )
+
+    new_group = replace(group, skills=group.skills + [skill_name])
 
     # 更新 config
     new_groups = dict(config.groups)
@@ -183,10 +194,8 @@ def command_add_target(
 
     # 创建新的 GroupConfig
     from dataclasses import replace
-    new_group = replace(
-        group,
-        targets=group.targets + [target]
-    )
+
+    new_group = replace(group, targets=group.targets + [target])
 
     # 更新 config
     new_groups = dict(config.groups)
@@ -234,7 +243,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     add_skill_parser.add_argument("--group", required=True, help="Target group")
 
     # add-target
-    add_target_parser = subparsers.add_parser("add-target", help="Add a target directory to a group")
+    add_target_parser = subparsers.add_parser(
+        "add-target", help="Add a target directory to a group"
+    )
     add_target_parser.add_argument("target", help="Target directory path")
     add_target_parser.add_argument("--group", required=True, help="Target group")
 
@@ -276,7 +287,11 @@ def main(
             )
         if args.command == "uninstall":
             return installer.command_uninstall_from_config(
-                resolved_repo_root, resolved_home, group=args.group, stdout=stdout, stderr=stderr
+                resolved_repo_root,
+                resolved_home,
+                group=args.group,
+                stdout=stdout,
+                stderr=stderr,
             )
         if args.command == "doctor":
             return installer.command_doctor_from_config(
