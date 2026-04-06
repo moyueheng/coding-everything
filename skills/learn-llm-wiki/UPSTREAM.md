@@ -16,4 +16,4 @@ cd upstream/karpathy-llm-wiki && git pull origin main
 
 - SKILL.md 已翻译为中文
 - references/ 目录保持原样（模板为通用格式，无需翻译）
-- 命名从 `karpathy-llm-wiki` 改为 `learn-karpathy-llm-wiki` 以符合项目命名规范（`learn-` 前缀）
+- 命名从 `karpathy-llm-wiki` 改为 `learn-llm-wiki` 以符合项目命名规范（`learn-` 前缀，不含人名）

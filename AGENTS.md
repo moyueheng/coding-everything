@@ -105,7 +105,7 @@ coding-everything/
 │   ├── dev-continuous-agent-loop/
 │   ├── dev-e2e-testing/
 │   ├── learn-deep-research/
-│   ├── learn-karpathy-llm-wiki/ # Karpathy 风格 LLM Wiki 构建与维护
+│   ├── learn-llm-wiki/ # Karpathy 风格 LLM Wiki 构建与维护
 │   ├── work-market-research/
 │   ├── tool-humanizer-zh/
 │   └── tool-macos-hidpi/
@@ -250,7 +250,7 @@ coding-everything/
 
 **迁移状态**:
 - ✅ 已迁移 8 个 workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-parse-knowledge`、`life-archive`、`work-ai-newsletters`、`work-ai-products`
-- ✅ `skills-install.yaml` 的 `obsidian` 组已扩展为 13 个 skill
+- ✅ `skills-install.yaml` 的 `obsidian` 组已扩展为 14 个 skill（含 `learn-llm-wiki`）
 - ✅ 本地适配统一使用 `20_Project/`，不保留 `20_Projects/` 兼容层
 
 ---
@@ -284,7 +284,7 @@ coding-everything/
 | `dev-continuous-agent-loop` | 顺序流水线、并行分发和持续 agent 循环的自动化执行模式 | 灵活 |
 | `dev-e2e-testing` | Playwright Python 端到端测试模式 | 灵活 |
 | `learn-deep-research` | 正式研究报告、技术调研、行业综述与结构化证据追踪 | 灵活 |
-| `learn-karpathy-llm-wiki` | Karpathy 风格 LLM Wiki 构建与维护（导入/查询/质量检查） | 灵活 |
+| `learn-llm-wiki` | Karpathy 风格 LLM Wiki 构建与维护（导入/查询/质量检查） | 灵活 |
 | `work-market-research` | 市场规模、竞品、价格带、区域机会与进入策略调研 | 灵活 |
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |

@@ -1,6 +1,6 @@
 ---
-name: learn-karpathy-llm-wiki
-description: "用于构建或维护个人 LLM 驱动的知识库。触发词：将资料导入 wiki、查询 wiki 知识、检查 wiki 质量、'添加到 wiki'、'我了解什么关于'，或任何提到 'LLM wiki'、'Karpathy wiki' 的场景。"
+name: learn-llm-wiki
+description: "用于构建或维护个人 LLM 驱动的知识库。触发词：将资料导入 wiki、查询 wiki 知识、检查 wiki 质量、'添加到 wiki'、'我了解什么关于'，或任何提到 'LLM wiki' 的场景。"
 ---
 
 # Karpathy LLM Wiki
