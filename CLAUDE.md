@@ -248,7 +248,7 @@ coding-everything/
 - 核心 workflow 命令：`/start-my-day`、`/kickoff`、`/research`、`/ask`、`/brainstorm`、`/parse-knowledge`、`/archive`
 
 **迁移状态**:
-- ✅ 已迁移 8 个 workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-parse-knowledge`、`life-archive`、`work-ai-newsletters`、`work-ai-products`
+- ✅ 已迁移 8 个 workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-parse-knowledge`、`life-archive`、`life-ai-newsletters`、`life-ai-products`
 - ✅ `skills-install.yaml` 的 `obsidian` 组已扩展为 14 个 skill（含 `learn-llm-wiki`）
 - ✅ 本地适配统一使用 `20_Project/`，不保留 `20_Projects/` 兼容层
 
