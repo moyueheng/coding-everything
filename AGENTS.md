@@ -51,12 +51,13 @@
 | [deanpeters/Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills.git) | Product Manager 相关 skill 集合 | `upstream/product-manager-skills/` |
 | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills.git) | Obsidian agent skills 仓库 | `upstream/obsidian-skills/` |
 | [MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS.git) | AI 驱动的 Obsidian 个人生产力系统 | `upstream/orbitos/` |
+| [Astro-Han/karpathy-llm-wiki](https://github.com/Astro-Han/karpathy-llm-wiki.git) | Karpathy 风格 LLM Wiki 构建工具 | `upstream/karpathy-llm-wiki/` |
 
 ### 个人配置
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **共享 skills** | `skills/` | ✅ 已配置（44 个skill，含 obsidian 组 13 个） |
+| **共享 skills** | `skills/` | ✅ 已配置（45 个skill，含 obsidian 组 13 个） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
 | **Claude Code** | 通过 `ce` CLI 写入 `~/.claude/skills/` 或项目级 `.claude/skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
@@ -104,6 +105,7 @@ coding-everything/
 │   ├── dev-continuous-agent-loop/
 │   ├── dev-e2e-testing/
 │   ├── learn-deep-research/
+│   ├── learn-karpathy-llm-wiki/ # Karpathy 风格 LLM Wiki 构建与维护
 │   ├── work-market-research/
 │   ├── tool-humanizer-zh/
 │   └── tool-macos-hidpi/
@@ -164,6 +166,11 @@ coding-everything/
     └── orbitos/                # AI 驱动的 Obsidian 个人生产力系统
         ├── README.md
         └── EN/                 # 英文版 vault 模板与 AI workflow
+
+    └── karpathy-llm-wiki/      # Karpathy 风格 LLM Wiki 构建工具
+        ├── SKILL.md
+        ├── README.md
+        └── references/         # 文章/索引/归档模板
 ```
 
 ---
@@ -277,6 +284,7 @@ coding-everything/
 | `dev-continuous-agent-loop` | 顺序流水线、并行分发和持续 agent 循环的自动化执行模式 | 灵活 |
 | `dev-e2e-testing` | Playwright Python 端到端测试模式 | 灵活 |
 | `learn-deep-research` | 正式研究报告、技术调研、行业综述与结构化证据追踪 | 灵活 |
+| `learn-karpathy-llm-wiki` | Karpathy 风格 LLM Wiki 构建与维护（导入/查询/质量检查） | 灵活 |
 | `work-market-research` | 市场规模、竞品、价格带、区域机会与进入策略调研 | 灵活 |
 | `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
 | `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
@@ -485,6 +493,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 - **product-manager-skills**: https://github.com/deanpeters/Product-Manager-Skills
 - **obsidian-skills**: https://github.com/kepano/obsidian-skills
 - **orbitos**: https://github.com/MarsWang42/OrbitOS
+- **karpathy-llm-wiki**: https://github.com/Astro-Han/karpathy-llm-wiki
 
 ### 平台文档
 

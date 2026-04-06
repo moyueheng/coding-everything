@@ -26,3 +26,7 @@
 	path = upstream/orbitos
 	url = https://github.com/MarsWang42/OrbitOS.git
 	branch = main
+[submodule "upstream/karpathy-llm-wiki"]
+	path = upstream/karpathy-llm-wiki
+	url = https://github.com/Astro-Han/karpathy-llm-wiki.git
+	branch = main
