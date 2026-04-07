@@ -19,6 +19,16 @@ Verify the draft meets all requirements before delivery.
 - Limitations and uncertainty are documented
 - Terminology is consistent
 
+## Obsidian Compatibility
+- YAML frontmatter present with `title`, `date`, `tags`
+- Tags use nested format `#research/<topic>` in frontmatter
+- No inline `#tag` in prose body
+- Callouts used correctly: `abstract` / `success` / `warning` / `question`
+- Source IDs in evidence table are wikilink format `[[Source - X]]`
+- External URLs use standard Markdown `[text](url)`, not wikilink
+- H1 heading matches frontmatter `title`
+- No broken wikilink syntax (missing `]]` etc.)
+
 ## Final Checks
 - Dates and time ranges are consistent
 - No unsupported claims
