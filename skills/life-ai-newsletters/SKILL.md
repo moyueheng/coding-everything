@@ -15,7 +15,7 @@ description: Curate AI newsletter content with smart deduplication and ranking. 
 
 1. **检查缓存**：查找 `50_Resources/NewsLetter/YYYY-MM/YYYY-MM-DD-Digest.md`。如果存在且日期为今天，返回缓存内容。
 
-2. **抓取订阅源**：使用 WebFetch 访问两个 RSS URL。提取每条内容的 title、link、pubDate、description。
+2. **抓取订阅源**：使用 网页阅读工具 访问两个 RSS URL。提取每条内容的 title、link、pubDate、description。
 
 3. **去重**：合并标题相似的内容（80% 以上词汇重叠）。保留较长的描述，跟踪两个来源。
 
