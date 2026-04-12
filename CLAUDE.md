@@ -249,7 +249,7 @@ coding-everything/
 
 **迁移状态**:
 - ✅ 已迁移 9 个 workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-ask`、`life-parse-knowledge`、`life-archive`、`life-ai-newsletters`、`life-ai-products`
-- ✅ `skills-install.yaml` 的 `obsidian` 组已扩展为 14 个 skill（含 `learn-llm-wiki`）
+- ✅ obsidian 组互斥规则：`learn-llm-wiki`、`life-ask`、`life-parse-knowledge`、`life-start-my-day` 等只归入 obsidian 组，不重复安装到 global
 - ✅ 本地适配统一使用 `20_Project/`，不保留 `20_Projects/` 兼容层
 
 ---
@@ -310,9 +310,14 @@ uv tool install -e .
 ce install
 ```
 
-默认会按 `skills-install.yaml` 分组安装：
+默认会按 `~/.ce/config.yaml` 分组安装：
 - `global` 组：skill symlink 到 `~/.agents/skills/` 和 `~/.claude/skills/`，安装 `~/.kimi/agents/superpower`、`~/.local/bin/ks`，合并 MCP 配置
-- `obsidian` 组：skill symlink 到 `~/Documents/ObsidianVault/.claude/skills/` 和 `~/Documents/ObsidianVault/.agents/skills/`
+- `obsidian` 组：skill symlink 到 Obsidian vault 下的 `.claude/skills/` 和 `.agents/skills/`；与 global 组互斥，同一 skill 只归属一个组
+
+`ce init` 中 obsidian 组的分类规则（`cli.py` `_obsidian_names`）：
+- 前缀匹配：`obsidian-*`、`defuddle`、`json-canvas`
+- 显式名称：`learn-llm-wiki`、`life-ai-newsletters`、`life-ai-products`、`life-ask`、`life-parse-knowledge`、`life-start-my-day`
+- 其余 skill 归入 global 组
 
 单组操作：
 
