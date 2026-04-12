@@ -73,7 +73,12 @@ def command_init(
 
     # 分类 skills
     _obsidian_prefixes = ("obsidian-", "defuddle", "json-canvas")
-    _obsidian_names = {"life-ai-newsletters", "life-ai-products"}
+    _obsidian_names = {
+        "life-ai-newsletters",
+        "life-ai-products",
+        "life-ask",
+        "life-parse-knowledge",
+    }
     obsidian_skills = [
         s
         for s in available_skills
