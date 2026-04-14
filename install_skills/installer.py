@@ -987,6 +987,89 @@ def command_status_from_config(
     return 0
 
 
+def command_sync_from_config(
+    repo_root: Path,
+    home: Path,
+    *,
+    group: str | None = None,
+    stdout: TextIO = sys.stdout,
+) -> int:
+    """让实际安装状态与 config.yaml 对齐：安装缺失的 + 清理多余的。"""
+    config_path = get_default_config_path(home)
+    config = load_user_config(config_path)
+    if config is None:
+        print(f"配置未找到: {config_path}", file=stdout)
+        print("请先运行: ce init", file=stdout)
+        return 1
+
+    _migrate_v1_manifest(home)
+    manifest_data = load_v2_manifest(home) or {"version": 2, "groups": {}}
+    manifest_data["version"] = 2
+
+    groups_to_sync = {group: config.groups[group]} if group else config.groups
+
+    for group_name, grp in groups_to_sync.items():
+        if group_name not in config.groups:
+            print(f"[{group_name}] 未在配置中定义", file=stdout)
+            continue
+
+        config_skills = set(grp.skills)
+        synced = removed = 0
+
+        # 1. 安装缺失的 skill
+        for skill_name in grp.skills:
+            src = repo_root / "skills" / skill_name
+            for target in grp.targets:
+                force_symlink(src, target / skill_name)
+                synced += 1
+
+        # 2. 清理 target 中不在 config 里的 skill
+        for target in grp.targets:
+            if not target.is_dir():
+                continue
+            for entry in target.iterdir():
+                if entry.name.startswith("."):
+                    continue
+                if entry.name not in config_skills and (entry.is_symlink() or entry.is_dir()):
+                    remove_existing(entry)
+                    removed += 1
+                    print(f"  removed {entry.name}", file=stdout)
+
+        # 3. 更新 manifest
+        timestamp = now_iso()
+        mcp_servers: list[str] = []
+        if group_name == "global":
+            targets_obj = build_targets(home)
+            ensure_parent_dirs(targets_obj)
+            install_kimi_agent_and_ks(repo_root, targets_obj)
+            mcp_installed, mcp_skipped = merge_mcp_config(home, repo_root)
+            mcp_servers = mcp_installed
+
+        group_record = manifest_data.get("groups", {}).get(group_name, {})
+        manifest_data.setdefault("groups", {})[group_name] = {
+            "installed_at": group_record.get("installed_at", timestamp),
+            "updated_at": timestamp,
+            "targets": [str(t) for t in grp.targets],
+            "skills": list(grp.skills),
+            "mcp_servers": mcp_servers,
+            "repo_root": str(repo_root),
+        }
+
+        print(
+            f"[{group_name}] synced {synced} skills, removed {removed} extras",
+            file=stdout,
+        )
+
+        if group_name == "global" and mcp_servers:
+            print(
+                f"[{group_name}] mcp installed: {','.join(mcp_servers)}",
+                file=stdout,
+            )
+
+    write_v2_manifest(home, manifest_data)
+    return 0
+
+
 def command_doctor_from_config(
     repo_root: Path,
     home: Path,

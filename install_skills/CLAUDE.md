@@ -128,6 +128,7 @@ groups:
 | `ce doctor` | 诊断损坏的 symlink 等环境问题 |
 | `ce add-skill SKILL --group GROUP` | 向配置中的组添加 skill |
 | `ce add-target PATH --group GROUP` | 向配置中的组添加 target 目录 |
+| `ce sync [--group NAME]` | 对齐实际安装与 config（安装缺失 + 清理多余） |
 
 ## 依赖
 

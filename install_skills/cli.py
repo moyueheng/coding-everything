@@ -256,6 +256,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     add_target_parser.add_argument("target", help="Target directory path")
     add_target_parser.add_argument("--group", required=True, help="Target group")
 
+    # sync
+    sync_parser = subparsers.add_parser(
+        "sync", help="Sync installed skills to match config (install missing, remove extras)"
+    )
+    sync_parser.add_argument("--group", help="Only sync specified group")
+
     return parser.parse_args(argv)
 
 
@@ -306,6 +312,10 @@ def main(
             )
         if args.command == "status":
             return installer.command_status_from_config(
+                resolved_repo_root, resolved_home, group=args.group, stdout=stdout
+            )
+        if args.command == "sync":
+            return installer.command_sync_from_config(
                 resolved_repo_root, resolved_home, group=args.group, stdout=stdout
             )
 
