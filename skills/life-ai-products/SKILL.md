@@ -19,7 +19,7 @@ description: Curate AI product launches from Product Hunt, Hacker News, GitHub, 
 
 1. **检查缓存**：查找 `50_Resources/ProductLaunches/YYYY-MM/YYYY-MM-DD-Digest.md`。如果存在且日期为今天，返回缓存。
 
-2. **抓取来源**：使用 WebFetch 逐个访问。提取产品名称、URL、描述和互动指标（votes/points/stars）。
+2. **抓取来源**：使用 网页阅读工具 逐个访问。提取产品名称、URL、描述和互动指标（votes/points/stars）。
 
 3. **筛选**：仅保留 AI 相关产品（关键词：AI、ML、LLM、GPT、Claude、automation、agent、model）。
 
