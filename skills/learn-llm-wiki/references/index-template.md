@@ -4,15 +4,18 @@
 
 {One-line description of this topic.}
 
-| Article | Summary | Updated |
-|---------|---------|---------|
-| [{Article Title}]({topic-name}/{article}.md) | {One-line summary} | {YYYY-MM-DD} |
-| [{Archived Article}]({topic-name}/{archived}.md) | [Archived] {One-line summary} | {YYYY-MM-DD} |
+- [[{topic-name}/{Article Title}.md]]
+  摘要：{One-line summary}
+  更新：{YYYY-MM-DD}
+
+- [[{topic-name}/{Archived Article}.md]]
+  摘要：[Archived] {One-line summary}
+  更新：{YYYY-MM-DD}
 
 ## {another-topic}
 
 {One-line description of this topic.}
 
-| Article | Summary | Updated |
-|---------|---------|---------|
-| [{Article Title}]({another-topic}/{article}.md) | {One-line summary} | {YYYY-MM-DD} |
+- [[{another-topic}/{Article Title}.md]]
+  摘要：{One-line summary}
+  更新：{YYYY-MM-DD}

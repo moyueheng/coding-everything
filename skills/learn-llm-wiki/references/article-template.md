@@ -1,5 +1,7 @@
 # {Title}
 
+{文件名必须为：{Title}.md}
+
 > Sources: {Author1, YYYY-MM-DD; Author2, YYYY-MM-DD}
 > Raw: [{source1}](../../raw/{topic1}/{filename1}.md); [{source2}](../../raw/{topic2}/{filename2}.md)
 
@@ -16,5 +18,5 @@
 ## See Also
 
 {Cross-references to related wiki articles. Maintained during lint. Use relative links:
-- Same topic: [Other Article](other-article.md)
-- Different topic: [Other Article](../other-topic/other-article.md)}
+- Same topic: [Other Article](其他文章标题.md)
+- Different topic: [Other Article](../other-topic/其他文章标题.md)}
