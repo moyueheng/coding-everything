@@ -3,6 +3,7 @@
 ## 目录
 
 - [共享 Skills 架构图](./docs/skills-architecture.md) - 技能关系图和调用流程可视化
+- [CODEMAPS](./docs/CODEMAPS/architecture.md) - 面向 AI 上下文的 token-lean 架构索引
 - [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
@@ -58,7 +59,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **共享 skills** | `skills/` | ✅ 已配置（45 个skill，含 obsidian 组 13 个） |
+| **共享 skills** | `skills/` | ✅ 已配置（46 个含 `SKILL.md` 的 skill） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
 | **Claude Code** | 通过 `ce` CLI 写入 `~/.claude/skills/` 或项目级 `.claude/skills/` | ✅ 已兼容 |
 | **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
@@ -113,13 +114,12 @@ coding-everything/
 ├── install_skills/             # ce CLI 工具 Python 包
 │   ├── __init__.py
 │   ├── cli.py                  # 命令行入口
-│   ├── config.py               # skills-install.yaml 加载
+│   ├── config.py               # 用户级 ~/.ce/config.yaml 加载
 │   ├── installer.py            # symlink / manifest / MCP 逻辑
 │   └── models.py               # 数据结构
 ├── pyproject.toml              # Python 包定义（ce CLI 入口）
-├── skills-install.yaml         # skill 分组安装配置
 ├── mcp-configs/                # MCP 服务器配置模板
-│   └── required.json           # 必装 MCP 定义（auggie-mcp + 3 个 zai 服务）
+│   └── required.json           # 必装 MCP 定义（auggie-mcp / zai / context7）
 ├── scripts/                    # 本地同步脚本
 │   └── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
 │
@@ -137,6 +137,7 @@ coding-everything/
 │   └── skills/                 # skill目录（待填充）
 │
 ├── docs/                       # 文档
+│   ├── CODEMAPS/               # token-lean 架构索引，供 AI 快速载入上下文
 │   └── upstream-updates/       # 上游更新报告
 │
 └── upstream/                   # 上游仓库（git submodules）

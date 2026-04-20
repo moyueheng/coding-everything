@@ -72,6 +72,7 @@ Karpathy 的核心理念：
 - Sources 字段：作者、组织或出版物名称 + 日期，分号分隔。
 - Raw 字段：指向 raw/ 文件的 markdown 链接，分号分隔。
 - 从 `wiki/<主题>/` 出发的相对路径使用 `../../raw/<主题>/<文件>.md`（向上两级到项目根目录）。
+- wiki 文章正文、See Also 与跨文章引用优先使用 Obsidian wikilink，例如 `[[文章标题]]` 或 `[[文章标题|显示文字]]`；只有 Raw 字段和外部 URL 使用 Markdown 链接。
 
 ### 级联更新
 
@@ -118,7 +119,7 @@ Updated 日期反映文章知识内容最后一次变更的时间，而非文件
 
 1. 读取 `wiki/index.md` 定位相关文章。
 2. 阅读这些文章并综合出答案。
-3. 优先使用 wiki 内容而非自身训练知识。对话中引用来源时，使用项目根目录相对路径，例如 `wiki/主题/文章.md`；在 wiki 文件内部，优先使用 Obsidian `[[...]]` 或标准 markdown 相对路径，且路径必须相对于当前文件。
+3. 优先使用 wiki 内容而非自身训练知识。对话中引用来源时，使用项目根目录相对路径，例如 `wiki/主题/文章.md`；在 wiki 文件内部，vault 内部文章使用 Obsidian `[[...]]`，Raw 字段和外部 URL 使用标准 Markdown 链接。
 4. 在对话中输出答案。除非用户要求，否则不写文件。
 
 ### 归档
@@ -190,10 +191,10 @@ Updated 日期反映文章知识内容最后一次变更的时间，而非文件
 
 ## 约定
 
-- 全程使用标准 markdown 和相对链接；但 `wiki/index.md` 例外，索引中的文章链接一律使用 Obsidian `[[相对路径.md]]`。
+- 全程使用标准 markdown；但 vault 内部 wiki 文章链接使用 Obsidian wikilink，Raw 字段和外部 URL 使用 Markdown 链接。`wiki/index.md` 中的文章链接一律使用 Obsidian `[[相对路径.md]]`。
 - wiki/ 仅支持一级主题子目录。禁止更深层嵌套。
 - 除 `wiki/index.md` 和 `wiki/log.md` 外，所有 wiki 文章都必须满足：文件名（不含 `.md`）= 正文一级标题。
 - `wiki/index.md` 禁止使用 Markdown 表格承载文章索引，避免 Obsidian 对 `|`、空格、中文标点和复杂文件名的解析歧义。
 - 日志条目、Collected 日期和 Archived 日期使用当天日期。Updated 日期反映文章知识内容最后一次变更的时间。Published 日期来自来源（不可用时使用 `Unknown`）。
-- wiki/ 文件内部，所有 markdown 链接使用相对于当前文件的路径。对话输出中使用项目根目录相对路径（如 `wiki/主题/文章.md`）。
+- wiki/ 文件内部，Raw 字段中的 markdown 链接使用相对于当前文件的路径；正文和 See Also 的内部文章引用使用 Obsidian wikilink。对话输出中使用项目根目录相对路径（如 `wiki/主题/文章.md`）。
 - Ingest 同时更新 `wiki/index.md` 和 `wiki/log.md`。Archive（来自 Query）同时更新两者。Lint 更新 `wiki/log.md`（仅在自动修复索引条目时更新 `wiki/index.md`）。普通查询不写入任何文件。

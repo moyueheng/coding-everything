@@ -17,6 +17,6 @@
 
 ## See Also
 
-{Cross-references to related wiki articles. Maintained during lint. Use relative links:
-- Same topic: [Other Article](其他文章标题.md)
-- Different topic: [Other Article](../other-topic/其他文章标题.md)}
+{Cross-references to related wiki articles. Maintained during lint. Use Obsidian wikilinks:
+- [[Other Article]]
+- [[Other Article|Display Text]] when the visible text should differ from the note title}
