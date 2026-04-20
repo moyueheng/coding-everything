@@ -190,7 +190,7 @@ coding-everything/
 
 **简介**: 为 AI 编程助手设计的综合软件开发工作流框架
 
-**当前跟踪版本**: v5.0.7（2026-03-31）
+**当前跟踪版本**: `b557648`（2026-04-16，post-v5.0.7）
 
 **核心skill**:
 - `using-superpowers` - skill使用入口
@@ -206,7 +206,7 @@ coding-everything/
 **同步状态**: 
 - ✅ `dev-brainstorming` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
 - ✅ `dev-writing-plans` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
-- ✅ 当前跟踪到 `v5.0.7`，新增 GitHub Copilot CLI 支持并修复 OpenCode bootstrap / skills path 一致性
+- ✅ 当前跟踪到 `b557648`，README 已补充 OpenAI Codex CLI / Codex App 插件安装入口；本地 skill 内容本次无变化
 
 ### 2. everything-claude-code
 
@@ -221,7 +221,7 @@ coding-everything/
 - `commands/` - 58+ 个预定义命令
 - `hooks/` - 会话钩子
 - `docs/zh-CN/skills/` - **32 个简体中文skill**（引入时无需翻译）
-- `ecc2/` - ECC 2.0 Rust TUI 脚手架（开发中）
+- `ecc2/` - ECC 2.0 Rust TUI 脚手架（alpha），近期新增 board observability 原型（`session_board` 元数据 + dashboard Board pane）
 
 **值得关注的 skill（尚未引入）**:
 | skill | 用途 | 引入障碍 |
