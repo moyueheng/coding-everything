@@ -30,3 +30,7 @@
 	path = upstream/karpathy-llm-wiki
 	url = https://github.com/Astro-Han/karpathy-llm-wiki.git
 	branch = main
+[submodule "upstream/karpathy-skills"]
+	path = upstream/karpathy-skills
+	url = https://github.com/forrestchang/andrej-karpathy-skills.git
+	branch = main

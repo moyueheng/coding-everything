@@ -52,6 +52,7 @@
 | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills.git) | Obsidian agent skills 仓库 | `upstream/obsidian-skills/` |
 | [MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS.git) | AI 驱动的 Obsidian 个人生产力系统 | `upstream/orbitos/` |
 | [Astro-Han/karpathy-llm-wiki](https://github.com/Astro-Han/karpathy-llm-wiki.git) | Karpathy 风格 LLM Wiki 构建工具 | `upstream/karpathy-llm-wiki/` |
+| [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills.git) | Karpathy 编码行为指南 skill | `upstream/karpathy-skills/` |
 
 ### 个人配置
 
@@ -173,6 +174,11 @@ coding-everything/
         ├── SKILL.md
         ├── README.md
         └── references/         # 文章/索引/归档模板
+
+    └── karpathy-skills/        # Karpathy 编码行为指南
+        ├── skills/karpathy-guidelines/  # 单 skill：编码行为准则
+        ├── CLAUDE.md           # 同内容可作为 CLAUDE.md 注入
+        └── CURSOR.md           # Cursor 编辑器版本
 ```
 
 ---
@@ -251,6 +257,24 @@ coding-everything/
 - ✅ 已迁移 9 个 workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-ask`、`life-parse-knowledge`、`life-archive`、`life-ai-newsletters`、`life-ai-products`
 - ✅ obsidian 组互斥规则：`learn-llm-wiki`、`life-ask`、`life-parse-knowledge`、`life-start-my-day` 等只归入 obsidian 组，不重复安装到 global
 - ✅ 本地适配统一使用 `20_Project/`，不保留 `20_Projects/` 兼容层
+
+### 5. karpathy-skills
+
+**简介**: 基于 Andrej Karpathy 观察总结的 LLM 编码行为指南，遵循 Agent Skills 开放标准
+
+**内容**:
+- `skills/karpathy-guidelines/` - 编码行为准则 skill（Think Before Coding / Simplicity First / Surgical Changes / Goal-Driven Execution）
+- `CLAUDE.md` - 同内容可注入项目级 CLAUDE.md
+- `CURSOR.md` - Cursor 编辑器版本
+- `EXAMPLES.md` - 使用示例
+
+**核心原则**:
+1. **Think Before Coding** — 不假设、不隐藏困惑、呈现权衡
+2. **Simplicity First** — 最小代码解决问题，不做推测性设计
+3. **Surgical Changes** — 只改必须改的，只清理自己制造的遗留
+4. **Goal-Driven Execution** — 定义可验证的成功标准，循环直到确认通过
+
+**迁移状态**: 📋 待评估是否引入到 `skills/`
 
 ---
 
@@ -498,6 +522,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 - **obsidian-skills**: https://github.com/kepano/obsidian-skills
 - **orbitos**: https://github.com/MarsWang42/OrbitOS
 - **karpathy-llm-wiki**: https://github.com/Astro-Han/karpathy-llm-wiki
+- **karpathy-skills**: https://github.com/forrestchang/andrej-karpathy-skills
 
 ### 平台文档
 
