@@ -1,435 +1,322 @@
 # 共享 Skills 架构全景图
 
-本文档详细描述 `coding-everything` 项目中跨平台共享 skills 的架构关系、调用流程和核心原则。
+本文档描述 `coding-everything` 中跨平台共享 skills 的分层、安装流、调用流和当前清单。当前事实来源以仓库中的 `skills/`、`.agents/skills/`、`install_skills/`、`mcp-configs/required.json` 为准。
 
 ---
 
 ## 目录
 
-- [架构分层图](#架构分层图)
-- [Skill 调用关系与数据流](#skill-调用关系与数据流)
+- [仓库分层](#仓库分层)
+- [安装与运行时流向](#安装与运行时流向)
+- [Skill 调用关系](#skill-调用关系)
 - [核心原则与反模式](#核心原则与反模式)
-- [状态机与决策树](#状态机与决策树)
 - [Skill 清单](#skill-清单)
+- [来源映射](#来源映射)
 
 ---
 
-## 架构分层图
+## 仓库分层
 
+当前仓库把“可复用能力”和“平台适配”分开维护：
+
+```text
+coding-everything/
+├── skills/                 # 46 个跨平台共享 skill，均含 SKILL.md
+│   ├── dev-*               # 开发流程、架构、测试、样式、MCP 等
+│   ├── obsidian-*          # Obsidian vault 编辑与结构化文件
+│   ├── life-*              # OrbitOS 迁移来的个人工作流
+│   ├── work-*              # PM / 市场 / 用户故事类工作流
+│   ├── learn-*             # 深度研究与 LLM Wiki
+│   └── tool-*              # 独立工具类 skill
+├── .agents/skills/         # 3 个系统级 skill
+│   ├── setup/
+│   ├── update-upstream-repos/
+│   └── dev-creating-subagents/
+├── install_skills/         # ce CLI：安装、更新、卸载、状态、同步
+├── mcp-configs/            # global 组安装时合并到 ~/.claude.json 的 MCP 模板
+├── kimi/                   # Kimi 专属 agent/config
+├── opencode/               # OpenCode 配置占位
+└── upstream/               # 作为 submodule 跟踪的上游仓库
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         SHARED SKILLS 全景架构图                            │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  第零层: 入口与规则 (Meta Layer)                                     │   │
-│   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │                    dev-using-skills                         │    │   │
-│   │  │  ┌─────────────────────────────────────────────────────────┐│    │   │
-│   │  │  │  铁律: 1%可能适用就必须调用 │ 先调用skill再响应         ││    │   │
-│   │  │  │  优先级: 用户请求 > AGENTS/CLAUDE > skill > 默认行为     ││    │   │
-│   │  │  │  多skill时: 流程skills > 实现skills │ 严格型vs灵活型      ││    │   │
-│   │  │  │  红旗: "太简单不需要" "先看一下" "我记得这个skill"        ││    │   │
-│   │  │  └─────────────────────────────────────────────────────────┘│    │   │
-│   │  │  类型: 严格型 │ 触发: 每次对话开始时                          │    │   │
-│   │  └─────────────────────────────────────────────────────────────┘    │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                    │                                        │
-│                                    ▼                                        │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  第一层: 设计阶段 (Design Phase)                                     │   │
-│   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │                   dev-brainstorming                         │    │   │
-│   │  │  ┌─────────────────────────────────────────────────────────┐│    │   │
-│   │  │  │  流程: 先查现有方案 → 澄清问题 → 2-3方案 → 展示设计      ││    │   │
-│   │  │  │  HARD-GATE: 未获用户批准禁止编写代码                     ││    │   │
-│   │  │  │  设计文档写完后必须按外置审查清单审查，过审后再进入计划  ││    │   │
-│   │  │  │  输出: docs/plans/YYYY-MM-DD-<topic>-design.md           ││    │   │
-│   │  │  └─────────────────────────────────────────────────────────┘│    │   │
-│   │  │  类型: 严格型 │ 下一步: dev-writing-plans                     │    │   │
-│   │  └─────────────────────────────────────────────────────────────┘    │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                    │                                        │
-│                                    ▼                                        │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  第二层: 计划阶段 (Planning Phase)                                   │   │
-│   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │                    dev-writing-plans                        │    │   │
-│   │  │  ┌─────────────────────────────────────────────────────────┐│    │   │
-│   │  │  │  粒度: 2-5分钟/任务 │ 每个任务必须引用 dev-tdd          ││    │   │
-│   │  │  │  内容: 精确路径 + 完整代码 + 预期输出 + 提交命令         ││    │   │
-│   │  │  │  分段编写、分段审查；审查清单外置；未过审不能交给执行    ││    │   │
-│   │  │  │  原则: DRY │ YAGNI │ TDD │ 频繁提交                      ││    │   │
-│   │  │  └─────────────────────────────────────────────────────────┘│    │   │
-│   │  │  类型: 严格型 │ 输出: docs/plans/YYYY-MM-DD-<feature>.md      │    │   │
-│   │  └─────────────────────────────────────────────────────────────┘    │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                    │                                        │
-│                                    ▼                                        │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  第三层: 执行阶段 (Execution Phase)                                  │   │
-│   │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────┐   │   │
-│   │  │dev-git-worktrees│  │dev-executing-   │  │   dev-requesting-   │   │   │
-│   │  │                 │  │    plans        │  │      review         │   │   │
-│   │  │ ┌─────────────┐ │  │ ┌─────────────┐ │  │  ┌─────────────┐    │   │   │
-│   │  │ │隔离工作区   │ │  │ │批量执行     │ │  │  │ 代码审查    │    │   │   │
-│   │  │ │~/.agents/   │ │  │ │3任务/批次   │ │  │  │ 子agent驱动 │    │   │   │
-│   │  │ │worktrees/   │ │  │ │调用dev-tdd  │ │  │  │ 每任务后    │    │   │   │
-│   │  │ │运行项目设置 │ │  │ │批次间汇报   │ │  │  │ 每批次后    │    │   │   │
-│   │  │ │验证干净基线 │ │  │ │阻塞时停止   │ │  │  └─────────────┘    │   │   │
-│   │  │ └─────────────┘ │  │ └─────────────┘ │  │                     │   │   │
-│   │  │ 类型: 严格型    │  │ 类型: 严格型    │  │  类型: 严格型       │   │   │
-│   │  └─────────────────┘  └────────┬────────┘  └─────────────────────┘   │   │
-│   │                                │                                      │   │
-│   │           ┌────────────────────┼────────────────────┐                 │   │
-│   │           ▼                    ▼                    ▼                 │   │
-│   │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐       │   │
-│   │  │     dev-tdd     │  │  dev-debugging  │  │ dev-verification│       │   │
-│   │  │  ┌───────────┐  │  │  ┌───────────┐  │  │  ┌───────────┐  │       │   │
-│   │  │  │ 红: 失败  │  │  │  │阶段1: 根本│  │  │  │ 门控函数  │  │       │   │
-│   │  │  │ 验证红    │  │  │  │阶段2: 模式│  │  │  │ 识别→运行 │  │       │   │
-│   │  │  │ 绿: 通过  │  │  │  │阶段3: 假设│  │  │  │ 阅读→验证 │  │       │   │
-│   │  │  │ 验证绿    │  │  │  │阶段4: TDD │  │  │  │ →声称     │  │       │   │
-│   │  │  │ 重构: 清理│  │  │  │3+失败→架构│  │  │  │           │  │       │   │
-│   │  │  └───────────┘  │  │  └───────────┘  │  │  └───────────┘  │       │   │
-│   │  │ 类型: 严格型    │  │  类型: 严格型    │  │  类型: 严格型    │       │   │
-│   │  └─────────────────┘  └─────────────────┘  └─────────────────┘       │   │
-│   │                                │                                      │   │
-│   └────────────────────────────────┼──────────────────────────────────────┘   │
-│                                    │                                        │
-│                                    ▼                                        │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  第四层: 完成阶段 (Completion Phase)                                 │   │
-│   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │                  dev-finishing-branch                       │    │   │
-│   │  │  ┌─────────────────────────────────────────────────────────┐│    │   │
-│   │  │  │ 步骤1: 验证测试通过                                      ││    │   │
-│   │  │  │ 步骤2: 展示4选项 → 1.本地合并 2.创建PR 3.保持 4.丢弃    ││    │   │
-│   │  │  │ 步骤3: 执行选择                                          ││    │   │
-│   │  │  │ 步骤4: 清理worktree(选项1,2,4)                          ││    │   │
-│   │  │  └─────────────────────────────────────────────────────────┘│    │   │
-│   │  │  类型: 严格型 │ 调用方: dev-executing-plans, subagent驱动     │    │   │
-│   │  └─────────────────────────────────────────────────────────────┘    │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  第五层: 领域实现层 (Domain Implementation)                          │   │
-│   │  ═══════════════════════════════════════════                        │   │
-│   │                                                                     │   │
-│   │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────┐  │   │
-│   │  │dev-backend-     │  │dev-frontend-    │  │   dev-code-cleanup  │  │   │
-│   │  │   patterns      │  │   patterns      │  │                     │  │   │
-│   │  │ ┌─────────────┐ │  │ ┌─────────────┐ │  │  ┌─────────────┐    │  │   │
-│   │  │ │FastAPI      │ │  │ │React/TS     │ │  │  │ 工具检测    │    │  │   │
-│   │  │ │Repository   │ │  │ │组合模式     │ │  │  │ 风险分级    │    │  │   │
-│   │  │ │Service层    │ │  │ │Hooks        │ │  │  │ 测试验证    │    │  │   │
-│   │  │ │N+1预防      │ │  │ │状态管理     │ │  │  │ 安全删除    │    │  │   │
-│   │  │ │Redis缓存    │ │  │ │性能优化     │ │  │  │ SAFE/CAUTION│    │  │   │
-│   │  │ │JWT/RBAC     │ │  │ │表单/动画    │ │  │  │ /DANGER     │    │  │   │
-│   │  │ │限流/队列    │ │  │ │无障碍       │ │  │  └─────────────┘    │  │   │
-│   │  │ └─────────────┘ │  │ └─────────────┘ │  │  类型: 灵活型       │  │   │
-│   │  │ 类型: 灵活型    │  │ 类型: 灵活型    │  └─────────────────────┘  │   │
-│   │  └─────────────────┘  └─────────────────┘                           │   │
-│   │                                                                     │   │
-│   │  ┌─────────────────┐  ┌─────────────────────────────────────────┐   │   │
-│   │  │dev-update-      │  │         dev-writing-skills              │   │   │
-│   │  │   codemaps      │  │  ┌─────────────────────────────────┐    │   │   │
-│   │  │                 │  │  │ 元skill: 编写skill的skill       │    │   │   │
-│   │  │ ┌─────────────┐ │  │  │                                 │    │   │   │
-│   │  │ │扫描结构     │ │  │  │ 红: 压力场景测试(看agent失败)   │    │   │   │
-│   │  │ │生成codemaps │ │  │  │ 绿: 编写解决特定违规的skill     │    │   │   │
-│   │  │ │差异检测>30% │ │  │  │ 重构: 关闭漏洞,合理化表,红旗   │    │   │   │
-│   │  │ │架构文档     │ │  │  │ CSO: 搜索优化(description≠what)│    │   │   │
-│   │  │ └─────────────┘ │  │  └─────────────────────────────────┘    │   │   │
-│   │  │ 类型: 灵活型    │  │  类型: 严格型(但创建的是灵活型skill)    │   │   │
-│   │  └─────────────────┘  └─────────────────────────────────────────┘   │   │
-│   │                                                                     │   │
-│   │  ┌─────────────────┐                                                │   │
-│   │  │dev-e2e-testing  │  Playwright Python 端到端测试                  │   │
-│   │  │                 │  ┌───────────────────────────────────────────┐ │   │
-│   │  │ ┌─────────────┐ │  │ pytest-playwright │ Page Object Model    │ │   │
-│   │  │ │POM模式      │ │  │ 多浏览器测试 │ 不稳定测试处理            │ │   │
-│   │  │ │多浏览器配置 │ │  │ Web3/钱包   │ Artifacts 管理            │ │   │
-│   │  │ │不稳定处理   │ │  └───────────────────────────────────────────┘ │   │
-│   │  │ └─────────────┘ │                                                │   │
-│   │  │ 类型: 灵活型    │                                                │   │
-│   │  └─────────────────┘                                                │   │
-│   │                                                                     │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │  基础设施层: 配置安装                                                │   │
-│   │  ┌─────────────────────────────────────────────────────────────┐    │   │
-│   │  │                         setup                               │    │   │
-│   │  │  • 安装 skills 到 ~/.agents/skills/                          │    │   │
-│   │  │  • 安装 agent 配置到各平台目录                                    │    │   │
-│   │  │  • symlink 模式实现实时同步                                    │    │   │
-│   │  │  • 兼容: Claude Code, Kimi CLI, Codex, OpenCode                │    │   │
-│   │  └─────────────────────────────────────────────────────────────┘    │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+
+### 逻辑分层
+
+```text
+┌──────────────────────────────────────────────────────────────────────┐
+│ 第零层：入口与规则                                                   │
+│ dev-using-skills                                                     │
+│ - 先检查适用 skill，再响应或行动                                      │
+│ - 优先级：用户请求 > AGENTS/CLAUDE > skill > 默认行为                 │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ 设计与计划层                                                         │
+│ dev-brainstorming → dev-writing-plans                                │
+│ - 新功能先澄清需求和方案                                             │
+│ - 计划拆成可验证的小任务                                             │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ 执行与验证层                                                         │
+│ dev-executing-plans / dev-tdd / dev-debugging / dev-verification      │
+│ dev-requesting-review / dev-finishing-branch / dev-git-worktrees      │
+│ - 写代码走 TDD，修 bug 先定位根因                                    │
+│ - 声称完成前必须有新鲜验证证据                                       │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ 开发实现层                                                           │
+│ dev-backend-patterns / dev-frontend-patterns / dev-design-system      │
+│ dev-ui-styling / dev-e2e-testing / dev-mcp-patterns                   │
+│ dev-code-cleanup / dev-update-codemaps / dev-search-first             │
+│ dev-continuous-agent-loop / dev-writing-skills                        │
+└───────────────────────────────┬──────────────────────────────────────┘
+                                ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│ 领域工作流层                                                         │
+│ obsidian-* / json-canvas / defuddle / life-* / learn-* / work-*       │
+│ tool-humanizer-zh / tool-macos-hidpi / agent-browser                  │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Skill 调用关系与数据流
+## 安装与运行时流向
 
-### 典型开发工作流 (Happy Path)
+`ce` CLI 由 `install_skills/` 实现。当前推荐路径是先运行 `ce init`，生成用户级配置，再按配置安装。
 
-```
-       ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
-       │  用户需求 │────►│brainstorm│────►│ writing- │────►│executing-│
-       │  "做XX"  │     │  -ing    │     │  plans   │     │  plans   │
-       └──────────┘     └────┬─────┘     └────┬─────┘     └────┬─────┘
-                             │                │                │
-                             ▼                ▼                ▼
-                        ┌─────────────────────────────────────────┐
-                        │   设计文档(先审查) + 实施计划(分段审查)   │
-                        │  docs/plans/YYYY-MM-DD-*.md              │
-                        └─────────────────────────────────────────┘
-                                          │
-                                          ▼
-                        ┌─────────────────────────────────────────┐
-                        │  循环: 批量执行任务 (默认3个/批)         │
-                        │  • 调用 dev-tdd (涉及代码时)             │
-                        │  • 调用 dev-requesting-review (批次后)   │
-                        │  • 汇报 → 反馈 → 下一批                  │
-                        └─────────────────────────────────────────┘
-                                          │
-                                          ▼
-                               ┌─────────────────┐
-                               │finishing-branch │
-                               │  展示4选项       │
-                               │  执行 + 清理    │
-                               └─────────────────┘
+```text
+ce init
+  │
+  ├─ 扫描 repo/skills/*/SKILL.md
+  ├─ 将 Obsidian 相关 skill 分到 obsidian 组
+  └─ 写入 ~/.ce/config.yaml
+
+~/.ce/config.yaml
+  │
+  ▼
+ce install / update / sync / status / uninstall [--group NAME]
+  │
+  ├─ global 组
+  │   ├─ symlink skill 到 ~/.agents/skills/
+  │   ├─ symlink skill 到 ~/.claude/skills/
+  │   ├─ symlink kimi/agents/superpower 到 ~/.kimi/agents/superpower
+  │   ├─ symlink ks 到 ~/.local/bin/ks
+  │   └─ 合并 mcp-configs/required.json 到 ~/.claude.json
+  │
+  ├─ obsidian 组
+  │   ├─ symlink skill 到 <vault>/.claude/skills/
+  │   └─ symlink skill 到 <vault>/.agents/skills/
+  │
+  └─ 写入 ~/.ce/install-manifest.json
 ```
 
-### 调试工作流 (Debug Path)
+配置模式：
 
-```
-       ┌──────────┐     ┌─────────────────────────────────────────┐
-       │  Bug报告 │────►│          dev-debugging                  │
-       │ 测试失败 │     │  ┌─────────────────────────────────────┐ │
-       └──────────┘     │  │ 阶段1: 根本原因调查                 │ │
-                        │  │ • 阅读错误消息 • 一致重现            │ │
-                        │  │ • 检查最近变更 • 追踪数据流          │ │
-                        │  ├─────────────────────────────────────┤ │
-                        │  │ 阶段2: 模式分析                     │ │
-                        │  │ • 找到工作示例 • 识别差异            │ │
-                        │  ├─────────────────────────────────────┤ │
-                        │  │ 阶段3: 假设和测试                   │ │
-                        │  │ • 形成单一假设 • 最小测试            │ │
-                        │  ├─────────────────────────────────────┤ │
-                        │  │ 阶段4: 实现 (必须调用 dev-tdd)      │ │
-                        │  │ • RED: 编写失败测试                  │ │
-                        │  │ • GREEN: 最小修复                    │ │
-                        │  │ • REFACTOR: 清理                     │ │
-                        │  └─────────────────────────────────────┘ │
-                        └─────────────────────────────────────────┘
-                                             │
-                                             ▼
-                                  ┌─────────────────┐
-                                  │ dev-verification│ ◄── 所有完成声称前
-                                  │   验证后才声称   │     必经之门
-                                  └─────────────────┘
+| 模式 | 触发条件 | 配置来源 | 说明 |
+|------|----------|----------|------|
+| UserConfig | `~/.ce/config.yaml` 存在 | `ce init` 生成，可用 `ce add-skill` / `ce add-target` 修改 | 当前推荐模式 |
+| Legacy grouped | `~/.ce/config.yaml` 不存在且仓库根存在 `skills-install.yaml` | 仓库级 YAML | 兼容旧实现；当前工作区根目录没有该文件 |
+| Legacy flat | 前两者都不存在 | 自动发现全部 `skills/` | 无分组回退模式 |
+
+`ce init` 的 Obsidian 组分类规则在 `install_skills/cli.py`：
+
+| 规则 | 当前内容 |
+|------|----------|
+| 前缀 / 名称匹配 | `obsidian-*`、`defuddle`、`json-canvas` |
+| 显式归入 Obsidian | `learn-llm-wiki`、`life-ai-newsletters`、`life-ai-products`、`life-ask`、`life-parse-knowledge`、`life-start-my-day` |
+| 其余 | 归入 `global` 组 |
+
+global 组额外管理 MCP。`mcp-configs/required.json` 当前包含 `auggie-mcp`、`zai-github-read`、`zai-web-reader`、`zai-web-search-prime`、`context7` 等模板；ZAI 相关配置依赖已有 `~/.claude.json` 或环境变量中的 `ZAI_API_KEY`。
+
+---
+
+## Skill 调用关系
+
+### 典型开发工作流
+
+```text
+用户需求
+  │
+  ▼
+dev-using-skills
+  │
+  ▼
+dev-brainstorming
+  │  设计文档与设计审查
+  ▼
+dev-writing-plans
+  │  实施计划与分段审查
+  ▼
+dev-executing-plans
+  │
+  ├─ 涉及代码：dev-tdd
+  ├─ 遇到异常：dev-debugging
+  ├─ 需要隔离：dev-git-worktrees
+  └─ 批次审查：dev-requesting-review
+  │
+  ▼
+dev-verification
+  │
+  ▼
+dev-finishing-branch
 ```
 
-### TDD 核心循环 (被多个 skills 调用)
+### 调试工作流
 
+```text
+Bug / 测试失败
+  │
+  ▼
+dev-debugging
+  ├─ 阶段 1：根本原因调查
+  ├─ 阶段 2：模式分析
+  ├─ 阶段 3：假设和最小验证
+  └─ 阶段 4：调用 dev-tdd 实现修复
+  │
+  ▼
+dev-verification
 ```
-       ┌─────────────────────────────────────────────────────────────────┐
-       │                         dev-tdd                                │
-       │  ┌─────────┐   ┌─────────┐   ┌─────────┐   ┌─────────┐         │
-       │  │   RED   │──►│验证RED  │──►│  GREEN  │──►│验证GREEN│         │
-       │  │写失败测试│   │看它失败 │   │最小代码 │   │看它通过 │         │
-       │  └────┬────┘   └────┬────┘   └────┬────┘   └────┬────┘         │
-       │       │             │ 失败原因不对 │             │               │
-       │       │             └─────────────┘             │               │
-       │       │                                         │               │
-       │       │             ┌─────────┐                 │               │
-       │       └────────────►│ REFACTOR│◄────────────────┘               │
-       │                     │ 清理代码 │                                 │
-       │                     │保持绿色  │                                 │
-       │                     └────┬────┘                                 │
-       │                          │                                      │
-       └──────────────────────────┼──────────────────────────────────────┘
-                                  │
-                                  ▼
-                            ┌──────────┐
-                            │  下一个  │
-                            │  RED测试 │
-                            └──────────┘
+
+### TDD 核心循环
+
+```text
+RED: 写一个失败测试
+  │
+  ▼
+验证 RED：确认失败原因正确
+  │
+  ▼
+GREEN：写最小实现
+  │
+  ▼
+验证 GREEN：测试通过
+  │
+  ▼
+REFACTOR：保持绿色的前提下清理
 ```
 
 ---
 
 ## 核心原则与反模式
 
-### 严格型 Skills 铁律
+### 严格型流程
 
-| Skill | 铁律 (不可违反) |
-|-------|----------------|
-| `dev-using-skills` | "1%可能适用就必须调用"<br>优先级: 用户请求 > AGENTS/CLAUDE > skill > 默认行为 |
-| `dev-brainstorming` | HARD-GATE: 未获批准禁止编写代码<br>设计文档必须先通过审查,再进入 dev-writing-plans |
-| `dev-tdd` | "没有先有失败的测试,就没有生产代码"<br>禁止: 保留代码"参考" "稍后补测试" 适配测试 |
-| `dev-debugging` | "没有先完成第一阶段,就没有修复"<br>3+修复失败 → 必须质疑架构,不继续瞎试 |
-| `dev-writing-plans` | 每个实现任务必须引用 dev-tdd<br>粒度: 2-5分钟/任务 + 分段审查收口 |
-| `dev-verification` | "没有新鲜验证证据,就没有完成声称"<br>禁止: "应该有效" "看起来正确" "我有信心" |
+| Skill | 不可绕过的点 |
+|-------|--------------|
+| `dev-using-skills` | 即使只有 1% 可能适用，也先检查相关 skill |
+| `dev-brainstorming` | 新功能先设计和审查，未获批准不写代码 |
+| `dev-writing-plans` | 实施计划要小步、可验证，并说明验证方式 |
+| `dev-executing-plans` | 按计划执行，遇到阻塞要停下来处理阻塞 |
+| `dev-tdd` | 没有先失败的测试，就不写生产代码 |
+| `dev-debugging` | 没有完成根因调查，就不直接修 |
+| `dev-verification` | 没有新鲜验证证据，就不声称完成 |
 
-### 灵活型 Skills 核心原则
-
-| Skill | 核心原则 |
-|-------|----------|
-| `dev-backend-patterns` | Repository + Service 分层 \| 依赖注入<br>N+1预防 \| 异步优先 \| 类型安全 |
-| `dev-frontend-patterns` | 组合优于继承 \| Hooks复用 \| 性能有意识<br>受控组件 \| 错误边界 \| 无障碍优先 |
-| `dev-code-cleanup` | 工具检测 → 风险分级 → 测试验证 → 安全删除<br>一次只删一项 \| 不确定就跳过 |
-| `dev-update-codemaps` | Token-lean \| 高层结构 > 实现细节<br>差异>30%需批准 \| 新鲜度标头 |
-| `dev-writing-skills` | 将 TDD 应用于文档: 红(压力测试) → 绿 → 重构<br>CSO: 描述=何时用(不是做什么) |
-
-### 常见反模式 (禁止)
+### 常见反模式
 
 | 反模式 | 正确做法 |
 |--------|----------|
-| ❌ "这个太简单了,不需要走流程" | ✅ 简单项目正是假设最多的地方，必须走流程 |
-| ❌ "我先看一下代码再调用skill" | ✅ 检查skill优先于探索代码 |
-| ❌ "我快速修复一下" | ✅ 快速修复=返工+新bug，遵循调试流程 |
-| ❌ "稍后写测试来验证" | ✅ 稍后写的测试立即通过,证明不了什么 |
-| ❌ "就这一次跳过TDD" | ✅ 没有例外，必须先写测试 |
-| ❌ "代码先写好了,我适配一下测试" | ✅ 删除代码,用TDD重新开始 |
-| ❌ "我觉得应该有效" | ✅ 信心≠证据,必须运行验证 |
-| ❌ "Agent说成功了" | ✅ 独立验证,检查diff |
-| ❌ "这次不同因为..." | ✅ 精神高于文字,规则没有例外 |
-
----
-
-## 状态机与决策树
-
-### 用户输入分类与 Skill 选择
-
-```
-                    ┌──────────────┐
-                    │  收到用户消息 │
-                    └──────┬───────┘
-                           │
-                           ▼
-                    ┌──────────────┐
-                    │ 调用相关skill │ ◄── dev-using-skills 要求
-                    │  即使1%可能   │
-                    └──────┬───────┘
-                           │
-                           ▼
-              ┌────────────────────────┐
-              │    用户想要什么？       │
-              └───────┬────────────────┘
-                      │
-         ┌────────────┼────────────┬────────────┐
-         ▼            ▼            ▼            ▼
-    ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐
-    │ 新功能  │  │ 修Bug   │  │ 代码清理│  │ 其他任务│
-    │ "构建X" │  │ "修复Y" │  │ "清理"  │  │ ...     │
-    └────┬────┘  └────┬────┘  └────┬────┘  └────┬────┘
-         │            │            │            │
-         ▼            ▼            ▼            ▼
-   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-   │brainstorm│  │debugging │  │code-cleanup│ │select    │
-   │ -ing     │  │          │  │          │  │appropriate│
-   │设计阶段  │  │调试阶段  │  │清理阶段  │  │skill     │
-   └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘
-        │             │             │             │
-        ▼             ▼             ▼             ▼
-   ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐
-   │writing-  │  │   tdd    │  │verification│ │...       │
-   │  plans   │  │(阶段4)   │  │(清理后)   │  │          │
-   │计划阶段  │  │修复+测试 │  │验证结果  │  │          │
-   └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬─────┘
-        │             │             │             │
-        ▼             ▼             ▼             ▼
-   ┌────────────────────────────────────────────────────┐
-   │           dev-verification (验证后才声称)           │
-   └────────────────────────────────────────────────────┘
-```
-
-### Skill 优先级决策树
-
-```
-              ┌─────────────────────┐
-              │ 多个skill可能适用？  │
-              └──────────┬──────────┘
-                         │
-                         ▼
-              ┌─────────────────────┐
-              │ 流程skills优先       │ ◄── 在不违背用户/AGENTS前提下
-              │ (brainstorm/debug)  │
-              └──────────┬──────────┘
-                         │
-                         ▼
-              ┌─────────────────────┐
-              │ 实现skills其次       │ ◄── 决定具体执行
-              │ (patterns/cleanup)  │
-              └─────────────────────┘
-```
+| “先看一下代码再说” | 先检查适用 skill，再检索代码 |
+| “这个很简单，不用流程” | 简单任务也要先判断适用流程 |
+| “先写完再补测试” | 用 TDD 先写失败测试 |
+| “应该有效” | 运行验证命令并读取输出 |
+| “找到相似方案就直接照抄” | 用 `dev-search-first` 做 Adopt / Extend / Build 判断 |
 
 ---
 
 ## Skill 清单
 
-### 流程型 Skills (严格型)
+### 流程型与开发型
 
-| Skill 名称 | 触发场景 | 核心输出 | 下一步 |
-|-----------|----------|----------|--------|
-| `dev-using-skills` | 每次对话开始 | 确定适用的 skill 与指令优先级 | 根据场景调用相应 skill |
-| `dev-brainstorming` | 新功能需求 | 设计文档 + 设计审查结论 | `dev-writing-plans` |
-| `dev-writing-plans` | 需要实施计划 | 计划文档 + 分段审查结论 | `dev-executing-plans` |
-| `dev-executing-plans` | 有书面计划 | 实现代码 | `dev-finishing-branch` |
-| `dev-tdd` | 写代码时 | 测试+实现 | 下一个测试或验证 |
-| `dev-debugging` | 遇到 Bug | 修复方案 | `dev-tdd` (阶段4) |
-| `dev-verification` | 声称完成前 | 验证报告 | 继续或修复 |
-| `dev-requesting-review` | 任务/批次后 | 审查报告 | 修复问题或继续 |
-| `dev-finishing-branch` | 开发完成 | 合并/PR/清理 | - |
-| `dev-git-worktrees` | 需要隔离工作区 | 干净 worktree | 开发任务 |
+| Skill | 类型 | 作用 |
+|-------|------|------|
+| `dev-using-skills` | 严格 | skill 入口、指令优先级与触发规则 |
+| `dev-brainstorming` | 严格 | 编码前设计、澄清和方案收敛 |
+| `dev-writing-plans` | 严格 | 编写可执行实施计划 |
+| `dev-executing-plans` | 严格 | 执行书面计划 |
+| `dev-tdd` | 严格 | 测试驱动开发 |
+| `dev-debugging` | 严格 | 系统化调试 |
+| `dev-verification` | 严格 | 完成前验证 |
+| `dev-requesting-review` | 严格 | 审查请求与问题修复 |
+| `dev-finishing-branch` | 严格 | 分支完成、合并或清理 |
+| `dev-git-worktrees` | 严格 | 隔离工作区 |
+| `dev-writing-skills` | 严格 | 编写和验证新 skill |
+| `dev-code-cleanup` | 严格 | 清理死代码、未用依赖和重复代码 |
+| `dev-search-first` | 严格 | 编码前检索现有实现和外部方案 |
+| `dev-backend-patterns` | 灵活 | 后端架构与 API 模式 |
+| `dev-frontend-patterns` | 灵活 | React / Next.js / 状态管理模式 |
+| `dev-design-system` | 灵活 | 设计 token、语义颜色、组件状态 |
+| `dev-ui-styling` | 灵活 | UI 样式、响应式、可访问性 |
+| `dev-continuous-agent-loop` | 灵活 | 长时间自治执行和质量门 |
+| `dev-e2e-testing` | 灵活 | Playwright Python 端到端测试 |
+| `dev-mcp-patterns` | 灵活 | Node/TypeScript MCP server 开发 |
+| `dev-update-codemaps` | 灵活 | 生成 token-lean 架构索引 |
 
-### 实现型 Skills (灵活型)
+### 领域与工具型
 
-| Skill 名称 | 用途 | 技术栈 |
-|-----------|------|--------|
-| `dev-backend-patterns` | 后端架构模式 | Python, FastAPI, SQLAlchemy, Redis |
-| `dev-frontend-patterns` | 前端架构模式 | React, TypeScript, Next.js |
-| `dev-design-system` | 设计系统模式 | Token 分层, 语义层, 组件状态 |
-| `dev-ui-styling` | UI 样式实现 | CSS Variables, 响应式, 可访问性 |
-| `dev-continuous-agent-loop` | 持续 agent 循环 | 顺序流水线, 并行分发, 质量门 |
-| `dev-code-cleanup` | 清理死代码 | knip, depcheck, vulture |
-| `dev-update-codemaps` | 更新架构文档 | 代码分析, Token-lean |
-| `dev-e2e-testing` | 端到端浏览器测试 | pytest-playwright, Page Object Model |
-| `dev-search-first` | 编码前先检索现成方案 | agent 内置搜索, 开源库, MCP, GitHub |
-| `learn-deep-research` | 正式调研报告与证据追踪 | agent 内置网页搜索, 多来源证据, 引用校验 |
-| `work-market-research` | 市场、竞品与进入策略调研 | agent 内置网页搜索, 公开市场信号, 业务判断 |
-| `agent-browser` | 浏览器自动化 | `agent-browser` CLI, 快照引用, 表单/抓取/截图模板 |
-| `dev-writing-skills` | 编写新 skill | TDD for Documentation |
+| Skill | 分组倾向 | 作用 |
+|-------|----------|------|
+| `agent-browser` | global | 浏览器自动化 CLI、表单、截图、抓取 |
+| `defuddle` | obsidian | 网页提取为干净 markdown |
+| `json-canvas` | obsidian | JSON Canvas 文件创建和编辑 |
+| `obsidian-markdown` | obsidian | Obsidian Flavored Markdown |
+| `obsidian-bases` | obsidian | Obsidian Bases 语法 |
+| `obsidian-cli` | obsidian | Obsidian CLI 与 vault 交互 |
+| `learn-deep-research` | global | 正式研究报告与证据追踪 |
+| `learn-llm-wiki` | obsidian | Karpathy 风格 LLM Wiki 构建与维护 |
+| `life-start-my-day` | obsidian | OrbitOS 日启动工作流 |
+| `life-kickoff` | global | 将想法转为项目笔记 |
+| `life-research` | global | Obsidian 研究工作流 |
+| `life-brainstorm` | global | 交互式头脑风暴 |
+| `life-ask` | obsidian | Vault 问答工作流 |
+| `life-parse-knowledge` | obsidian | 知识解析与归档 |
+| `life-archive` | global | 归档完成项目和收件箱项 |
+| `life-ai-newsletters` | obsidian | AI newsletter 处理 |
+| `life-ai-products` | obsidian | AI 产品信息处理 |
+| `work-market-research` | global | 市场规模、竞品和进入策略 |
+| `work-jobs-to-be-done` | global | JTBD 结构化分析 |
+| `work-problem-statement` | global | 问题陈述 |
+| `work-user-story` | global | 用户故事与验收标准 |
+| `work-user-story-mapping` | global | 用户故事地图 |
+| `work-user-story-splitting` | global | 大故事拆分 |
+| `tool-humanizer-zh` | global | 中文 AI 写作去痕 |
+| `tool-macos-hidpi` | global | macOS HiDPI 分辨率配置 |
 
-### 来源映射
+系统级 `.agents/skills/`：
 
-| 本地 skill | 来源 | 引入内容 |
-|-----------|------|----------|
-| `dev-search-first` | `upstream/everything-claude-code/skills/search-first/SKILL.md` | 吸收 research-before-coding workflow，并按本仓库约束改为优先使用 agent 内置搜索能力 |
-| `work-market-research` | `upstream/everything-claude-code/skills/market-research/SKILL.md` | 吸收市场、竞品、业务判断框架；上游仅提供 `SKILL.md`，无额外 `references/` 或 `scripts/` |
-| `learn-deep-research` | `daymade/claude-code-skills/deep-research` | 吸收正式研究报告 workflow，并完整引入 `references/`：研究计划、来源质量、报告模板、格式规则、完整性检查 |
-| `agent-browser` | `vercel-labs/agent-browser/skills/agent-browser` | 直接镜像 `SKILL.md`、`references/`、`templates/`，并用 `scripts/sync-agent-browser-skill.sh` 单独跟踪更新 |
+| Skill | 作用 |
+|-------|------|
+| `setup` | 安装本项目共享 skills、Kimi agent、`ks` 和 MCP 配置 |
+| `update-upstream-repos` | 更新上游 submodule 并生成更新报告 |
+| `dev-creating-subagents` | Kimi CLI / Codex subagent 创建与管理 |
 
 ---
 
-## 总结：核心设计思想
+## 来源映射
 
-| 设计原则 | 说明 |
-|---------|------|
-| **分层架构** | 入口层 → 设计层 → 计划层 → 执行层 → 完成层 → 领域层 |
-| **严格型/灵活型区分** | 流程类必须严格遵循，实现类可根据上下文调整 |
-| **TDD 贯穿始终** | 代码开发用 TDD，编写 skill 本身也用 TDD |
-| **验证门控** | dev-verification 是所有完成声称前的必经之门 |
-| **技能即代码** | skills 是可版本控制、可测试、可迭代的代码资产 |
-| **元能力** | dev-writing-skills 让系统能自我扩展、自我改进 |
+| 本地 skill / 模块 | 来源 | 维护方式 |
+|-------------------|------|----------|
+| `dev-*` 核心流程 | `upstream/superpowers` 为主要参考 | 本地适配为 `dev-` 前缀，按项目规则维护 |
+| `dev-search-first`、`work-market-research` | `upstream/everything-claude-code` | 吸收 workflow 后本地化 |
+| `obsidian-markdown`、`obsidian-bases`、`json-canvas`、`obsidian-cli`、`defuddle` | `upstream/obsidian-skills` | 迁移到 `skills/`，各目录用 `UPSTREAM.md` 跟踪 |
+| `life-*` | `upstream/orbitos` | 迁移 OrbitOS workflow 并按本地 vault 约束适配 |
+| `learn-llm-wiki` | `upstream/karpathy-llm-wiki` | 迁移 Karpathy 风格 LLM Wiki workflow |
+| `tool-humanizer-zh` | `upstream/humanizer-zh` | 本地工具型 skill |
+| `agent-browser` | `vercel-labs/agent-browser/skills/agent-browser` | 通过 `scripts/sync-agent-browser-skill.sh` 单独镜像 |
 
 ---
 
-*文档更新时间: 2026-04-02*
-*对应技能版本: skills v1.3*
+## 总结
+
+| 设计原则 | 当前落点 |
+|----------|----------|
+| 共享能力与平台适配分离 | `skills/` 放跨平台 skill，`kimi/` / `opencode/` 放平台配置 |
+| 安装配置用户化 | `~/.ce/config.yaml` 优先，manifest 记录真实安装项 |
+| 分组隔离 | global 与 obsidian 组可独立安装、更新、卸载、同步 |
+| 可验证工作流 | 开发、调试、清理、完成前都绑定验证门 |
+| 上游可追踪 | submodule、`UPSTREAM.md`、同步脚本记录来源 |
+
+---
+
+*文档更新时间: 2026-04-20*
+*对应 skill 目录: `skills/` 46 个共享 skill，`.agents/skills/` 3 个系统级 skill*
