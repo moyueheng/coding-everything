@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from dataclasses import replace
 from pathlib import Path
 from typing import TextIO
 
@@ -12,6 +13,50 @@ from install_skills.config import (
     save_user_config,
 )
 from install_skills.models import UserConfig, GroupConfig
+
+
+def _looks_like_repo_root(path: Path) -> bool:
+    """检查路径是否像 coding-everything 仓库根目录。"""
+    return (
+        (path / "skills").is_dir()
+        and (path / "install_skills").is_dir()
+        and (path / "pyproject.toml").is_file()
+    )
+
+
+def _repair_config_repo_root_if_stale(
+    config_path: Path,
+    repo_root: Path,
+    *,
+    stdout: TextIO = sys.stdout,
+) -> None:
+    """当仓库被移动后，自动把用户配置中的 repo_root 修正到当前仓库。
+
+    只在旧路径不存在时修复，避免用户从另一个仍存在的 checkout 中运行 ce 时
+    静默改写配置。
+    """
+    config = load_user_config(config_path)
+    if config is None or config.repo_root is None:
+        return
+
+    configured_root = config.repo_root.expanduser()
+    current_root = repo_root.resolve()
+    try:
+        configured_matches_current = configured_root.resolve() == current_root
+    except FileNotFoundError:
+        configured_matches_current = False
+
+    if configured_matches_current or configured_root.exists():
+        return
+
+    if not _looks_like_repo_root(current_root):
+        return
+
+    save_user_config(config_path, replace(config, repo_root=current_root))
+    print(
+        f"repo_root moved: updated {config_path} from {configured_root} to {current_root}",
+        file=stdout,
+    )
 
 
 def _ask_obsidian_path(_input_func=input) -> Path | None:
@@ -289,6 +334,11 @@ def main(
     # 检查是否存在用户级配置 ~/.ce/config.yaml
     user_config_path = get_default_config_path(resolved_home)
     if user_config_path.exists():
+        _repair_config_repo_root_if_stale(
+            user_config_path,
+            resolved_repo_root,
+            stdout=stdout,
+        )
         # 使用新的 UserConfig 模式
         if args.command == "install":
             return installer.command_install_from_config(

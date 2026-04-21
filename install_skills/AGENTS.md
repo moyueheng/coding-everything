@@ -130,6 +130,10 @@ groups:
 | `ce add-target PATH --group GROUP` | 向配置中的组添加 target 目录 |
 | `ce sync [--group NAME]` | 对齐实际安装与 config（安装缺失 + 清理多余） |
 
+## Repo Root 自愈
+
+存在 `~/.ce/config.yaml` 时，`ce install/update/status/sync/doctor/uninstall` 会先检查配置中的 `repo_root`。如果旧 `repo_root` 已不存在，且当前运行路径看起来是本项目仓库根目录（包含 `skills/`、`install_skills/`、`pyproject.toml`），CLI 会自动把 `repo_root` 更新到当前仓库路径。这样用户把 `Projects` 改名为 `01-Projects` 后，只需在新仓库路径运行 `ce update`，即可重建 symlink 并刷新 manifest。
+
 ## 依赖
 
 - Python >= 3.12

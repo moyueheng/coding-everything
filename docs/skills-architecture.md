@@ -97,6 +97,8 @@ ce init
   ▼
 ce install / update / sync / status / uninstall [--group NAME]
   │
+  ├─ 若 ~/.ce/config.yaml 的 repo_root 已不存在，自动修正为当前仓库根目录
+  │
   ├─ global 组
   │   ├─ symlink skill 到 ~/.agents/skills/
   │   ├─ symlink skill 到 ~/.claude/skills/
