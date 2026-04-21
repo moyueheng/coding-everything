@@ -232,6 +232,7 @@ coding-everything/
 
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
 - **[docs/skills-architecture.md](./docs/skills-architecture.md)** - 共享 skill 架构全景图和调用关系
+- **[docs/agent-context-loading.md](./docs/agent-context-loading.md)** - Codex、Claude Code、Kimi CLI 与 OpenCode 的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载机制对比
 - `docs/upstream-updates/YYYY-MM-DD-upstream-updates.md` - 使用 `update-upstream-repos` skill 生成和维护的上游更新报告
 
 ## 上游仓库

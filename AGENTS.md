@@ -4,6 +4,7 @@
 
 - [共享 Skills 架构图](./docs/skills-architecture.md) - 技能关系图和调用流程可视化
 - [CODEMAPS](./docs/CODEMAPS/architecture.md) - 面向 AI 上下文的 token-lean 架构索引
+- [Agent 上下文加载机制](./docs/agent-context-loading.md) - Codex、Claude Code、Kimi CLI 与 OpenCode 在嵌套 Git 工作区中的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载边界对比
 - [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
@@ -28,6 +29,7 @@
   - [skill开发](#skill开发)
   - [脚本开发](#脚本开发)
   - [文档同步（AGENTS/CLAUDE）](#文档同步agentsclaude)
+  - [多工具嵌套工作区](#多工具嵌套工作区)
   - [命名规范](#命名规范)
 - [资源链接](#资源链接)
   - [上游仓库](#上游仓库)
@@ -138,6 +140,7 @@ coding-everything/
 │
 ├── docs/                       # 文档
 │   ├── CODEMAPS/               # token-lean 架构索引，供 AI 快速载入上下文
+│   ├── agent-context-loading.md # 多工具指令文件与 skill 加载机制对比
 │   └── upstream-updates/       # 上游更新报告
 │
 └── upstream/                   # 上游仓库（git submodules）
@@ -452,6 +455,12 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 2. 只要变更触及目录结构、架构边界、工作流、安装步骤、测试入口等高信息密度事实，必须同步更新相关文档
 3. 更新内容禁止流水账，优先写稳定、可执行、可复用的约束与结构信息
 4. 每次 commit 前检查 `upstream/everything-claude-code/agents/architect.md` 是否需要同步到当前仓库的相关 skills 或文档
+
+### 多工具嵌套工作区
+
+1. 多 Git 仓库共享父级规则时，先查阅 `docs/agent-context-loading.md`，确认 Codex、Claude Code、Kimi CLI、OpenCode 的指令文件和 skill 发现边界
+2. Codex 多仓库工作区优先使用 `.codex-root` + `project_root_markers = [".codex-root"]`，不要同时依赖 `.git` 和 `.codex-root` 作为等价 marker
+3. Kimi CLI 和 OpenCode 在嵌套 Git 仓库中不会稳定继承父级项目级 rules/skills；需要跨仓库共享时优先使用用户级 skill 目录、symlink、或显式配置/启动函数注入
 
 ### Git Worktree 约束
 
