@@ -234,6 +234,8 @@ coding-everything/
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
 - **[docs/skills-architecture.md](./docs/skills-architecture.md)** - 共享 skill 架构全景图和调用关系
 - **[docs/agent-context-loading.md](./docs/agent-context-loading.md)** - Codex、Claude Code、Kimi CLI 与 OpenCode 的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载机制对比
+- **[docs/ROADMAP.md](./docs/ROADMAP.md)** - 项目分阶段规划、能力边界、非目标与里程碑
+- **[docs/2026-04-23-skills-manager-architecture-research.md](./docs/2026-04-23-skills-manager-architecture-research.md)** - `jiweiyeah/Skills-Manager` 的公开能力边界、架构推断与对本仓库 roadmap 的启发
 - **[docs/templates/agent-context/](./docs/templates/agent-context/)** - 全局、开发、生活、Obsidian 多工作区 agent context 模板和 Kimi/OpenCode wrapper 示例
 - `docs/upstream-updates/YYYY-MM-DD-upstream-updates.md` - 使用 `update-upstream-repos` skill 生成和维护的上游更新报告
 

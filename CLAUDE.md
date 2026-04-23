@@ -6,6 +6,8 @@
 - [CODEMAPS](./docs/CODEMAPS/architecture.md) - 面向 AI 上下文的 token-lean 架构索引
 - [Agent 上下文加载机制](./docs/agent-context-loading.md) - Codex、Claude Code、Kimi CLI 与 OpenCode 在嵌套 Git 工作区中的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载边界对比
 - [Agent Context 模板](./docs/templates/agent-context/) - 全局、开发、生活、Obsidian 多工作区 agent context 模板和 Kimi/OpenCode wrapper 示例
+- [项目 Roadmap](./docs/ROADMAP.md) - 项目分阶段规划、能力边界、非目标与里程碑
+- [Skills-Manager 架构调研](./docs/2026-04-23-skills-manager-architecture-research.md) - `jiweiyeah/Skills-Manager` 的公开能力边界、架构推断与对本仓库 roadmap 的启发
 - [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
