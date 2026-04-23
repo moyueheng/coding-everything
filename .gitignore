@@ -9,3 +9,6 @@ __pycache__/
 
 # Avoid accidentally committing symlink loops or local symlink artifacts
 skills/skills
+
+# Local nested repos not tracked by this workspace
+skills/boss-cli/
