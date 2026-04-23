@@ -5,6 +5,7 @@
 - [共享 Skills 架构图](./docs/skills-architecture.md) - 技能关系图和调用流程可视化
 - [CODEMAPS](./docs/CODEMAPS/architecture.md) - 面向 AI 上下文的 token-lean 架构索引
 - [Agent 上下文加载机制](./docs/agent-context-loading.md) - Codex、Claude Code、Kimi CLI 与 OpenCode 在嵌套 Git 工作区中的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载边界对比
+- [Agent Context 模板](./docs/templates/agent-context/) - 全局、开发、生活、Obsidian 多工作区 agent context 模板和 Kimi/OpenCode wrapper 示例
 - [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
@@ -141,6 +142,7 @@ coding-everything/
 ├── docs/                       # 文档
 │   ├── CODEMAPS/               # token-lean 架构索引，供 AI 快速载入上下文
 │   ├── agent-context-loading.md # 多工具指令文件与 skill 加载机制对比
+│   ├── templates/agent-context/ # 多工作区 agent context 模板
 │   └── upstream-updates/       # 上游更新报告
 │
 └── upstream/                   # 上游仓库（git submodules）

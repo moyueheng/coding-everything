@@ -53,7 +53,7 @@ ce install
 | 组 | 安装位置 | 内容 |
 |------|------|------|
 | `global` | `~/.agents/skills/` + `~/.claude/skills/` | 开发工作流 skill、Kimi agent、ks 命令、MCP 配置 |
-| `obsidian` | `~/00-Life/ob-note/.claude/skills/` + `.agents/skills/` | Obsidian 编辑相关 skill（只在 vault 内生效） |
+| `obsidian` | `<obsidian-vault>/.claude/skills/` + `.agents/skills/` | Obsidian 编辑相关 skill（只在 vault 内生效） |
 
 ### 4. 验证安装
 
@@ -67,7 +67,7 @@ ce status
 [global] installed=25 missing=0 drifted=0
   mcp: configured=auggie-mcp,...
 [obsidian] installed=5 missing=0 drifted=0
-  targets: ~/00-Life/ob-note/.claude/skills, ~/00-Life/ob-note/.agents/skills
+  targets: <obsidian-vault>/.claude/skills, <obsidian-vault>/.agents/skills
 ```
 
 ## 常用命令
@@ -98,8 +98,8 @@ groups:
   obsidian:
     skills: [obsidian-markdown, obsidian-bases, ...]
     targets:
-      - ~/00-Life/ob-note/.claude/skills
-      - ~/00-Life/ob-note/.agents/skills
+      - <obsidian-vault>/.claude/skills
+      - <obsidian-vault>/.agents/skills
 ```
 
 - **global 组**：额外处理 kimi agent、ks 命令、MCP 服务器配置
@@ -226,6 +226,7 @@ coding-everything/
 ├── mcp-configs/                # MCP 服务器配置模板
 ├── upstream/                   # 上游仓库（子模块）
 └── docs/                       # 文档
+    └── templates/agent-context/ # 多工作区 agent context 模板
 ```
 
 ## 文档
@@ -233,6 +234,7 @@ coding-everything/
 - **[AGENTS.md](./AGENTS.md)** - 完整项目文档，包含架构、约定、工作流等
 - **[docs/skills-architecture.md](./docs/skills-architecture.md)** - 共享 skill 架构全景图和调用关系
 - **[docs/agent-context-loading.md](./docs/agent-context-loading.md)** - Codex、Claude Code、Kimi CLI 与 OpenCode 的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载机制对比
+- **[docs/templates/agent-context/](./docs/templates/agent-context/)** - 全局、开发、生活、Obsidian 多工作区 agent context 模板和 Kimi/OpenCode wrapper 示例
 - `docs/upstream-updates/YYYY-MM-DD-upstream-updates.md` - 使用 `update-upstream-repos` skill 生成和维护的上游更新报告
 
 ## 上游仓库

@@ -352,14 +352,17 @@ OpenCode project-level skill 目录：
 
 如果 `c` 是 Git 仓库，父级 `a` 下的 `.opencode/skills` 和 `.agents/skills` 会被当前 Git worktree 截断。需要共享时，优先使用用户级目录，或在子仓库 `opencode.json` 中显式配置绝对路径。
 
-## 手动注入方案
+## 手动注入与 Alias 方案
 
 如果 `a` 是开发大工作区，下面有多个 Git 仓库：
 
 ```text
-~/00-Life/a/
+~/workspace/a/
+  .codex-root
   AGENTS.md
+  CLAUDE.md
   .agents/skills/
+  .claude/skills/
   .opencode/skills/
 
   repo1/.git/
@@ -367,14 +370,14 @@ OpenCode project-level skill 目录：
   group/repo3/.git/
 ```
 
-目标是在子仓库中启动工具时继承 `a/AGENTS.md` 和共享 skills。
+目标是在子仓库中启动工具时继承 `a/AGENTS.md` 和共享 skills。Codex 优先用 `.codex-root` 解决；Kimi CLI 和 OpenCode 在嵌套 Git 仓库中需要启动参数或本地薄文件补齐。
 
 ### OpenCode function
 
 OpenCode 支持 `OPENCODE_CONFIG_CONTENT`，适合用 shell function 显式注入：
 
 ```bash
-export DEV_AI_ROOT="$HOME/00-Life/a"
+export DEV_AI_ROOT="$HOME/workspace/a"
 
 oca() {
   local root="${DEV_AI_ROOT:?DEV_AI_ROOT is not set}"
@@ -399,19 +402,28 @@ oca() {
 用法：
 
 ```bash
-cd ~/00-Life/a/repo1
+cd ~/workspace/a/repo1
 oca
 oca run "帮我检查这个仓库"
 ```
 
 这个方案不依赖 OpenCode 的 upward discovery，而是显式传入绝对路径，所以不会被 `repo1/.git` 截断。
 
+实际效果：
+
+```text
+repo1/.git
+  不再阻止 OpenCode 读取 a/AGENTS.md
+  不再阻止 OpenCode 发现 a/.agents/skills
+  不再阻止 OpenCode 发现 a/.opencode/skills
+```
+
 ### Kimi CLI function
 
 Kimi CLI 可以通过 `--skills-dir` 注入父级 skills：
 
 ```bash
-export DEV_AI_ROOT="$HOME/00-Life/a"
+export DEV_AI_ROOT="$HOME/workspace/a"
 
 kimia() {
   local root="${DEV_AI_ROOT:?DEV_AI_ROOT is not set}"
@@ -435,6 +447,13 @@ kimia() {
 
 这个方案可以加载父级 `a/.agents/skills`，也能把当前仓库存在的 skill 目录补回。但它不能自动把 `a/AGENTS.md` 合并进 `${KIMI_AGENTS_MD}`。
 
+本次检查的 Kimi CLI 启动参数中，没有发现等价于下面形式的参数：
+
+```bash
+kimi --instructions /path/to/AGENTS.md
+kimi --agents-md /path/to/AGENTS.md
+```
+
 Kimi CLI 共享父级 `AGENTS.md` 的稳定做法是在每个仓库放一个很薄的 `.kimi/AGENTS.md`：
 
 ```text
@@ -447,14 +466,133 @@ repo1/
 ```md
 请先读取并遵守：
 
-/Users/moyueheng/00-Life/a/AGENTS.md
+$DEV_AI_ROOT/AGENTS.md
 ```
 
 也可以使用 symlink：
 
 ```bash
 mkdir -p .kimi
-ln -s /Users/moyueheng/00-Life/a/AGENTS.md .kimi/AGENTS.md
+ln -s "$DEV_AI_ROOT/AGENTS.md" .kimi/AGENTS.md
+```
+
+如果不想改每个仓库，也可以用启动 prompt 做轻量补齐：
+
+```bash
+kimia-start() {
+  local root="${DEV_AI_ROOT:?DEV_AI_ROOT is not set}"
+  kimia --prompt "开始前请读取并遵守 $root/AGENTS.md。之后等待我的下一步指令。"
+}
+```
+
+这个方式轻量，但稳定性低于 `.kimi/AGENTS.md` 或 symlink，因为它依赖模型在启动回合主动读取文件。
+
+### 多工作区分层示例
+
+如果要拆分开发、生活和 Obsidian vault 上下文，可以使用三个工作区 root。下面使用可迁移的 `$HOME` 路径；实际目录名可按个人机器调整。
+
+```text
+$HOME/
+  .codex/AGENTS.md                 # 只放跨场景全局规则
+
+  <projects-dir>/
+    .codex-root
+    AGENTS.md                      # 代码开发通用规则
+    CLAUDE.md                      # @AGENTS.md
+    .agents/skills/                # 可选：dev-* 工作区级 skills
+    .claude/skills/                # 可选：Claude Code 工作区级 skills
+    .opencode/skills/              # 可选：OpenCode 工作区级 skills
+
+  <life-dir>/
+    .codex-root
+    AGENTS.md                      # 生活、研究、写作、知识管理通用规则
+    CLAUDE.md                      # @AGENTS.md
+    .agents/skills/                # 可选：life-* / work-* / learn-* 工作区级 skills
+
+    <obsidian-vault>/
+      AGENTS.md                    # Obsidian vault 专属规则
+      CLAUDE.md
+      .agents/skills/              # Obsidian 专用 skills
+      .claude/skills/
+```
+
+对应 shell function 可以按 root 拆三套：
+
+```bash
+export PROJECTS_AI_ROOT="$HOME/<projects-dir>"
+export LIFE_AI_ROOT="$HOME/<life-dir>"
+export OBSIDIAN_AI_ROOT="$LIFE_AI_ROOT/<obsidian-vault>"
+```
+
+OpenCode：
+
+```bash
+_oc_with_root() {
+  local root="${1:?root is required}"
+  shift
+  local cfg
+
+  cfg="$(jq -nc \
+    --arg agents "$root/AGENTS.md" \
+    --arg agents_skills "$root/.agents/skills" \
+    --arg opencode_skills "$root/.opencode/skills" \
+    '{
+      "$schema": "https://opencode.ai/config.json",
+      "instructions": [$agents],
+      "skills": {
+        "paths": [$agents_skills, $opencode_skills]
+      }
+    }')"
+
+  OPENCODE_CONFIG_CONTENT="$cfg" opencode "$@"
+}
+
+ocp() { _oc_with_root "$PROJECTS_AI_ROOT" "$@"; }
+ocl() { _oc_with_root "$LIFE_AI_ROOT" "$@"; }
+oco() { _oc_with_root "$OBSIDIAN_AI_ROOT" "$@"; }
+```
+
+Kimi CLI：
+
+```bash
+_kimi_with_root() {
+  local root="${1:?root is required}"
+  shift
+  local args=()
+
+  args+=(--add-dir "$root")
+  [ -d "$root/.agents/skills" ] && args+=(--skills-dir "$root/.agents/skills")
+  [ -d "$root/.claude/skills" ] && args+=(--skills-dir "$root/.claude/skills")
+  [ -d "$root/.codex/skills" ] && args+=(--skills-dir "$root/.codex/skills")
+
+  for d in \
+    "$PWD/.kimi/skills" \
+    "$PWD/.claude/skills" \
+    "$PWD/.codex/skills" \
+    "$PWD/.agents/skills"
+  do
+    [ -d "$d" ] && args+=(--skills-dir "$d")
+  done
+
+  kimi "${args[@]}" "$@"
+}
+
+kimip() { _kimi_with_root "$PROJECTS_AI_ROOT" "$@"; }
+kimil() { _kimi_with_root "$LIFE_AI_ROOT" "$@"; }
+kimio() { _kimi_with_root "$OBSIDIAN_AI_ROOT" "$@"; }
+```
+
+Kimi 的 `AGENTS.md` 仍建议用 repo-local `.kimi/AGENTS.md` symlink 补齐：
+
+```bash
+mkdir -p .kimi
+ln -s "$PROJECTS_AI_ROOT/AGENTS.md" .kimi/AGENTS.md
+```
+
+如果当前目录是 Obsidian vault，则链接到：
+
+```bash
+ln -s "$OBSIDIAN_AI_ROOT/AGENTS.md" .kimi/AGENTS.md
 ```
 
 ## 推荐实践
@@ -504,6 +642,39 @@ a/
 
 如果希望单一来源供多个工具使用，可以用 symlink 或同步脚本分发到各工具对应的位置。
 
+如果希望把 `a` 当作“开发大目录”，并让下面多个 Git 仓库尽量继承 `a` 的规范，推荐组合是：
+
+```text
+a/
+  .codex-root
+  AGENTS.md
+  CLAUDE.md
+  .agents/skills/
+  .claude/skills/
+  .opencode/skills/
+
+  repo1/
+    .git/
+    .kimi/AGENTS.md -> <workspace-root>/AGENTS.md
+```
+
+工具侧做法：
+
+```text
+Codex
+  用 .codex-root + project_root_markers
+
+Claude Code
+  用 CLAUDE.md 引用 AGENTS.md，并使用 a/.claude/skills
+
+OpenCode
+  用 oca/ocp/ocl/oco function，通过 OPENCODE_CONFIG_CONTENT 注入 a/AGENTS.md 和 a 下 skills
+
+Kimi CLI
+  用 kimia/kimip/kimil/kimio function 注入 --skills-dir
+  用 repo-local .kimi/AGENTS.md 或 symlink 补齐 a/AGENTS.md
+```
+
 ## 关键结论
 
 - Codex `AGENTS.md` 和 repo skills 都使用 project-root-to-cwd discovery。
@@ -518,4 +689,6 @@ a/
 - OpenCode project-level skills 会被当前 Git worktree 截断；可用 `OPENCODE_CONFIG_CONTENT` 或 `opencode.json` 显式注入父级指令和 skills。
 - Kimi CLI `--skills-dir` 可以注入父级 skills，但会覆盖默认 discovery；需要当前仓库自己的 skills 时也要一起传入。
 - Kimi CLI `--add-dir` 只扩大工具可访问目录，不会让父级 `AGENTS.md` 自动并入 `${KIMI_AGENTS_MD}`。
+- Kimi CLI 未发现 `--instructions` 或 `--agents-md` 这类直接注入父级 `AGENTS.md` 的启动参数；要用 `.kimi/AGENTS.md`、symlink 或启动 prompt 补齐。
+- OpenCode 的 alias/function 方案可以同时注入 `instructions` 和 `skills.paths`，是多 Git 仓库工作区下最干净的手动继承方案。
 - 推荐把 `AGENTS.md` 作为共享指令源，并在 `CLAUDE.md` 中通过 `@AGENTS.md` 引用。
