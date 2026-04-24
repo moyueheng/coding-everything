@@ -3,7 +3,7 @@
 ## 目录
 
 - [共享 Skills 架构图](./docs/skills-architecture.md) - 技能关系图和调用流程可视化
-- [CODEMAPS](./docs/CODEMAPS/architecture.md) - 面向 AI 上下文的 token-lean 架构索引
+- [CODEMAPS](./docs/CODEMAPS/INDEX.md) - 面向 AI 上下文的 token-lean 架构索引（由 `scripts/generate_codemaps.py` 自动生成）
 - [Agent 上下文加载机制](./docs/agent-context-loading.md) - Codex、Claude Code、Kimi CLI 与 OpenCode 在嵌套 Git 工作区中的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载边界对比
 - [Agent Context 模板](./docs/templates/agent-context/) - 全局、开发、生活、Obsidian 多工作区 agent context 模板和 Kimi/OpenCode wrapper 示例
 - [项目 Roadmap](./docs/ROADMAP.md) - 项目分阶段规划、能力边界、非目标与里程碑
@@ -125,8 +125,13 @@ coding-everything/
 ├── pyproject.toml              # Python 包定义（ce CLI 入口）
 ├── mcp-configs/                # MCP 服务器配置模板
 │   └── required.json           # 必装 MCP 定义（auggie-mcp / zai / context7）
-├── scripts/                    # 本地同步脚本
-│   └── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
+├── scripts/                    # 本地同步与工具脚本
+│   ├── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
+│   └── generate_codemaps.py    # codemap 生成器（扫描仓库 → docs/CODEMAPS/）
+│
+├── tests/                      # 测试
+│   ├── conftest.py             # 将 scripts/ 加入 sys.path
+│   └── test_generate_codemaps.py # codemap 生成器测试
 │
 ├── kimi/                       # Kimi 专属配置
 │   ├── README.md
@@ -142,7 +147,7 @@ coding-everything/
 │   └── skills/                 # skill目录（待填充）
 │
 ├── docs/                       # 文档
-│   ├── CODEMAPS/               # token-lean 架构索引，供 AI 快速载入上下文
+│   ├── CODEMAPS/               # token-lean 架构索引，由 scripts/generate_codemaps.py 自动生成
 │   ├── agent-context-loading.md # 多工具指令文件与 skill 加载机制对比
 │   ├── templates/agent-context/ # 多工作区 agent context 模板
 │   └── upstream-updates/       # 上游更新报告
