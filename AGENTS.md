@@ -3,11 +3,6 @@
 ## 目录
 
 - [共享 Skills 架构图](./docs/skills-architecture.md) - 技能关系图和调用流程可视化
-- [CODEMAPS](./docs/CODEMAPS/architecture.md) - 面向 AI 上下文的 token-lean 架构索引
-- [Agent 上下文加载机制](./docs/agent-context-loading.md) - Codex、Claude Code、Kimi CLI 与 OpenCode 在嵌套 Git 工作区中的 `AGENTS.md`、`CLAUDE.md` 和 skill 加载边界对比
-- [Agent Context 模板](./docs/templates/agent-context/) - 全局、开发、生活、Obsidian 多工作区 agent context 模板和 Kimi/OpenCode wrapper 示例
-- [项目 Roadmap](./docs/ROADMAP.md) - 项目分阶段规划、能力边界、非目标与里程碑
-- [Skills-Manager 架构调研](./docs/2026-04-23-skills-manager-architecture-research.md) - `jiweiyeah/Skills-Manager` 的公开能力边界、架构推断与对本仓库 roadmap 的启发
 - [PM Skills 迁移待办](./docs/product-manager-skills-migration-backlog.md) - Product Manager Skills 分批迁移清单
 - [项目概述](#项目概述)
   - [跟踪的上游仓库](#跟踪的上游仓库)
@@ -32,7 +27,6 @@
   - [skill开发](#skill开发)
   - [脚本开发](#脚本开发)
   - [文档同步（AGENTS/CLAUDE）](#文档同步agentsclaude)
-  - [多工具嵌套工作区](#多工具嵌套工作区)
   - [命名规范](#命名规范)
 - [资源链接](#资源链接)
   - [上游仓库](#上游仓库)
@@ -57,17 +51,14 @@
 | [deanpeters/Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills.git) | Product Manager 相关 skill 集合 | `upstream/product-manager-skills/` |
 | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills.git) | Obsidian agent skills 仓库 | `upstream/obsidian-skills/` |
 | [MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS.git) | AI 驱动的 Obsidian 个人生产力系统 | `upstream/orbitos/` |
-| [Astro-Han/karpathy-llm-wiki](https://github.com/Astro-Han/karpathy-llm-wiki.git) | Karpathy 风格 LLM Wiki 构建工具 | `upstream/karpathy-llm-wiki/` |
-| [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills.git) | Karpathy 编码行为指南 skill | `upstream/karpathy-skills/` |
 
 ### 个人配置
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **共享 skills** | `skills/` | ✅ 已配置（46 个含 `SKILL.md` 的 skill） |
+| **共享 skills** | `skills/` | ✅ 已配置（46 个共享 skill；其中 5 个 Obsidian 编辑类 skill 可单独分组安装） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
-| **Claude Code** | 通过 `ce` CLI 写入 `~/.claude/skills/` 或项目级 `.claude/skills/` | ✅ 已兼容 |
-| **OpenCode** | `opencode/` | 🏗️ 开发中（12 个skill目录，1 个已完成） |
+| **Claude Code** | 通过 `ce` CLI 写入 `~/.claude/skills/` 或项目级 `.claude/skills/`，并合并 `mcp-configs/required.json` | ✅ 已兼容 |
 
 ---
 
@@ -77,6 +68,7 @@
 coding-everything/
 ├── README.md                   # 项目简介
 ├── AGENTS.md                   # 本文档
+├── CLAUDE.md                   # Claude/Codex 共享项目文档
 ├── .gitmodules                 # Git submodule 配置
 ├── .agents/
 │   └── skills/                 # 系统级 skills
@@ -85,48 +77,28 @@ coding-everything/
 │       └── dev-creating-subagents/ # 创建和管理 subagent
 │
 ├── skills/                     # 跨平台共享 skills
-│   ├── agent-browser/          # 单独镜像跟踪的外部浏览器自动化 skill
-│   ├── obsidian-markdown/      # Obsidian Flavored Markdown 编辑（从上游迁移）
-│   ├── obsidian-bases/         # Obsidian Bases 语法编辑
+│   ├── dev-*/                  # 开发 workflow / 模式类 skill（21 个）
+│   ├── life-*/                 # OrbitOS 派生 workflow（9 个）
+│   ├── work-*/                 # 产品 / 研究 workflow（6 个）
+│   ├── obsidian-*/             # Obsidian 编辑 skill（3 个）
 │   ├── json-canvas/            # JSON Canvas 文件编辑
-│   ├── obsidian-cli/           # Obsidian CLI 与 vault 交互
 │   ├── defuddle/               # 网页提取为干净 markdown
-│   ├── dev-using-skills/
-│   ├── dev-brainstorming/
-│   ├── dev-debugging/
-│   ├── dev-tdd/
-│   ├── dev-writing-plans/
-│   ├── dev-executing-plans/
-│   ├── dev-git-worktrees/
-│   ├── dev-requesting-review/
-│   ├── dev-verification/
-│   ├── dev-finishing-branch/
-│   ├── dev-writing-skills/
-│   ├── dev-code-cleanup/
-│   ├── dev-update-codemaps/
-│   ├── dev-search-first/
-│   ├── dev-backend-patterns/
-│   ├── dev-frontend-patterns/
-│   ├── dev-design-system/
-│   ├── dev-ui-styling/
-│   ├── dev-continuous-agent-loop/
-│   ├── dev-e2e-testing/
-│   ├── learn-deep-research/
-│   ├── learn-llm-wiki/ # Karpathy 风格 LLM Wiki 构建与维护
-│   ├── work-market-research/
-│   ├── tool-humanizer-zh/
-│   └── tool-macos-hidpi/
+│   ├── tool-*/                 # 工具类 skill
+│   ├── learn-*/                # 学习 / 研究类 skill（2 个）
+│   └── agent-browser/          # 单独镜像跟踪的外部浏览器自动化 skill
 ├── install_skills/             # ce CLI 工具 Python 包
 │   ├── __init__.py
 │   ├── cli.py                  # 命令行入口
-│   ├── config.py               # 用户级 ~/.ce/config.yaml 加载
+│   ├── config.py               # `~/.ce/config.yaml` 读写
 │   ├── installer.py            # symlink / manifest / MCP 逻辑
-│   └── models.py               # 数据结构
+│   └── models.py               # 配置与 manifest 数据结构
 ├── pyproject.toml              # Python 包定义（ce CLI 入口）
+├── ks                          # Kimi Superpower 启动脚本
 ├── mcp-configs/                # MCP 服务器配置模板
-│   └── required.json           # 必装 MCP 定义（auggie-mcp / zai / context7）
+│   └── required.json           # Auggie + ZAI + Context7
 ├── scripts/                    # 本地同步脚本
 │   └── sync-agent-browser-skill.sh # 同步 vercel-labs/agent-browser skill
+├── tests/                      # ce CLI / 安装逻辑测试
 │
 ├── kimi/                       # Kimi 专属配置
 │   ├── README.md
@@ -136,14 +108,9 @@ coding-everything/
 │           ├── system.md
 │           └── README.md
 │
-├── opencode/                   # OpenCode 配置
-│   ├── README.md
-│   ├── plugins/                # 插件目录
-│   └── skills/                 # skill目录（待填充）
-│
 ├── docs/                       # 文档
-│   ├── CODEMAPS/               # token-lean 架构索引，供 AI 快速载入上下文
-│   ├── agent-context-loading.md # 多工具指令文件与 skill 加载机制对比
+│   ├── CODEMAPS/               # token-lean 架构索引
+│   ├── plans/                  # 计划与调研文档
 │   ├── templates/agent-context/ # 多工作区 agent context 模板
 │   └── upstream-updates/       # 上游更新报告
 │
@@ -174,14 +141,14 @@ coding-everything/
     │   ├── README.md
     │   └── skills/             # Obsidian / Bases / Canvas / CLI 等 skill
     │
-    └── orbitos/                # AI 驱动的 Obsidian 个人生产力系统
+    ├── orbitos/                # AI 驱动的 Obsidian 个人生产力系统
         ├── README.md
         └── EN/                 # 英文版 vault 模板与 AI workflow
-
+    │
     ├── karpathy-llm-wiki/      # Karpathy 风格 LLM Wiki 构建工具
     │   ├── SKILL.md
     │   ├── README.md
-    │   └── references/         # 文章/索引/归档模板
+    │   └── references/
     │
     └── karpathy-skills/        # Karpathy 编码行为指南 skill
 ```
@@ -194,7 +161,7 @@ coding-everything/
 
 **简介**: 为 AI 编程助手设计的综合软件开发工作流框架
 
-**当前跟踪版本**: `b557648`（2026-04-16，post-v5.0.7）
+**当前跟踪版本**: `b557648`（位于 `v5.0.7` 之后 23 个提交，2026-04-24 同步）
 
 **核心skill**:
 - `using-superpowers` - skill使用入口
@@ -210,7 +177,7 @@ coding-everything/
 **同步状态**: 
 - ✅ `dev-brainstorming` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
 - ✅ `dev-writing-plans` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
-- ✅ 当前跟踪到 `b557648`，README 已补充 OpenAI Codex CLI / Codex App 插件安装入口；本地 skill 内容本次无变化
+- ✅ 当前 gitlink 已前进到 `b557648`，本轮上游重点在 Codex plugin 镜像工具链与 README / 安装表述整理
 
 ### 2. everything-claude-code
 
@@ -220,12 +187,17 @@ coding-everything/
 - `.claude/` - Claude 专属配置
 - `.cursor/` - Cursor 编辑器配置
 - `.opencode/` - OpenCode 配置
-- `skills/` - 69+ 个skill（持续增长）
-- `agents/` - 28+ 个 agent 配置
-- `commands/` - 58+ 个预定义命令
+- `skills/` - 183 个 skill
+- `agents/` - 48 个 agent 配置
+- `commands/` - 79 个 legacy command shim
 - `hooks/` - 会话钩子
-- `docs/zh-CN/skills/` - **32 个简体中文skill**（引入时无需翻译）
-- `ecc2/` - ECC 2.0 Rust TUI 脚手架（alpha），近期新增 board observability 原型（`session_board` 元数据 + dashboard Board pane）
+- `docs/zh-CN/skills/` - 116 个简体中文条目
+- `ecc2/` - ECC 2.0 Rust TUI 脚手架（开发中）
+
+**本次同步观察**:
+- `4e66b288` 把 Continuous Learning v2、Cursor 原生 hook / MCP、Windows hook wrapper 等安装链路继续收敛
+- 上游 README 当前公开面已对齐到 `48 agents / 183 skills / 79 legacy command shims`
+- 这次不直接引入 ECC 新表面，但本仓库文档应同步它的真实体量和插件安装边界
 
 **值得关注的 skill（尚未引入）**:
 | skill | 用途 | 引入障碍 |
@@ -262,52 +234,34 @@ coding-everything/
 - 核心 workflow 命令：`/start-my-day`、`/kickoff`、`/research`、`/ask`、`/brainstorm`、`/parse-knowledge`、`/archive`
 
 **迁移状态**:
-- ✅ 已迁移 8 个 workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-parse-knowledge`、`life-archive`、`life-ai-newsletters`、`life-ai-products`
-- ✅ `skills-install.yaml` 的 `obsidian` 组已扩展为 14 个 skill（含 `learn-llm-wiki`）
+- ✅ 已迁移 9 个 OrbitOS workflow skill 到 `skills/`：`life-start-my-day`、`life-kickoff`、`life-research`、`life-brainstorm`、`life-parse-knowledge`、`life-archive`、`life-ask`、`life-ai-newsletters`、`life-ai-products`
+- ✅ 当前仓库另含 6 个 `work-*` workflow：`work-jobs-to-be-done`、`work-market-research`、`work-problem-statement`、`work-user-story`、`work-user-story-mapping`、`work-user-story-splitting`
+- ✅ 已新增 `learn-llm-wiki`，来源于 `upstream/karpathy-llm-wiki/`
+- ✅ `ce init` 默认只把 5 个 Obsidian 编辑类 skill 归入可选 `obsidian` 组；OrbitOS workflow 会随 `global` 组安装
 - ✅ 本地适配统一使用 `20_Project/`，不保留 `20_Projects/` 兼容层
 
 ---
 
 ## 个人 Kimi 配置
 
-共享 skill 基于 Agent Skills 标准组织；`kimi/` 目录仅保留 Kimi Code CLI 专属 agent/config。
+共享 skill 基于 Agent Skills 标准组织；`kimi/` 目录仅保留 Kimi Code CLI 专属 agent/config。当前仓库共有 46 个共享 skill，按前缀分类如下：
 
 ### skill列表
 
-| skill | 用途 | 类型 |
+| 前缀 / 组 | 数量 | 说明 |
 |------|------|------|
-| `dev-using-skills` | 入口点 - skill使用方法与指令优先级 | 严格 |
-| `dev-brainstorming` | 编码前苏格拉底式对话与设计审查闭环（审查清单外置） | 严格 |
-| `dev-debugging` | 四阶段调试流程 | 严格 |
-| `dev-tdd` | 测试驱动开发 | 严格 |
-| `dev-writing-plans` | 编写实施计划与分段审查收口（审查清单外置） | 严格 |
-| `dev-executing-plans` | 执行计划 | 严格 |
-| `dev-git-worktrees` | Git 工作树管理 | 严格 |
-| `dev-requesting-review` | 代码审查请求 | 严格 |
-| `dev-verification` | 完成前验证 | 严格 |
-| `dev-finishing-branch` | 分支完成工作流 | 严格 |
-| `dev-writing-skills` | 编写新skill | 严格 |
-| `dev-code-cleanup` | 代码清理和死代码删除 | 严格 |
-| `dev-update-codemaps` | 分析代码库结构并生成架构文档 | 灵活 |
-| `dev-search-first` | 编码前先检索仓库、依赖、MCP、公开 skill 与 GitHub 方案，再决定 Adopt / Extend / Build | 严格 |
-| `dev-backend-patterns` | 后端架构模式与最佳实践 | 灵活 |
-| `dev-frontend-patterns` | 前端架构模式与最佳实践 | 灵活 |
-| `dev-design-system` | 设计 token、语义层与组件状态的设计系统模式 | 灵活 |
-| `dev-ui-styling` | 组件样式、响应式布局、主题与可访问性的 UI 实现模式 | 灵活 |
-| `dev-continuous-agent-loop` | 顺序流水线、并行分发和持续 agent 循环的自动化执行模式 | 灵活 |
-| `dev-e2e-testing` | Playwright Python 端到端测试模式 | 灵活 |
-| `learn-deep-research` | 正式研究报告、技术调研、行业综述与结构化证据追踪 | 灵活 |
-| `learn-llm-wiki` | Karpathy 风格 LLM Wiki 构建与维护（导入/查询/质量检查） | 灵活 |
-| `work-market-research` | 市场规模、竞品、价格带、区域机会与进入策略调研 | 灵活 |
-| `tool-humanizer-zh` | 去除文本中的 AI 生成痕迹 | 灵活 |
-| `tool-macos-hidpi` | 为 macOS 新增或验证 HiDPI/标准分辨率 | 灵活 |
-| `dev-creating-subagents` | 创建和管理 subagent（Kimi CLI/Codex 双平台指南） | 灵活 |
-| `agent-browser` | 浏览器自动化 CLI 使用、页面交互、抓取与截图 workflow | 灵活 |
-| `obsidian-markdown` | Obsidian Flavored Markdown 编辑（项目级安装到 Obsidian vault） | 灵活 |
-| `obsidian-bases` | Obsidian Bases 语法编辑（项目级安装到 Obsidian vault） | 灵活 |
-| `json-canvas` | JSON Canvas 文件编辑（项目级安装到 Obsidian vault） | 灵活 |
-| `obsidian-cli` | Obsidian CLI 与 vault 交互（项目级安装到 Obsidian vault） | 灵活 |
-| `defuddle` | 网页提取为干净 markdown（项目级安装到 Obsidian vault） | 灵活 |
+| `dev-*` | 21 | 开发 workflow、模式与安装配套，包括 `dev-mcp-patterns` |
+| `life-*` | 9 | OrbitOS 派生的个人 workflow |
+| `work-*` | 6 | 产品、研究与需求分析 workflow |
+| `obsidian-*` | 3 | Obsidian 编辑 skill |
+| `json-canvas` + `defuddle` | 2 | Obsidian 相关辅助 skill |
+| `tool-*` | 2 | 工具类 skill |
+| `learn-*` | 2 | 深度研究类 skill，含 `learn-llm-wiki` |
+| `agent-browser` | 1 | 浏览器自动化 skill |
+
+分组规则：
+- `ce init` 会把 `obsidian-*`、`json-canvas`、`defuddle` 识别为可选 `obsidian` 组
+- 其余共享 skill 默认进入 `global` 组
 
 ### 快速安装
 
@@ -318,15 +272,21 @@ cd coding-everything
 uv tool install -e .
 ```
 
-安装所有组的 skill：
+先初始化用户配置：
+
+```bash
+ce init
+```
+
+初始化会把分组配置写入 `~/.ce/config.yaml`。随后再安装：
 
 ```bash
 ce install
 ```
 
-默认会按 `skills-install.yaml` 分组安装：
-- `global` 组：skill symlink 到 `~/.agents/skills/` 和 `~/.claude/skills/`，安装 `~/.kimi/agents/superpower`、`~/.local/bin/ks`，合并 MCP 配置
-- `obsidian` 组：skill symlink 到 `~/Documents/ObsidianVault/.claude/skills/` 和 `~/Documents/ObsidianVault/.agents/skills/`
+默认分组行为：
+- `global` 组：skill symlink 到 `~/.agents/skills/` 和 `~/.claude/skills/`，安装 `~/.kimi/agents/superpower`、`~/.local/bin/ks`，并把 `mcp-configs/required.json` 合并到 `~/.claude.json`
+- `obsidian` 组：仅在 `ce init` 时提供 vault 路径后创建，安装到对应 vault 的 `.claude/skills/` 与 `.agents/skills/`
 
 单组操作：
 
@@ -336,6 +296,9 @@ ce update --group global        # 只更新 global 组
 ce uninstall --group obsidian   # 只卸载 obsidian 组
 ce status                       # 查看所有组状态
 ce status --group global        # 只查看 global 组
+ce doctor                       # 检查并修复常见安装问题
+ce add-skill learn-llm-wiki --group global
+ce add-target /Users/moyueheng/00-life/myhron-os/.claude/skills --group obsidian
 ```
 
 ---
@@ -444,7 +407,7 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
    - 检查清单（如适用）
 3. **Skill 标准**：本项目的 skills 遵循 [Agent Skills 开放标准](https://agentskills.io/)，与 Claude Code、Codex 等平台兼容
 4. 安装与卸载边界以 manifest 为准（`~/.ce/install-manifest.json`），`update/uninstall/status` 只能处理本仓库登记过的项
-5. 新增 skill 必须在 `skills-install.yaml` 中声明所属组和 targets，否则不会被安装
+5. 当前主流程通过 `~/.ce/config.yaml` 管理分组；如新增 skill，需要通过 `ce init` / `ce add-skill` / `ce add-target` 进入目标组
 
 ### 脚本开发
 
@@ -459,12 +422,6 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 2. 只要变更触及目录结构、架构边界、工作流、安装步骤、测试入口等高信息密度事实，必须同步更新相关文档
 3. 更新内容禁止流水账，优先写稳定、可执行、可复用的约束与结构信息
 4. 每次 commit 前检查 `upstream/everything-claude-code/agents/architect.md` 是否需要同步到当前仓库的相关 skills 或文档
-
-### 多工具嵌套工作区
-
-1. 多 Git 仓库共享父级规则时，先查阅 `docs/agent-context-loading.md`，确认 Codex、Claude Code、Kimi CLI、OpenCode 的指令文件和 skill 发现边界
-2. Codex 多仓库工作区优先使用 `.codex-root` + `project_root_markers = [".codex-root"]`，不要同时依赖 `.git` 和 `.codex-root` 作为等价 marker
-3. Kimi CLI 和 OpenCode 在嵌套 Git 仓库中不会稳定继承父级项目级 rules/skills；需要跨仓库共享时优先使用用户级 skill 目录、symlink、或显式配置/启动函数注入
 
 ### Git Worktree 约束
 
@@ -512,7 +469,6 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 - **product-manager-skills**: https://github.com/deanpeters/Product-Manager-Skills
 - **obsidian-skills**: https://github.com/kepano/obsidian-skills
 - **orbitos**: https://github.com/MarsWang42/OrbitOS
-- **karpathy-llm-wiki**: https://github.com/Astro-Han/karpathy-llm-wiki
 
 ### 平台文档
 
