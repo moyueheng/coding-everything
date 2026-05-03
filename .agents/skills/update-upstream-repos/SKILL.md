@@ -76,13 +76,15 @@ git -C upstream/<repo> fetch --all --tags
 git -C upstream/<repo> pull --ff-only
 ```
 
-`git submodule update --remote` 会按 `.gitmodules` 里的 `branch = main` 前进，但通常会把 submodule 工作树留在 detached HEAD。这个项目要求更新后把已变化的 submodule 切回本地 `main`，避免后续误判成“没有跟踪主分支”。
+`git submodule update --remote` 会按 `.gitmodules` 里的 `branch = main` 前进，但通常会把 submodule 工作树留在 detached HEAD。这个项目要求更新后把所有已初始化的 `upstream/*` submodule 都切回本地 `main`，避免未发生 gitlink 变化的新初始化仓库停在 detached HEAD。
 
 更新后立刻执行：
 
 ```bash
 uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py
 ```
+
+如只想处理根仓库当前有 gitlink diff 的 submodule，可显式加 `--changed-only`；常规上游同步不要使用这个窄模式。
 
 更新后不要立刻总结，先确认根仓库里真的有 gitlink 变化：
 

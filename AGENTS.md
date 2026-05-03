@@ -51,6 +51,8 @@
 | [deanpeters/Product-Manager-Skills](https://github.com/deanpeters/Product-Manager-Skills.git) | Product Manager 相关 skill 集合 | `upstream/product-manager-skills/` |
 | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills.git) | Obsidian agent skills 仓库 | `upstream/obsidian-skills/` |
 | [MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS.git) | AI 驱动的 Obsidian 个人生产力系统 | `upstream/orbitos/` |
+| [Astro-Han/karpathy-llm-wiki](https://github.com/Astro-Han/karpathy-llm-wiki.git) | Karpathy 风格 LLM Wiki 构建工具 | `upstream/karpathy-llm-wiki/` |
+| [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills.git) | Karpathy 编码行为指南 | `upstream/karpathy-skills/` |
 
 ### 个人配置
 
@@ -161,7 +163,7 @@ coding-everything/
 
 **简介**: 为 AI 编程助手设计的综合软件开发工作流框架
 
-**当前跟踪版本**: `b557648`（位于 `v5.0.7` 之后 23 个提交，2026-04-24 同步）
+**当前跟踪版本**: `e7a2d16`（位于 `v5.0.7` 之后 25 个提交，2026-05-03 同步）
 
 **核心skill**:
 - `using-superpowers` - skill使用入口
@@ -177,7 +179,7 @@ coding-everything/
 **同步状态**: 
 - ✅ `dev-brainstorming` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
 - ✅ `dev-writing-plans` 已同步 v5.0.6 内联自审模式（替代 subagent review loop）
-- ✅ 当前 gitlink 已前进到 `b557648`，本轮上游重点在 Codex plugin 镜像工具链与 README / 安装表述整理
+- ✅ 当前 gitlink 已前进到 `e7a2d16`，本轮上游重点在提交版 Codex plugin manifest/assets、Codex plugin 同步脚本和新 harness PR 证据要求
 
 ### 2. everything-claude-code
 
@@ -187,17 +189,18 @@ coding-everything/
 - `.claude/` - Claude 专属配置
 - `.cursor/` - Cursor 编辑器配置
 - `.opencode/` - OpenCode 配置
-- `skills/` - 183 个 skill
+- `skills/` - 182 个 skill
 - `agents/` - 48 个 agent 配置
-- `commands/` - 79 个 legacy command shim
+- `commands/` - 68 个 maintained command entry
+- `legacy-command-shims/commands/` - 12 个 retired short-name shim
 - `hooks/` - 会话钩子
 - `docs/zh-CN/skills/` - 116 个简体中文条目
 - `ecc2/` - ECC 2.0 Rust TUI 脚手架（开发中）
 
 **本次同步观察**:
-- `4e66b288` 把 Continuous Learning v2、Cursor 原生 hook / MCP、Windows hook wrapper 等安装链路继续收敛
-- 上游 README 当前公开面已对齐到 `48 agents / 183 skills / 79 legacy command shims`
-- 这次不直接引入 ECC 新表面，但本仓库文档应同步它的真实体量和插件安装边界
+- `841beea4` 把 ECC 2.0 rc1、跨 harness 文档、`loop-status` transcript inspector / watch / snapshot、`auto-update`、`consult` 等工具链继续收敛
+- 上游 README 当前公开面已对齐到 `48 agents / 182 skills / 68 legacy command shims`
+- 本次不直接引入 ECC 新表面；`loop-status` 的 bounded watch / snapshot 思路可作为 `dev-continuous-agent-loop` 后续参考
 
 **值得关注的 skill（尚未引入）**:
 | skill | 用途 | 引入障碍 |
@@ -326,7 +329,7 @@ git submodule update --remote
 约束：
 - 所有 `upstream/` submodule 必须显式跟踪 `main` 分支，禁止依赖远端默认分支隐式漂移
 - 更新 submodule 后，先检查 gitlink 是否沿 `main` 前进，再决定是否写报告或提交
-- `git submodule update --remote` 后，必须把本次有变化的 submodule 切回本地 `main`，不要把工作树停在 detached HEAD
+- `git submodule update --remote` 或 `git submodule update --init --remote` 后，必须把所有已初始化的 `upstream/*` submodule 切回本地 `main`；新初始化但 gitlink 未变化的 submodule 也不能停在 detached HEAD
 - 固定入口：
 
 ```bash
@@ -469,6 +472,8 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 - **product-manager-skills**: https://github.com/deanpeters/Product-Manager-Skills
 - **obsidian-skills**: https://github.com/kepano/obsidian-skills
 - **orbitos**: https://github.com/MarsWang42/OrbitOS
+- **karpathy-llm-wiki**: https://github.com/Astro-Han/karpathy-llm-wiki
+- **karpathy-skills**: https://github.com/forrestchang/andrej-karpathy-skills
 
 ### 平台文档
 

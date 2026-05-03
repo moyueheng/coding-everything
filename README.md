@@ -11,6 +11,8 @@
 - **[nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)** - UI/UX Pro Max Skill
 - **[kepano/obsidian-skills](https://github.com/kepano/obsidian-skills)** - Obsidian agent skills 仓库
 - **[MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS)** - AI 驱动的 Obsidian 个人生产力系统
+- **[Astro-Han/karpathy-llm-wiki](https://github.com/Astro-Han/karpathy-llm-wiki)** - Karpathy 风格 LLM Wiki 构建工具
+- **[forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)** - Karpathy 编码行为指南
 - **[vercel-labs/agent-browser](https://github.com/vercel-labs/agent-browser)** - 单独镜像跟踪 `agent-browser` skill
 
 ## 快速开始
@@ -202,7 +204,7 @@ groups:
 # 更新所有子模块到最新
 git submodule update --remote
 
-# 将本次有变化的子模块切回本地 main，避免停在 detached HEAD
+# 将所有已初始化的 upstream/* 子模块切回本地 main，避免停在 detached HEAD
 uv run .agents/skills/update-upstream-repos/scripts/switch_updated_submodules_to_main.py
 
 # 更新特定子模块
@@ -212,7 +214,7 @@ cd upstream/superpowers && git pull origin main
 uv run .agents/skills/update-upstream-repos/scripts/generate_upstream_report.py
 ```
 
-约束：所有 `upstream/` 子模块都显式跟踪 `main` 分支，避免因远端默认分支变化导致漂移。执行 `git submodule update --remote` 后，还要把已变化的子模块切回本地 `main`，否则 Git 常会把工作树留在 detached HEAD。
+约束：所有 `upstream/` 子模块都显式跟踪 `main` 分支，避免因远端默认分支变化导致漂移。执行 `git submodule update --remote` 或 `git submodule update --init --remote` 后，还要把所有已初始化的 `upstream/*` 子模块切回本地 `main`；新初始化但 gitlink 未变化的子模块也可能停在 detached HEAD。
 
 ## 项目结构
 
@@ -264,6 +266,8 @@ coding-everything/
 | [nextlevelbuilder/ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | UI/UX Pro Max Skill |
 | [kepano/obsidian-skills](https://github.com/kepano/obsidian-skills) | Obsidian agent skills 仓库 |
 | [MarsWang42/OrbitOS](https://github.com/MarsWang42/OrbitOS) | AI 驱动的 Obsidian 个人生产力系统 |
+| [Astro-Han/karpathy-llm-wiki](https://github.com/Astro-Han/karpathy-llm-wiki) | Karpathy 风格 LLM Wiki 构建工具 |
+| [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) | Karpathy 编码行为指南 |
 
 ## 许可证
 
