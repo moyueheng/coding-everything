@@ -1,21 +1,21 @@
 # Knowledge Base Index
 
-## {topic-name}
+## {主题名}
 
-{One-line description of this topic.}
+{该主题的一句话描述。}
 
-- [[{topic-name}/{Article Title}.md]]
-  摘要：{One-line summary}
+- [[{主题名}/{文章标题}.md]]
+  摘要：{一句话摘要}
   更新：{YYYY-MM-DD}
 
-- [[{topic-name}/{Archived Article}.md]]
-  摘要：[Archived] {One-line summary}
+- [[{主题名}/{归档文章}.md]]
+  摘要：[Archived] {一句话摘要}
   更新：{YYYY-MM-DD}
 
-## {another-topic}
+## {另一主题}
 
-{One-line description of this topic.}
+{该主题的一句话描述。}
 
-- [[{another-topic}/{Article Title}.md]]
-  摘要：{One-line summary}
+- [[{另一主题}/{文章标题}.md]]
+  摘要：{一句话摘要}
   更新：{YYYY-MM-DD}

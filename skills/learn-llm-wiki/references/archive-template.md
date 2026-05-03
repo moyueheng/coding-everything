@@ -1,23 +1,23 @@
-# {Title}
+# {标题}
 
-{文件名必须为：{Title}.md}
+{文件名必须为：{标题}.md}
 
-> Sources: [{Cited Article 1}](article1.md); [{Cited Article 2}](../other-topic/article2.md)
-{Paths must be relative to this file: same-topic = 文章标题.md, cross-topic = ../other-topic/文章标题.md}
+> Sources: [{引用文章 1}](article1.md); [{引用文章 2}](../other-topic/article2.md)
+{路径必须相对于当前文件：同主题 = 文章标题.md，跨主题 = ../other-topic/文章标题.md}
 > Archived: {YYYY-MM-DD}
 
-## Overview
+## 概览
 
-{One paragraph summarizing the query and key findings.}
+{用一个段落总结查询问题和关键发现。}
 
-## {Body Sections}
+## {正文小节}
 
-{The synthesized answer, lightly edited for wiki context. This page is a point-in-time snapshot; it will not be cascade-updated when source articles change.}
+{综合后的答案，可为适配 wiki 上下文做轻量编辑。此页面是特定时间点的快照；来源文章变化时，本页面不会被级联更新。}
 
-{OPTIONAL — include this section only when cross-references exist:}
+{可选：仅当存在交叉引用时包含本节。}
 
-## See Also
+## 另见
 
-{Cross-references to related wiki articles. Use relative links:
-- Same topic: [Other Article](其他文章标题.md)
-- Different topic: [Other Article](../other-topic/其他文章标题.md)}
+{指向相关 wiki 文章的交叉引用。使用相对链接：
+- 同主题：[其他文章](其他文章标题.md)
+- 不同主题：[其他文章](../other-topic/其他文章标题.md)}

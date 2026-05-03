@@ -1,22 +1,22 @@
-# {Title}
+# {标题}
 
-{文件名必须为：{Title}.md}
+{文件名必须为：{标题}.md}
 
-> Sources: {Author1, YYYY-MM-DD; Author2, YYYY-MM-DD}
-> Raw: [{source1}](../../raw/{topic1}/{filename1}.md); [{source2}](../../raw/{topic2}/{filename2}.md)
+> Sources: {作者1, YYYY-MM-DD; 作者2, YYYY-MM-DD}
+> Raw: [{来源1}](../../raw/{主题1}/{文件名1}.md); [{来源2}](../../raw/{主题2}/{文件名2}.md)
 
-## Overview
+## 概览
 
-{One paragraph summarizing the key points of this article.}
+{用一个段落总结本文的关键要点。}
 
-## {Body Sections}
+## {正文小节}
 
-{Synthesize a coherent structure from the source material. Do not copy source text verbatim; distill and reorganize. Use blockquotes sparingly for particularly important original phrasing.}
+{基于来源材料综合出连贯结构。不要逐字复制原文；应提炼并重组内容。仅在原文措辞特别重要时少量使用引用块。}
 
-{OPTIONAL — include this section only when cross-references exist:}
+{可选：仅当存在交叉引用时包含本节。}
 
-## See Also
+## 另见
 
-{Cross-references to related wiki articles. Maintained during lint. Use Obsidian wikilinks:
-- [[Other Article]]
-- [[Other Article|Display Text]] when the visible text should differ from the note title}
+{指向相关 wiki 文章的交叉引用，由 lint 流程维护。使用 Obsidian wikilink：
+- [[其他文章]]
+- 当显示文本需要不同于笔记标题时，使用 [[其他文章|显示文本]]}
