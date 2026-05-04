@@ -1,6 +1,6 @@
 ---
 name: dev-using-skills
-description: 开始任何对话时使用 - 建立如何查找和使用 skills，在做出任何响应前要求先检查适用的 skill
+description: 开始开发编程相关对话时使用 - 建立如何查找和使用 skills，在做出任何响应前要求先检查适用的 skill
 ---
 
 <SUBAGENT-STOP>
