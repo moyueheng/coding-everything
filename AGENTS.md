@@ -428,8 +428,11 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 
 ### Git Worktree 约束
 
-1. 新建 git worktree 时，统一使用 `~/.agents/worktrees/<项目名称>/<分支名>`
-2. 不要在仓库内创建或复用 `.worktrees/`、`worktrees/` 等项目本地目录作为新 worktree 位置
+1. 默认不要为执行计划自动创建 git worktree，直接在当前分支修改
+2. 只有用户明确要求隔离工作区、并行分支验证或临时试验时，才调用 `dev-git-worktrees`
+3. 已知问题：设计文档或实施计划如果在当前工作区生成但尚未提交，新建 worktree 后这些未提交文件不可见，容易导致执行阶段丢失上下文；上游 superpowers 已有相关讨论，后续再评估是否恢复自动 worktree 流程
+4. 如果确实新建 git worktree，统一使用 `~/.agents/worktrees/<项目名称>/<分支名>`
+5. 不要在仓库内创建或复用 `.worktrees/`、`worktrees/` 等项目本地目录作为新 worktree 位置
 
 ### 命名规范
 

@@ -154,7 +154,7 @@ dev-executing-plans
   │
   ├─ 涉及代码：dev-tdd
   ├─ 遇到异常：dev-debugging
-  ├─ 需要隔离：dev-git-worktrees
+  ├─ 用户明确要求隔离：dev-git-worktrees
   └─ 批次审查：dev-requesting-review
   │
   ▼
@@ -223,6 +223,7 @@ REFACTOR：保持绿色的前提下清理
 | “先写完再补测试” | 用 TDD 先写失败测试 |
 | “应该有效” | 运行验证命令并读取输出 |
 | “找到相似方案就直接照抄” | 用 `dev-search-first` 做 Adopt / Extend / Build 判断 |
+| “执行计划前默认新建 worktree” | 默认在当前分支执行；只有用户明确要求隔离时才调用 `dev-git-worktrees`，避免未提交计划/设计在新 worktree 中不可见 |
 
 ---
 
@@ -320,5 +321,5 @@ REFACTOR：保持绿色的前提下清理
 
 ---
 
-*文档更新时间: 2026-04-20*
+*文档更新时间: 2026-05-06*
 *对应 skill 目录: `skills/` 46 个共享 skill，`.agents/skills/` 3 个系统级 skill*
