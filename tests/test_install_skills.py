@@ -442,9 +442,10 @@ class MergeMcpConfigTest(unittest.TestCase):
         )
         self._write_claude_json({"mcpServers": {}})
 
-        installed = installer.merge_mcp_config(self.home, self.repo_root)
+        installed, skipped = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, ["auggie-mcp"])
+        self.assertEqual(skipped, [])
         config = self._read_claude_json()
         mcp = config["mcpServers"]["auggie-mcp"]
         self.assertEqual(mcp["command"], "auggie")
@@ -464,9 +465,10 @@ class MergeMcpConfigTest(unittest.TestCase):
         self._write_claude_json({"mcpServers": {}})
 
         with unittest.mock.patch.dict("os.environ", {"ZAI_API_KEY": "test-key"}):
-            installed = installer.merge_mcp_config(self.home, self.repo_root)
+            installed, skipped = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, ["zai-github-read"])
+        self.assertEqual(skipped, [])
         config = self._read_claude_json()
         self.assertEqual(
             config["mcpServers"]["zai-github-read"]["headers"]["Authorization"],
@@ -486,9 +488,10 @@ class MergeMcpConfigTest(unittest.TestCase):
         self._write_claude_json({"mcpServers": {}})
 
         with unittest.mock.patch.dict("os.environ", {}, clear=True):
-            installed = installer.merge_mcp_config(self.home, self.repo_root)
+            installed, skipped = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, [])
+        self.assertEqual(skipped, ["zai-github-read"])
         config = self._read_claude_json()
         self.assertNotIn("zai-github-read", config["mcpServers"])
 
@@ -528,9 +531,10 @@ class MergeMcpConfigTest(unittest.TestCase):
         )
         self.home.mkdir(parents=True, exist_ok=True)
 
-        installed = installer.merge_mcp_config(self.home, self.repo_root)
+        installed, skipped = installer.merge_mcp_config(self.home, self.repo_root)
 
         self.assertEqual(installed, ["auggie-mcp"])
+        self.assertEqual(skipped, [])
         self.assertTrue(self.claude_json.exists())
         config = self._read_claude_json()
         self.assertIn("auggie-mcp", config["mcpServers"])

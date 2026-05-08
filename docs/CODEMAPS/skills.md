@@ -38,7 +38,7 @@
 | `dev-executing-plans` | 当有书面实施计划要在单独会话中执行并带审查检查点时使用 |
 | `dev-finishing-branch` | 实现完成、所有测试通过且需要决定如何集成工作时使用 - 指导完成开发工作 |
 | `dev-frontend-patterns` | React、Next.js、状态管理、性能优化和 UI 最佳实践的前端开发模式 |
-| `dev-git-worktrees` | 开始需要与当前工作区隔离的功能工作前使用，或在执行实施计划前 - 创建隔离的 git worktree |
+| `dev-git-worktrees` | 用户明确要求隔离工作区、并行分支验证或临时试验时使用 - 创建隔离的 git worktree |
 | `dev-mcp-patterns` | 使用 Node/TypeScript SDK 构建 MCP (Model Context Protocol) 服务器 —— tools、resources、pr... |
 | `dev-requesting-review` | 完成任务、实现主要功能或合并前使用 - 验证工作满足要求 |
 | `dev-search-first` | 何时使用需要在写代码、引入依赖、增加集成、创建新工具或抽象前，先检索仓库内已有实现、第三方库、MCP、公开 skill 和 GitHub 模式，避免重复造轮子 |

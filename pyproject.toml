@@ -17,6 +17,9 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["install_skills"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
 [[tool.uv.index]]
 url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 default = true
