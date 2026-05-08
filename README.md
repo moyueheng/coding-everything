@@ -49,7 +49,7 @@ uv tool install -e .
 ce init
 ```
 
-`ce init` 会扫描仓库当前的 46 个共享 skills，并写入 `~/.ce/config.yaml`：
+`ce init` 会扫描仓库当前的 47 个共享 skills，并写入 `~/.ce/config.yaml`：
 
 - `global` 组默认收纳非 Obsidian 编辑类 skills，同时安装 `~/.kimi/agents/superpower`、`~/.local/bin/ks`，并合并 `mcp-configs/required.json`
 - 如果提供 Obsidian vault 路径，会额外创建 `obsidian` 组，把 `obsidian-*`、`json-canvas`、`defuddle` 安装到 vault 内
@@ -157,6 +157,7 @@ groups:
 | `dev-ui-styling` | 高质量 UI 样式实现与可访问性约束 |
 | `dev-continuous-agent-loop` | 持续 agent 循环与自动化执行模式 |
 | `dev-mcp-patterns` | MCP 集成与模式约束 |
+| `dev-create-agents-md` | 为多级项目目录创建 AGENTS.md 并维护 CLAUDE.md 软链接 |
 | `learn-deep-research` | 通用深度调研与正式研究报告 |
 | `work-market-research` | 市场、竞品、价格与区域机会调研 |
 | `agent-browser` | 浏览器自动化 CLI 使用与网页交互 workflow |

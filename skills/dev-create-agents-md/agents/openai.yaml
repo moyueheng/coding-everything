@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create AGENTS.md"
+  short_description: "为多级编程项目目录生成并维护 agent 操作手册"
+  default_prompt: "Use $dev-create-agents-md to create AGENTS.md files for this project and link each CLAUDE.md to AGENTS.md."

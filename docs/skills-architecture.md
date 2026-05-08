@@ -21,7 +21,7 @@
 
 ```text
 coding-everything/
-├── skills/                 # 46 个跨平台共享 skill，均含 SKILL.md
+├── skills/                 # 47 个跨平台共享 skill，均含 SKILL.md
 │   ├── dev-*               # 开发流程、架构、测试、样式、MCP 等
 │   ├── obsidian-*          # Obsidian vault 编辑与结构化文件
 │   ├── life-*              # OrbitOS 迁移来的个人工作流
@@ -69,7 +69,7 @@ coding-everything/
 │ dev-backend-patterns / dev-frontend-patterns / dev-design-system      │
 │ dev-ui-styling / dev-e2e-testing / dev-mcp-patterns                   │
 │ dev-code-cleanup / dev-update-codemaps / dev-search-first             │
-│ dev-continuous-agent-loop / dev-writing-skills                        │
+│ dev-continuous-agent-loop / dev-writing-skills / dev-create-agents-md │
 └───────────────────────────────┬──────────────────────────────────────┘
                                 ▼
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -254,6 +254,7 @@ REFACTOR：保持绿色的前提下清理
 | `dev-e2e-testing` | 灵活 | Playwright Python 端到端测试 |
 | `dev-mcp-patterns` | 灵活 | Node/TypeScript MCP server 开发 |
 | `dev-update-codemaps` | 灵活 | 生成 token-lean 架构索引 |
+| `dev-create-agents-md` | 灵活 | 多级目录 AGENTS.md 与 CLAUDE.md 软链接维护 |
 
 ### 领域与工具型
 
@@ -321,5 +322,5 @@ REFACTOR：保持绿色的前提下清理
 
 ---
 
-*文档更新时间: 2026-05-06*
-*对应 skill 目录: `skills/` 46 个共享 skill，`.agents/skills/` 3 个系统级 skill*
+*文档更新时间: 2026-05-08*
+*对应 skill 目录: `skills/` 47 个共享 skill，`.agents/skills/` 3 个系统级 skill*

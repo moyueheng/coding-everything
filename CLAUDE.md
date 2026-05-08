@@ -58,7 +58,7 @@
 
 | 平台 | 路径 | 状态 |
 |------|------|------|
-| **共享 skills** | `skills/` | ✅ 已配置（46 个共享 skill；其中 5 个 Obsidian 编辑类 skill 可单独分组安装） |
+| **共享 skills** | `skills/` | ✅ 已配置（47 个共享 skill；其中 5 个 Obsidian 编辑类 skill 可单独分组安装） |
 | **Kimi** | `kimi/` | ✅ 已配置（agent/config） |
 | **Claude Code** | 通过 `ce` CLI 写入 `~/.claude/skills/` 或项目级 `.claude/skills/`，并合并 `mcp-configs/required.json` | ✅ 已兼容 |
 
@@ -79,7 +79,7 @@ coding-everything/
 │       └── dev-creating-subagents/ # 创建和管理 subagent
 │
 ├── skills/                     # 跨平台共享 skills
-│   ├── dev-*/                  # 开发 workflow / 模式类 skill（21 个）
+│   ├── dev-*/                  # 开发 workflow / 模式类 skill（22 个）
 │   ├── life-*/                 # OrbitOS 派生 workflow（9 个）
 │   ├── work-*/                 # 产品 / 研究 workflow（6 个）
 │   ├── obsidian-*/             # Obsidian 编辑 skill（3 个）
@@ -247,13 +247,13 @@ coding-everything/
 
 ## 个人 Kimi 配置
 
-共享 skill 基于 Agent Skills 标准组织；`kimi/` 目录仅保留 Kimi Code CLI 专属 agent/config。当前仓库共有 46 个共享 skill，按前缀分类如下：
+共享 skill 基于 Agent Skills 标准组织；`kimi/` 目录仅保留 Kimi Code CLI 专属 agent/config。当前仓库共有 47 个共享 skill，按前缀分类如下：
 
 ### skill列表
 
 | 前缀 / 组 | 数量 | 说明 |
 |------|------|------|
-| `dev-*` | 21 | 开发 workflow、模式与安装配套，包括 `dev-mcp-patterns` |
+| `dev-*` | 22 | 开发 workflow、模式与安装配套，包括 `dev-mcp-patterns`、`dev-create-agents-md` |
 | `life-*` | 9 | OrbitOS 派生的个人 workflow |
 | `work-*` | 6 | 产品、研究与需求分析 workflow |
 | `obsidian-*` | 3 | Obsidian 编辑 skill |
