@@ -84,5 +84,23 @@ def save_user_config(config_path: Path, config: UserConfig) -> None:
 
 
 def load_install_config(config_path: Path) -> dict[str, SkillGroup]:
-    """【已废弃】保留以兼容旧代码，实际不再使用。"""
-    return {}
+    """加载 legacy skills-install.yaml 分组配置。
+
+    新流程优先使用 ~/.ce/config.yaml；这个 loader 只服务 CLI 的 legacy fallback
+    和旧测试夹具。
+    """
+    if not config_path.exists():
+        return {}
+
+    data = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    if data is None:
+        return {}
+
+    groups: dict[str, SkillGroup] = {}
+    for name, group_data in data.get("groups", {}).items():
+        groups[name] = SkillGroup(
+            name=name,
+            skills=list(group_data.get("skills", [])),
+            targets=[expand_path(t) for t in group_data.get("targets", [])],
+        )
+    return groups

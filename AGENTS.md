@@ -416,8 +416,9 @@ docs/upstream-updates/YYYY-MM-DD-upstream-updates.md
 
 1. 使用 TDD 开发重要脚本
 2. 测试文件放在 `tests/` 目录
-3. 保持脚本 POSIX 兼容（优先使用 bash）
-4. 外部单 skill 同步脚本放在仓库根 `scripts/`，并与被跟踪目录内的 `UPSTREAM.md` 一起维护来源、分支、SHA 与同步命令
+3. pytest 默认收集范围在 `pyproject.toml` 中限定为 `tests/`，避免递归执行 `skills/` 与 `upstream/` 中的外部测试
+4. 保持脚本 POSIX 兼容（优先使用 bash）
+5. 外部单 skill 同步脚本放在仓库根 `scripts/`，并与被跟踪目录内的 `UPSTREAM.md` 一起维护来源、分支、SHA 与同步命令
 
 ### 文档同步（AGENTS/CLAUDE）
 

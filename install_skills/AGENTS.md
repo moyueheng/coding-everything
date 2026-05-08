@@ -8,7 +8,7 @@
 |------|------|
 | `__init__.py` | 包入口，声明 `__version__` |
 | `models.py` | 不可变数据结构（frozen dataclass） |
-| `config.py` | 用户配置 `~/.ce/config.yaml` 的加载与持久化 |
+| `config.py` | 用户配置 `~/.ce/config.yaml` 的加载与持久化；legacy `skills-install.yaml` 分组读取 |
 | `cli.py` | argparse 命令路由，交互式 init，add-skill/add-target |
 | `installer.py` | 核心安装逻辑：symlink、manifest、MCP 合并、v1→v2 迁移 |
 
@@ -107,6 +107,7 @@ groups:
 3. 从现有配置或环境变量中提取 `ZAI_API_KEY`
 4. 将 `{{ZAI_API_KEY}}` 占位符替换为真实值
 5. 合并到 `~/.claude.json` 的 `mcpServers` 字段
+6. 返回 `(installed, skipped)`，其中 `skipped` 表示因缺少 `ZAI_API_KEY` 跳过的 MCP 名称
 
 ## v1→v2 迁移
 
