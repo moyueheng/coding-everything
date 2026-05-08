@@ -1,11 +1,11 @@
 ---
 name: dev-update-codemaps
-description: 分析代码库结构并生成 token-lean 架构文档。
+description: 分析代码库结构并生成中文 token-lean 架构文档。
 ---
 
 # 更新 Codemaps
 
-分析代码库结构并生成 token-lean 架构文档。
+分析代码库结构并生成中文 token-lean 架构文档。
 
 ## 第 1 步：扫描项目结构
 
@@ -17,6 +17,8 @@ description: 分析代码库结构并生成 token-lean 架构文档。
 
 在 `docs/CODEMAPS/`（或 `.reports/codemaps/`）中创建或更新 codemaps：
 
+**语言硬性要求：所有 codemap 正文、标题、表格说明、报告内容必须使用中文。** 仅保留代码标识、文件路径、类名、函数名、HTTP method、依赖包名、配置 key 等技术专有名词的原文。
+
 | 文件 | 内容 |
 |------|----------|
 | `architecture.md` | 高层系统图、服务边界、数据流 |
@@ -27,20 +29,20 @@ description: 分析代码库结构并生成 token-lean 架构文档。
 
 ### Codemap 格式
 
-每个 codemap 应为 token-lean —— 针对 AI 上下文消费进行优化：
+每个 codemap 应为中文且 token-lean —— 针对 AI 上下文消费进行优化：
 
 ```markdown
-# Backend Architecture
+# 后端架构
 
-## Routes
+## 路由
 POST /api/users → UserController.create → UserService.create → UserRepo.insert
 GET  /api/users/:id → UserController.get → UserService.findById → UserRepo.findById
 
-## Key Files
+## 关键文件
 src/services/user.ts (业务逻辑, 120 行)
 src/repos/user.ts (数据库访问, 80 行)
 
-## Dependencies
+## 依赖
 - PostgreSQL (主数据存储)
 - Redis (会话缓存、限流)
 - Stripe (支付处理)
@@ -67,6 +69,8 @@ src/repos/user.ts (数据库访问, 80 行)
 - 检测到的新依赖
 - 架构变更（新 routes、新 services 等）
 - 90+ 天未更新文档的陈旧警告
+
+报告同样必须使用中文；技术标识可保留原文。
 
 ## 提示
 
